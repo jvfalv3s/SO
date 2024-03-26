@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include ".\LogFileManager\LogFileManager.h"
 
 /* Comment this line to don't show debug mensages */
 #define DEBUG
@@ -9,8 +11,15 @@
 #define CONFIG_FILE "./ConfigFile.txt"
 
 void error(char* error_message);
+void AutReqMan();
+void MonEng();
+
+const char* logFileName;
 
 int main(int argc, char* argv[]) {
+    logFileName = creatLogFile();
+    writeLog(logFileName, "PROCESS SYSTEM_MANAGER CREATED");
+
     int QUEUE_POS;
     int AUTH_SERVERS_MAX;
     int AUTH_PROC_TIME;
@@ -75,11 +84,27 @@ int main(int argc, char* argv[]) {
     #ifdef DEBUG
         printf("File readed!\n");
     #endif
+    fclose(f);
+    free(buf);
+
+
+    pid_t ARM_PID, ME_PID;
+    if(ARM_PID = fork() == 0) AutReqMan();
+    writeLog(logFileName, "PROCESS AUTHORIZATION_REQUEST_MANAGER CREATED");
+    if(ME_PID = fork() == 0) MonEng();
+    writeLog(logFileName, "PROCESS AUTHORIZATION_REQUEST_MANAGER CREATED");
+
+    for(int j = 0; j < 2; j++) wait();
 
     return 0;
 }
 
 void error(char* error_message) {
     printf("%s\n", error_message);
+    exit(0);
+}
+
+void endSys() {
+    endLogFile(logFileName);
     exit(0);
 }
