@@ -3,20 +3,35 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include ".\LogFileManager\LogFileManager.h"
+#include <sys/types.h>
+#include <signal.h>
+#include <iostream>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include "./LogFileManager/LogFileManager.h"
 
 /* Comment this line to don't show debug mensages */
 #define DEBUG
-
-#define CONFIG_FILE "./ConfigFile.txt"
 
 void error(char* error_message);
 void AutReqMan();
 void MonEng();
 
 const char* logFileName;
+int shmid;
+char* shmptr;
 
 int main(int argc, char* argv[]) {
+    if(argc != 1) {
+        printf("Not enought arguments: ./SystemManager <config-file-name>");
+        exit(0);
+    }
+
+    signal(SIGINT, endSys);
+
+    shmid = shmget(IPC_PRIVATE, 1024, IPC_CREAT | 0777);
+    shmptr = (char*)shmat(shmid, NULL, 0);
+
     logFileName = creatLogFile();
     writeLog(logFileName, "PROCESS SYSTEM_MANAGER CREATED");
 
@@ -33,7 +48,7 @@ int main(int argc, char* argv[]) {
     #ifdef DEBUG
         printf("Start reading file...\n");
     #endif
-    if((f = fopen(CONFIG_FILE, "r")) == NULL) {
+    if((f = fopen(argv[0], "r")) == NULL) {
         error("Opening the config file");
     }
     while(fgets(buf, sizeof(buf), f)) {
@@ -87,7 +102,6 @@ int main(int argc, char* argv[]) {
     fclose(f);
     free(buf);
 
-
     pid_t ARM_PID, ME_PID;
     if(ARM_PID = fork() == 0) AutReqMan();
     writeLog(logFileName, "PROCESS AUTHORIZATION_REQUEST_MANAGER CREATED");
@@ -105,6 +119,14 @@ void error(char* error_message) {
 }
 
 void endSys() {
+    #ifdef DEBUG
+        printf("Ending program!\n");
+    #endif
+
+    shmdt(shmptr);
+    shmctl(shmid, IPC_RMID, NULL);
+
     endLogFile(logFileName);
+
     exit(0);
 }
