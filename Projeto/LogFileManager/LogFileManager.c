@@ -5,7 +5,7 @@
 #include <time.h>
 #include <semaphore.h> 
 #include <unistd.h> 
-#include ".\LogFileManager.h"
+#include "./LogFileManager.h"
 
 sem_t mutex;
 time_t t;

@@ -3,7 +3,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include ".\LogFileManager\LogFileManager.h"
+#include "./LogFileManager/LogFileManager.h"
+#include <sys/types.h>
 
 /* Comment this line to don't show debug mensages */
 #define DEBUG
