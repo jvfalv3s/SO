@@ -5,8 +5,8 @@
  * --> João Vitor Fraga Maia Alves           Nº: 2016122878
  **********************************************************/
 
-#ifndef LOGFILEMANAGERH
-#define LOGFILEMANAGERH
+#ifndef LOGFILEMANAGER_H
+#define LOGFILEMANAGER_H
 
 /**
  * Creates a new log file and returns his name.

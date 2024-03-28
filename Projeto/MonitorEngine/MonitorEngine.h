@@ -5,8 +5,8 @@
  * --> João Vitor Fraga Maia Alves           Nº: 2016122878
  **********************************************************/
 
-#ifndef MONITORENGINEH
-#define MONITORENGINEH
+#ifndef MONITORENGINE_H
+#define MONITORENGINE_H
 
 /**
  * Creates the Monitor Engine process.
