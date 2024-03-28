@@ -126,7 +126,7 @@ int main(int argc, char* argv[]) {
     signal(SIGINT, endSys);
 
     /* Waits for his 2 childs to end */
-    for(int j = 0; j < 2; j++) waitpid(0);
+    for(int j = 0; j < 2; j++) wait(NULL);
 
     return 0;
 }
@@ -146,7 +146,7 @@ void endSys() {
     /* Write log Waiting for last task to finish */
     writeLog(logFileName, "5G_AUTH_PLATFORM SIMULATOR WAITING FOR LAST TASKS TO FINISH");
     kill(0, SIGQUIT);
-    for(int i = 0; i < 2; i++) waitpid(0);
+    for(int i = 0; i < 2; i++) wait(NULL);
     
     /* Detach and closes shared memory */
     shmdt(shmptr);
