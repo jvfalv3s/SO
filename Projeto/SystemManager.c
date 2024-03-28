@@ -126,7 +126,7 @@ int main(int argc, char* argv[]) {
     signal(SIGINT, endSys);
 
     /* Waits for his 2 childs to end */
-    for(int j = 0; j < 2; j++) wait();
+    for(int j = 0; j < 2; j++) wait(0);
 
     return 0;
 }
