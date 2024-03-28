@@ -146,7 +146,7 @@ void endSys() {
     /* Write log Waiting for last task to finish */
     writeLog(logFileName, "5G_AUTH_PLATFORM SIMULATOR WAITING FOR LAST TASKS TO FINISH");
     kill(0, SIGQUIT);
-    for(int i = 0; i < 2; i++) wait();
+    for(int i = 0; i < 2; i++) waitpid(0);
     
     /* Detach and closes shared memory */
     shmdt(shmptr);
