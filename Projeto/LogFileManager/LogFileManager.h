@@ -14,7 +14,7 @@
 const char* creatLogFile();
 
 /**
- * Writes a new log in the log file with the given name 'logFileName' and also prints the mensage in the console.
+ * Writes a new log in the log file with the given name 'logFileName' and also prints the message in the console.
  */
 void writeLog(const char* logFileName, char* newLog);
 
@@ -24,7 +24,7 @@ void writeLog(const char* logFileName, char* newLog);
 void endLogFile(char* logFileName);
 
 /**
- * Exists the program after an error printing the mensage in the screen and writting it in the log file.
+ * Exists the program after an error printing the message in the screen and writting it in the log file.
  */
 void error(char* error_message);
 

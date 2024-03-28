@@ -19,7 +19,7 @@
 #include "./MonitorEngine/MonitorEngine.h"
 
 
-/* Comment this line to don't show debug mensages */
+/* Comment this line to don't show debug messages */
 #define DEBUG
 
 const char* logFileName;

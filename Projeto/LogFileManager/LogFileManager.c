@@ -39,7 +39,7 @@ const char* creatLogFile() {
     fprintf(logFile, "%02d:%02d:%02d 5G_AUTH_PLATFORM SIMULATOR STARTING", tm.tm_hour, tm.tm_min, tm.tm_sec);
     fclose(logFile);
 
-    /* Prints the same mensage in the console */
+    /* Prints the same message in the console */
     printf("5G_AUTH_PLATFORM SIMULATOR STARTING");
 
     /* Initializes a new semaphore caled mutex to use in next times */
@@ -50,7 +50,7 @@ const char* creatLogFile() {
 }
 
 /**
- * Writes a new log in the log file with the given name 'logFileName' and also prints the mensage in the console.
+ * Writes a new log in the log file with the given name 'logFileName' and also prints the message in the console.
  */
 void writeLog(const char* logFileName, char* newLog) {
     sem_wait(&mutex);
@@ -66,7 +66,7 @@ void writeLog(const char* logFileName, char* newLog) {
     fprintf(logFile, "%02d:%02d:%02d %s", tm.tm_hour, tm.tm_min, tm.tm_sec, newLog);
     fclose(logFile);
 
-    /* Prints the same mensage in the console */
+    /* Prints the same message in the console */
     printf("%02d:%02d:%02d %s", tm.tm_hour, tm.tm_min, tm.tm_sec, newLog);
 
     sem_post(&mutex);
@@ -89,7 +89,7 @@ void endLogFile(char* logFileName) {
     fprintf(logFile, "%02d:%02d:%02d 5G_AUTH_PLATFORM SIMULATOR CLOSING", tm.tm_hour, tm.tm_min, tm.tm_sec);
     fclose(logFile);
 
-    /* Prints the same mensage in the console */
+    /* Prints the same message in the console */
     printf("%02d:%02d:%02d 5G_AUTH_PLATFORM SIMULATOR CLOSING", tm.tm_hour, tm.tm_min, tm.tm_sec);
 
     sem_post(&mutex);
@@ -99,7 +99,7 @@ void endLogFile(char* logFileName) {
 }
 
 /**
- * Exists the program after an error printing the mensage in the screen and writting it in the log file.
+ * Exists the program after an error printing the message in the screen and writting it in the log file.
  */
 void error(char* error_message) {
     writeLog(logFileName, strcat("ERROR: ", strupr(error_message)));

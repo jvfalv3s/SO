@@ -16,7 +16,7 @@
 #include "../LogFileManager/LogFileManager.h"
 #include "./AutorizationReqManager.h"
 
-/* Comment this line to don't show debug mensages */
+/* Comment this line to don't show debug messages */
 #define DEBUG
 
 /**

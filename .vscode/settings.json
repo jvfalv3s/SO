@@ -1,6 +1,8 @@
 {
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
-        "logfilemanager.h": "c"
+        "logfilemanager.h": "c",
+        "stdio.h": "c",
+        "autorizationreqmanager.h": "c"
     }
 }
