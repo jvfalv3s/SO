@@ -19,12 +19,14 @@
 /* Comment this line to don't show debug messages */
 #define DEBUG
 
+/* Initialization of the threads IDs */
+pthread_t Sender_id, Receiver_id;
+
 /**
  * Creates the Autorization Request Manager process.
  */
 void AutReqMan(const char* logFileName) {
     /* Creates two threads, the sender and the receiver and logs their creation right after */
-    pthread_t Sender_id, Receiver_id;
     pthread_create(&Sender_id, NULL, Sender, NULL);
     writeLog(logFileName, "THREAD SENDER CREATED");
     pthread_create(&Receiver_id, NULL, Receiver, NULL);

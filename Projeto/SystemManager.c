@@ -11,7 +11,6 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <signal.h>
-#include <iostream>
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include "./LogFileManager/LogFileManager.h"

@@ -5,8 +5,8 @@
  * --> João Vitor Fraga Maia Alves           Nº: 2016122878
  **********************************************************/
 
-#ifndef AUTORIZATIONREQMANAGER.H
-#define AUTORIZATIONREQMANAGER.H
+#ifndef AUTORIZATIONREQMANAGERH
+#define AUTORIZATIONREQMANAGERH
 
 /**
  * Creates the Autorization Request Manager process.
