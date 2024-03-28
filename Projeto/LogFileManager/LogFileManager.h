@@ -21,7 +21,7 @@ void writeLog(const char* logFileName, char* newLog);
 /**
  * Ends the log file writting a last log in it and in the console, it also destroys the mutex created.
  */
-void endLogFile(char* logFileName);
+void endLogFile(const char* logFileName);
 
 /**
  * Exists the program after an error printing the message in the screen and writting it in the log file.

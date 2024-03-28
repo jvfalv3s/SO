@@ -10,6 +10,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <signal.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
@@ -17,9 +18,10 @@
 #include "./AutorizationReqManager/AutorizationReqManager.h"
 #include "./MonitorEngine/MonitorEngine.h"
 
-
 /* Comment this line to don't show debug messages */
 #define DEBUG
+
+void endSys();
 
 const char* logFileName;
 int shmid;
@@ -115,9 +117,9 @@ int main(int argc, char* argv[]) {
 
     /* Creates the two child processes: Autorization Request Manager and the Monitor Engine writting a log after each creation */
     pid_t ARM_PID, ME_PID;
-    if(ARM_PID = fork() == 0) AutReqMan(logFileName);
+    if((ARM_PID = fork()) == 0) AutReqMan(logFileName);
     writeLog(logFileName, "PROCESS AUTHORIZATION_REQUEST_MANAGER CREATED");
-    if(ME_PID = fork() == 0) MonEng(logFileName);
+    if((ME_PID = fork()) == 0) MonEng(logFileName);
     writeLog(logFileName, "PROCESS AUTHORIZATION_REQUEST_MANAGER CREATED");
 
     /* Capture and handles the ^C (SIGINT) signal */

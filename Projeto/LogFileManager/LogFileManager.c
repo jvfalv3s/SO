@@ -75,7 +75,7 @@ void writeLog(const char* logFileName, char* newLog) {
 /**
  * Ends the log file writting a last log in it and in the console, it also destroys the mutex created.
  */
-void endLogFile(char* logFileName) {
+void endLogFile(const char* logFileName) {
     sem_wait(&mutex);
 
     /* Takes the actual time to use in the log file */
