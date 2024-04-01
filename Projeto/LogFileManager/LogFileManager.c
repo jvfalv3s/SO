@@ -19,6 +19,8 @@ time_t t;
 FILE* logFile;
 struct tm tm;
 
+//alguns erros na compilação, comentados nas mesmas nas linhas
+
 /**
  * Creates a new log file and returns his name.
  */
@@ -30,7 +32,7 @@ const char* creatLogFile() {
     tm = *localtime(&t);
 
     /* Define the log file name as dd-mm-yyyy_hh:mm:ss */
-    sprintf(logFileName, "%02d-%02d-%d_%02d:%02d:%02d", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min, tm.tm_sec);
+    sprintf(logFileName, "%02d-%02d-%d_%02d:%02d:%02d", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min, tm.tm_sec); //warning: passing argument 1 of ‘sprintf’ discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers] sprintf(logFileName, "%02d-%02d-%d_%02d:%02d:%02d", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min, tm.tm_sec);
     
     /* Creates a new file to write logs and writes the first log in it marking the initialization of the system */
     if((logFile = fopen(logFileName, "w")) == NULL) {
@@ -102,6 +104,6 @@ void endLogFile(const char* logFileName) {
  * Exists the program after an error printing the message in the screen and writting it in the log file.
  */
 void error(char* error_message) {
-    writeLog(logFileName, strcat("ERROR: ", strupr(error_message)));
+    writeLog(logFileName, strcat("ERROR: ", strupr(error_message))); //error: ‘logFileName’ undeclared (first use in this function); did you mean ‘logFile’? writeLog(logFileName, strcat("ERROR: ", strupr(error_message))); logFile
     exit(0);
 }
