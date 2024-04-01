@@ -32,8 +32,8 @@ char* shmptr;
 int main(int argc, char* argv[]) {
     /* Check if the arguments of execution are correct */
     if(argc != 2) {
-        printf("Not enought arguments: ./SystemManager <config-file-name>");
-        exit(0);
+        fprintf(stderr, "Not enought arguments: Use: %s <config-file-name>\n", argv[0]);
+        exit(EXIT_FAILURE);
     }
 
     /* Create a new shared memory id and attach it */
@@ -154,5 +154,5 @@ void endSys() {
     /* Ends the log file saving it and writing the last log saying the system will shut down */
     endLogFile();
 
-    exit(0);
+    exit(EXIT_SUCCESS);
 }

@@ -101,5 +101,5 @@ void endLogFile() {
  */
 void error(char* error_message) {
     writeLog(logFileName, strcat("ERROR: ", strupr(error_message)));
-    exit(0);
+    exit(EXIT_FAILURE);
 }

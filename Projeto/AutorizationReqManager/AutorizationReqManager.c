@@ -38,7 +38,7 @@ void AutReqMan() {
     pthread_join(Sender_id, NULL);
     pthread_join(Receiver_id, NULL);
 
-    exit(0);
+    exit(EXIT_SUCCESS);
 }
 
 /**
@@ -69,6 +69,6 @@ void endAutReqMan() {
     pthread_kill(Sender_id, SIGINT);
     pthread_kill(Sender_id, SIGINT);
 
-    exit(0);
+    exit(EXIT_SUCCESS);
 }
 

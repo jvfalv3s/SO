@@ -17,5 +17,5 @@
  * Creates the Monitor Engine process.
  */
 void MonEng() {
-    exit(0);
+    exit(EXIT_SUCCESS);
 }
