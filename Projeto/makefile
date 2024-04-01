@@ -42,12 +42,11 @@ clean:
 	rm -f $(OBJS) $(TARGET)
 
 
-
 main : SystemManager.c
 	gcc -Wall -Wextra SystemManager.c -o SystemManager
 
 mobileUser : mobileUser.c
-	gcc -Wall -Wextra mobileUser.c mobileUser.h -o mobileUser
+	gcc -Wall -Wextra mobileUser.c -o mobileUser
 
 backOfficeUser : backOfficeUser.c
 	gcc -Wall -Wextra backOfficeUser.c -o backOfficeUser
