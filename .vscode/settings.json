@@ -3,6 +3,7 @@
     "files.associations": {
         "logfilemanager.h": "c",
         "stdio.h": "c",
-        "autorizationreqmanager.h": "c"
+        "autorizationreqmanager.h": "c",
+        "errno.h": "c"
     }
 }
