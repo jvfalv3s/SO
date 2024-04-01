@@ -23,7 +23,6 @@
 
 void endSys();
 
-const char* logFileName;
 int shmid;
 char* shmptr;
 
@@ -42,8 +41,8 @@ int main(int argc, char* argv[]) {
     shmptr = (char*)shmat(shmid, NULL, 0);
 
     /* Creates a new log file and log the creation of the system manager process */
-    logFileName = creatLogFile();
-    writeLog(logFileName, "PROCESS SYSTEM_MANAGER CREATED");
+    creatLogFile();
+    writeLog("PROCESS SYSTEM_MANAGER CREATED");
 
     /* Initialization of the variables obtained from the config file */
     int QUEUE_POS;
@@ -117,10 +116,10 @@ int main(int argc, char* argv[]) {
 
     /* Creates the two child processes: Autorization Request Manager and the Monitor Engine writting a log after each creation */
     pid_t ARM_PID, ME_PID;
-    if((ARM_PID = fork()) == 0) AutReqMan(logFileName);
-    writeLog(logFileName, "PROCESS AUTHORIZATION_REQUEST_MANAGER CREATED");
-    if((ME_PID = fork()) == 0) MonEng(logFileName);
-    writeLog(logFileName, "PROCESS AUTHORIZATION_REQUEST_MANAGER CREATED");
+    if((ARM_PID = fork()) == 0) AutReqMan();
+    writeLog("PROCESS AUTHORIZATION_REQUEST_MANAGER CREATED");
+    if((ME_PID = fork()) == 0) MonEng();
+    writeLog("PROCESS AUTHORIZATION_REQUEST_MANAGER CREATED");
 
     /* Capture and handles the ^C (SIGINT) signal */
     signal(SIGINT, endSys);
@@ -141,10 +140,10 @@ void endSys() {
     #endif
 
     /* Write log Signal received */
-    writeLog(logFileName, "SIGNAL SIGINT RECEIVED");
+    writeLog("SIGNAL SIGINT RECEIVED");
 
     /* Write log Waiting for last task to finish */
-    writeLog(logFileName, "5G_AUTH_PLATFORM SIMULATOR WAITING FOR LAST TASKS TO FINISH");
+    writeLog("5G_AUTH_PLATFORM SIMULATOR WAITING FOR LAST TASKS TO FINISH");
     kill(0, SIGQUIT);
     for(int i = 0; i < 2; i++) wait(NULL);
     
@@ -153,7 +152,7 @@ void endSys() {
     shmctl(shmid, IPC_RMID, NULL);
 
     /* Ends the log file saving it and writing the last log saying the system will shut down */
-    endLogFile(logFileName);
+    endLogFile();
 
     exit(0);
 }

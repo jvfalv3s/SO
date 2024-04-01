@@ -9,19 +9,19 @@
 #define LOGFILEMANAGER_H
 
 /**
- * Creates a new log file and returns his name.
+ * Creates a new log file.
  */
-const char* creatLogFile();
+void creatLogFile();
 
 /**
- * Writes a new log in the log file with the given name 'logFileName' and also prints the message in the console.
+ * Writes a new log in the log file and also prints the message in the console.
  */
-void writeLog(const char* logFileName, char* newLog);
+void writeLog(char* newLog);
 
 /**
  * Ends the log file writting a last log in it and in the console, it also destroys the mutex created.
  */
-void endLogFile(const char* logFileName);
+void endLogFile();
 
 /**
  * Exists the program after an error printing the message in the screen and writting it in the log file.

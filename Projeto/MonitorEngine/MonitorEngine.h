@@ -11,6 +11,6 @@
 /**
  * Creates the Monitor Engine process.
  */
-void MonEng(const char* logFileName);
+void MonEng();
 
 #endif

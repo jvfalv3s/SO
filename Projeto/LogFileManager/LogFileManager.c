@@ -18,21 +18,20 @@ sem_t mutex;
 time_t t;
 FILE* logFile;
 struct tm tm;
-
-//alguns erros na compilação, comentados nas mesmas nas linhas
+char* logFileName;
 
 /**
- * Creates a new log file and returns his name.
+ * Creates a new log file.
  */
-const char* creatLogFile() {
-    const char* logFileName;
-
+void creatLogFile() {
     /* Takes the actual time to use in the log file */
     t = time(NULL);
     tm = *localtime(&t);
 
     /* Define the log file name as dd-mm-yyyy_hh:mm:ss */
-    sprintf(logFileName, "%02d-%02d-%d_%02d:%02d:%02d", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min, tm.tm_sec); //warning: passing argument 1 of ‘sprintf’ discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers] sprintf(logFileName, "%02d-%02d-%d_%02d:%02d:%02d", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min, tm.tm_sec);
+    if(sprintf(logFileName, "%02d-%02d-%d_%02d:%02d:%02d", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min, tm.tm_sec) < 0) {
+        error("Creating log file name");
+    }
     
     /* Creates a new file to write logs and writes the first log in it marking the initialization of the system */
     if((logFile = fopen(logFileName, "w")) == NULL) {
@@ -46,15 +45,12 @@ const char* creatLogFile() {
 
     /* Initializes a new semaphore caled mutex to use in next times */
     sem_init(&mutex, 0, 1);
-
-    /* Return the log file name to use in next logs */
-    return logFileName;
 }
 
 /**
- * Writes a new log in the log file with the given name 'logFileName' and also prints the message in the console.
+ * Writes a new log in the log file and also prints the message in the console.
  */
-void writeLog(const char* logFileName, char* newLog) {
+void writeLog(char* newLog) {
     sem_wait(&mutex);
 
     /* Takes the actual time to use in the log file */
@@ -77,7 +73,7 @@ void writeLog(const char* logFileName, char* newLog) {
 /**
  * Ends the log file writting a last log in it and in the console, it also destroys the mutex created.
  */
-void endLogFile(const char* logFileName) {
+void endLogFile() {
     sem_wait(&mutex);
 
     /* Takes the actual time to use in the log file */
@@ -104,6 +100,6 @@ void endLogFile(const char* logFileName) {
  * Exists the program after an error printing the message in the screen and writting it in the log file.
  */
 void error(char* error_message) {
-    writeLog(logFileName, strcat("ERROR: ", strupr(error_message))); //error: ‘logFileName’ undeclared (first use in this function); did you mean ‘logFile’? writeLog(logFileName, strcat("ERROR: ", strupr(error_message))); logFile
+    writeLog(logFileName, strcat("ERROR: ", strupr(error_message)));
     exit(0);
 }

@@ -11,7 +11,7 @@
 /**
  * Creates the Autorization Request Manager process.
  */
-void AutReqMan(const char* logFileName);
+void AutReqMan();
 
 /**
  * Sender Thread.

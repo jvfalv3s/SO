@@ -25,12 +25,12 @@ pthread_t Sender_id, Receiver_id;
 /**
  * Creates the Autorization Request Manager process.
  */
-void AutReqMan(const char* logFileName) {
+void AutReqMan() {
     /* Creates two threads, the sender and the receiver and logs their creation right after */
     pthread_create(&Sender_id, NULL, Sender, NULL);
-    writeLog(logFileName, "THREAD SENDER CREATED");
+    writeLog("THREAD SENDER CREATED");
     pthread_create(&Receiver_id, NULL, Receiver, NULL);
-    writeLog(logFileName, "THREAD RECEIVER CREATED");
+    writeLog("THREAD RECEIVER CREATED");
 
     //signal(SIGQUIT, endAutReqMan);
 
