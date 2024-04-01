@@ -13,12 +13,12 @@
 CC = gcc
 
 # Flags de compilação
-CFLAGS = -Wall -Wextra
+CFLAGS = -Wall -Wextra -g -pthread
 
 CFLAGS += -I./AutorizationReqManager
 CFLAGS += -I./LogFileManager
 CFLAGS += -I./MonitorEngine
-CFLAGS += -I./SystemManager
+
 
 # Nome do executável
 TARGET = SystemManager
