@@ -17,6 +17,9 @@
 #include <sys/msg.h>
 #include "mobileUser.h"
 
+/* Comment this line to don't show debug messages */
+#define DEBUG
+
 /* Max characters a command can have */
 #define MAX_CHAR_COMMAND_AMMOUNT = 100
 
@@ -54,21 +57,39 @@ int main(int argc, char *argv[]) {
     /* CLI arguments extraction and verification */
     int initial_plafond = atoi(argv[1]);
     if(initial_plafond <= 0) error("Initial Plafond must be > 0");
+    #ifdef DEBUG
+        printf("Initial Plafond = %d\n", initial_plafond);
+    #endif
 
     int autorizations_requests_number = atoi(argv[2]);
     if(autorizations_requests_number <= 0) error("Autorizations Requests Number must be > 0");
+    #ifdef DEBUG
+        printf("Autorizations Requests Number = %d\n", autorizations_requests_number);
+    #endif
 
     int VIDEO_interval = atoi(argv[3]);
     if(VIDEO_interval <= 0) error("VIDEO Interval must be > 0");
+    #ifdef DEBUG
+        printf("VIDEO Interval = %d\n", VIDEO_interval);
+    #endif
 
     int MUSIC_interval = atoi(argv[4]);
     if(MUSIC_interval <= 0) error("MUSIC Interval must be > 0");
+    #ifdef DEBUG
+        printf("MUSIC Interval = %d\n", MUSIC_interval);
+    #endif
 
     int SOCIAL_interval = atoi(argv[5]);
     if(SOCIAL_interval <= 0) error("SOCIAL Interval must be > 0");
+    #ifdef DEBUG
+        printf("SOCIAL Interval = %d\n", SOCIAL_interval);
+    #endif
 
     int data_to_reserve = atoi(argv[6]);
     if(data_to_reserve <= 0) error("Data_to_Reserve must be > 0");
+    #ifdef DEBUG
+        printf("Data to Reserve = %d\n", data_to_reserve);
+    #endif
 
     /*
     // Criar o named pipe para comunicação com o Authorization Requests Manager
