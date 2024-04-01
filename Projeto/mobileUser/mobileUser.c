@@ -243,6 +243,6 @@ void handle_sigint(int sig) {
 void error(char* str_to_print) {
     free(command);
 
-    if(fprintf(stderr, "Error: %s", str_to_print) < 0) exit(EXIT_FAILURE);
+    if(fprintf(stderr, "Error: %s\n", str_to_print) < 0) exit(EXIT_FAILURE);
     exit(EXIT_FAILURE);
 }
