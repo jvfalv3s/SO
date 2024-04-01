@@ -18,8 +18,9 @@
 #include <sys/ipc.h>
 #include <sys/msg.h>
 #include <pthread.h>
-#include "BackOfficeUser.h"
-#include "AutorizationReqManager.h"
+#include <stdbool.h>
+//#include "backOfficeUser.h"
+//#include "AutorizationReqManager.h"
 
 #define BACK_PIPE "back_pipe"
 #define MESSAGE_QUEUE_KEY 1234
@@ -71,7 +72,7 @@ void startBackOfficeUser() {
     pthread_join(Receiver_id, NULL);
 
     // Loop para receber estatísticas periódicas e solicitar estatísticas assíncronas
-    while (1) {
+    while (!should_exit) { // Saia do loop se should_exit for verdadeiro
         // Implemente aqui a lógica para receber estatísticas periódicas e solicitar estatísticas assíncronas
 
         sleep(10); // Aguarda 10 segundos antes de continuar para simular o recebimento periódico de estatísticas
@@ -110,7 +111,7 @@ int main() {
     }
 
     // Loop principal do processo BackOffice User
-    while (1) {
+    while (!should_exit) {
         // Receber estatísticas agregadas periodicamente
         receive_aggregated_statistics();
 

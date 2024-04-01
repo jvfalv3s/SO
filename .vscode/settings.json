@@ -4,6 +4,7 @@
         "logfilemanager.h": "c",
         "stdio.h": "c",
         "autorizationreqmanager.h": "c",
-        "errno.h": "c"
+        "errno.h": "c",
+        "stdbool.h": "c"
     }
 }
