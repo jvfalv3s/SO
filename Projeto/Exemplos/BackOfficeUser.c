@@ -49,6 +49,14 @@ void startBackOfficeUser() {
         exit(EXIT_FAILURE);
     }
 
+     // Crie as threads para envio e recebimento
+    pthread_create(&Sender_id, NULL, Sender, NULL);
+    pthread_create(&Receiver_id, NULL, Receiver, NULL);
+
+    // Espere que as threads terminem
+    pthread_join(Sender_id, NULL);
+    pthread_join(Receiver_id, NULL);
+
     // Loop para receber estatísticas periódicas e solicitar estatísticas assíncronas
     while (1) {
         // Implemente aqui a lógica para receber estatísticas periódicas e solicitar estatísticas assíncronas

@@ -54,6 +54,14 @@ void startMobileUser(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
+    // Crie as threads para envio e recebimento
+    pthread_create(&Sender_id, NULL, Sender, NULL);
+    pthread_create(&Receiver_id, NULL, Receiver, NULL);
+
+    // Espere que as threads terminem
+    pthread_join(Sender_id, NULL);
+    pthread_join(Receiver_id, NULL);
+
     // Envia mensagem de registo inicial
     dprintf(user_pipe_fd, "%d#%s\n", getpid(), argv[1]);
 
