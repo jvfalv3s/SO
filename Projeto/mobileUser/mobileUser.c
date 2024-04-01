@@ -15,167 +15,62 @@
 #include <errno.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
-#include <pthread.h>
 #include "mobileUser.h"
 
+/* Max characters a command can have */
+#define MAX_CHAR_COMMAND_AMMOUNT = 100
+
+/* Initializing some usefull variables */
+char MOBILE_USER_ID[6];
+char* command = malloc(sizeof(char)*MAX_CHAR_COMMAND_AMMOUNT);
+
+/*
 #define USER_PIPE "user_pipe"
 #define VIDEO_STREAMING_QUEUE_KEY 5678
 #define MESSAGE_QUEUE_KEY 1234
+*/
 
+/* Possivel solução para pipes
 // Estrutura para as mensagens na fila
 struct message_buffer {
     long message_type;
     char message_text[100];
 };
+*/
 
-// Estrutura para a mensagem na fila de vídeo
-struct video_request_message {
-    long type; // Tipo da mensagem
-    // Adicione campos adicionais conforme necessário para representar os dados do pedido
-    // Por exemplo:
-    // int user_id; // ID do usuário
-    // int service_type; // Tipo de serviço (vídeo, música, etc.)
-    // Outros campos relevantes
-};
-
-// Etrutura pra a mensagem na fila de música
-
-struct music_request_message {
-    long type; // Tipo da mensagem
-    // Adicione campos adicionais conforme necessário para representar os dados do pedido
-    // Por exemplo:
-    // int user_id; // ID do usuário
-    // int service_type; // Tipo de serviço (vídeo, música, etc.)
-    // Outros campos relevantes
-};
-
-// Estrutura para a mensagem na fila de rede social
-
-struct social_request_message {
-    long type; // Tipo da mensagem
-    // Adicione campos adicionais conforme necessário para representar os dados do pedido
-    // Por exemplo:
-    // int user_id; // ID do usuário
-    // int service_type; // Tipo de serviço (vídeo, música, etc.)
-    // Outros campos relevantes
-};
-
-pthread_t Sender_id, Receiver_id;
-
-void* Sender(void *arg) {
-    // Implemente aqui a lógica para o envio de mensagens para o Autorization Request Manager
-    return NULL;
-}
-
-void* Receiver(void *arg) {
-    // Implemente aqui a lógica para o recebimento de alertas do Autorization Request Manager
-    return NULL;
-}
-
-void handle_signal(int sig) {
-    // Tratamento de sinal
-    printf("Recebido sinal SIGINT. Encerrando o Mobile User...\n");
-    exitAutReqMan();
-    exit(EXIT_SUCCESS);
-}
-
-void startMobileUser(int argc, char *argv[]) {
-    if (argc < 7) {
-        fprintf(stderr, "Uso: %s <plafond inicial> <número máximo de pedidos> <intervalo VIDEO> <intervalo MUSIC> <intervalo SOCIAL> <dados a reservar>\n", argv[0]);
-        exit(EXIT_FAILURE);
-    }
-
-    // Registra o tratamento de sinal
-    signal(SIGINT, handle_signal);
-
-    // Abre o named pipe USER_PIPE para escrita
-    int user_pipe_fd = open(USER_PIPE, O_WRONLY);
-    if (user_pipe_fd == -1) {
-        perror("Erro ao abrir o named pipe USER_PIPE");
-        exit(EXIT_FAILURE);
-    }
-
-    // Cria ou conecta à Message Queue
-    int msgqid;
-    if ((msgqid = msgget(MESSAGE_QUEUE_KEY, IPC_CREAT | 0666)) == -1) {
-        perror("Erro ao criar/conectar a Message Queue");
-        exit(EXIT_FAILURE);
-    }
-
-    // Crie as threads para envio e recebimento
-    pthread_create(&Sender_id, NULL, Sender, NULL);
-    pthread_create(&Receiver_id, NULL, Receiver, NULL);
-
-    // Espere que as threads terminem
-    pthread_join(Sender_id, NULL);
-    pthread_join(Receiver_id, NULL);
-
-    // Envia mensagem de registo inicial
-    dprintf(user_pipe_fd, "%d#%s\n", getpid(), argv[1]);
-
-    // Cria o processo Autorization Request Manager
-    AutReqMan("logfile.txt");
-
-    // Fecha o pipe USER_PIPE
-    close(user_pipe_fd);
-}
-
-// Função para enviar um pedido de serviço
-void send_data_request(int user_pipe_fd, int video_queue_id, int initial_balance) {
-    // Enviar mensagem de registo inicial para o Authorization Requests Manager
-    char registration_message[100];
-    sprintf(registration_message, "%d#%d", getpid(), initial_balance);
-    write(user_pipe_fd, registration_message, strlen(registration_message) + 1);
-
-    // Exemplo de pedido de serviço (música)
-    char request2[] = "MUSIC"; // Exemplo de pedido de serviço (música)
-    write(user_pipe_fd, request2, strlen(request2) + 1);
-
-    // Exemplo de pedido de serviço (rede social)
-    char request3[] = "SOCIAL"; // Exemplo de pedido de serviço (rede social)
-    write(user_pipe_fd, request3, strlen(request3) + 1);
-
-    // Criação de um pedido de autorização para a fila de mensagens de vídeo
-    struct video_request_message video_request;
-    video_request.type = 1; // Tipo de mensagem (pode ser usado para distinguir entre diferentes tipos de pedidos)
-    // Preencha os campos da mensagem conforme necessário
-    // Por exemplo:
-    // video_request.user_id = 123;
-    // video_request.service_type = VIDEO;
-    // Outros campos relevantes
-
-    // Envio do pedido para a fila de mensagens de vídeo
-    if (msgsnd(video_queue_id, &video_request, sizeof(struct video_request_message), 0) == -1) {
-        perror("Erro ao enviar pedido de vídeo para a fila");
-        exit(EXIT_FAILURE);
-    }
-}
-
-// Função para receber alertas
-void receive_alerts(int message_queue_id) {
-    struct message_buffer message;
-    
-    // Receber alertas da fila de mensagens
-    if (msgrcv(message_queue_id, &message, sizeof(message), 1, IPC_NOWAIT) != -1) {
-        // Exibir alerta
-        printf("Alerta: %s\n", message.message_text);
-    }
-}
-
+/**
+ * Main function.
+ */
 int main(int argc, char *argv[]) {
+    /* Error in case wrong usage of the file */
     if (argc != 7) {
-        fprintf(stderr, "Uso: %s <plafond_inicial> <n_pedidos_autorizacao> <intervalo_VIDEO> <intervalo_MUSIC> <intervalo_SOCIAL> <dados_reservar>\n", argv[0]);
+        fprintf(stderr, "Use: %s <Initial_Plafond> <Autorizations_Requests_Number> <VIDEO_Interval> <MUSIC_Interval> <SOCIAL_Interval> <Data_to_Reserve>\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
-    // Extrair argumentos da linha de comando
-    int initial_balance = atoi(argv[1]);
-    int num_authorization_requests = atoi(argv[2]);
-    int interval_VIDEO = atoi(argv[3]);
-    int interval_MUSIC = atoi(argv[4]);
-    int interval_SOCIAL = atoi(argv[5]);
-    int data_to_reserve = atoi(argv[6]);
+    /* SIGINT handling */
+    signal(SIGINT, handle_sigint);
 
+    /* CLI arguments extraction and verification */
+    int initial_plafond = atoi(argv[1]);
+    if(initial_plafond <= 0) error("Initial Plafond must be > 0");
+
+    int autorizations_requests_number = atoi(argv[2]);
+    if(autorizations_requests_number <= 0) error("Autorizations Requests Number must be > 0");
+
+    int VIDEO_interval = atoi(argv[3]);
+    if(VIDEO_interval <= 0) error("VIDEO Interval must be > 0");
+
+    int MUSIC_interval = atoi(argv[4]);
+    if(MUSIC_interval <= 0) error("MUSIC Interval must be > 0");
+
+    int SOCIAL_interval = atoi(argv[5]);
+    if(SOCIAL_interval <= 0) error("SOCIAL Interval must be > 0");
+
+    int data_to_reserve = atoi(argv[6]);
+    if(data_to_reserve <= 0) error("Data_to_Reserve must be > 0");
+
+    /*
     // Criar o named pipe para comunicação com o Authorization Requests Manager
     if (mkfifo(USER_PIPE, 0666) == -1) {
         if (errno != EEXIST) {
@@ -204,10 +99,55 @@ int main(int argc, char *argv[]) {
         perror("Erro ao criar ou obter a fila de mensagens");
         exit(EXIT_FAILURE);
     }
+    */
 
-    // Loop principal do processo Mobile User
-    int i;
-    for (i = 0; i < num_authorization_requests; ++i) {
+    /* Loop to read and verify commands of the Mobile User */
+    char* token;
+    for (int i = 0; i < num_authorization_requests; ++i) {
+        if(sprintf(command, "Waitting new command...\n") < 0) error("creating waitting new command message");
+        puts(command);
+
+        /* Waits a new command to be written */
+        fgets(command, sizeof(command), stdin);
+
+        /* Verification of the mobile user ID */
+        token = strtok(command, "#");
+        if(token == NULL) {  // Verifyes if the command is valid
+            if(sprintf(command, "invalid command\n") < 0) error("creating invalid command message");
+            puts(command);
+            i--;
+            continue;
+        }
+        else if((MOBILE_USER_ID != NULL) && (strcmp(token, MOBILE_USER_ID) != 0)) {  // Verifyes if the mobile user id exists and/or is compatible
+            if(sprintf(command, "invalid mobile user id\n") < 0) error("creating invalid mobile user id message");
+            puts(command);
+            i--;
+            continue;
+        }
+        strcpy(MOBILE_USER_ID, token);
+
+        /* Verification of the other argumments */
+        token = strtok(NULL, "#");
+        if(token == NULL) {  // Verifyes if the command is valid
+            if(sprintf(command, "invalid command\n") < 0) error("creating invalid command message");
+            puts(command);
+            i--;
+            continue;
+        }
+        else if(strtok(NULL, "#") != NULL) {  // Verifyes if there exists a theard argument
+            if(!((strcmp(token, "VIDEO") == 0) || (strcmp(token, "MUSIC") == 0) || (strcmp(token, "SOCIAL") == 0))) {  // Verifyes if the second argumment is valid
+                if(sprintf(command, "service ID\n") < 0) error("creating service ID message");
+                puts(command);
+                i--;
+                continue;
+            }
+        }
+
+        /* Prints the written command */
+        if(sprintf(command, "Command writen: %s\n", command) < 0) error("creating command message");
+        puts(command);
+        
+        /*
         // Gerar e enviar pedidos de serviço
         send_data_request(user_pipe_fd, video_queue_id, initial_balance);
 
@@ -216,8 +156,11 @@ int main(int argc, char *argv[]) {
 
         // Esperar um intervalo de tempo antes de enviar outro pedido (por exemplo, 1 segundo)
         sleep(1);
+        */
     }
+    free(command);
 
+    /*
     // Fechar o named pipe
     close(user_pipe_fd);
     // Remover o named pipe
@@ -234,6 +177,51 @@ int main(int argc, char *argv[]) {
         perror("Erro ao encerrar a fila de mensagens");
         exit(EXIT_FAILURE);
     }
+    */
 
     return 0;
+}
+
+/*
+void startMobileUser(char* command) {
+    // Abre o named pipe USER_PIPE para escrita
+    int user_pipe_fd = open(USER_PIPE, O_WRONLY);
+    if (user_pipe_fd == -1) {
+        perror("Erro ao abrir o named pipe USER_PIPE");
+        exit(EXIT_FAILURE);
+    }
+
+    // Cria ou conecta à Message Queue
+    int msgqid;
+    if ((msgqid = msgget(MESSAGE_QUEUE_KEY, IPC_CREAT | 0666)) == -1) {
+        perror("Erro ao criar/conectar a Message Queue");
+        exit(EXIT_FAILURE);
+    }
+
+    // Envia mensagem de registo inicial
+    dprintf(user_pipe_fd, "%s#%s\n", userID, receiveID);
+
+    // Fecha o pipe USER_PIPE
+    close(user_pipe_fd);
+}
+*/
+
+/**
+ * Handles the SIGINT signal.
+ */
+void handle_sigint(int sig) {
+    free(command);
+
+    puts("SIGINT received. Closing Mobile User...\n");
+    exit(EXIT_SUCCESS);
+}
+
+/**
+ * Frees all the resorces and prints error message.
+ */
+void error(char* str_to_print) {
+    free(command);
+
+    if(fprintf(stderr, "Error: %s", str_to_print) < 0) exit(EXIT_FAILURE);
+    exit(EXIT_FAILURE);
 }

@@ -2,8 +2,13 @@
 #define MOBILEUSER_H
 
 /**
- * Cria e inicia o processo Mobile User.
+ * Handles the SIGINT signal.
  */
-void startMobileUser(int argc, char *argv[]);
+void handle_sigint(int sig);
+
+/**
+ * Frees all the resorces and prints error message.
+ */
+void error(char* str_to_print)
 
 #endif
