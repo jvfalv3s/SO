@@ -9,63 +9,42 @@
 
 #MakeFile
 
-#Compilador
+# Compilador
 CC = gcc
 
-#Flags de compilação
+# Flags de compilação
 CFLAGS = -Wall -Wextra
 
-#Nome do executável
+CFLAGS += -I./AutorizationReqManager
+CFLAGS += -I./LogFileManager
+CFLAGS += -I./MonitorEngine
+CFLAGS += -I./SystemManager
+
+# Nome do executável
 TARGET = SystemManager
 
-#Arquivos fonte
-SOURCES = SystemManager.c mobileUser.c backOfficeUser.c AutorizationReqManager.c LogFileManager.c MonitorEngine.c
+# Arquivos fonte
+SRCS = SystemManager.c AutorizationReqManager/AutorizationReqManager.c LogFileManager/LogFileManager.c MonitorEngine/MonitorEngine.c
 
-#Arquivos objetos
+# Arquivos objetos
 OBJS = $(SRCS:.c=.o)
 
-#Arquivos de cabeçalho
-HEADERS = mobileUser.h LogFileManager.h MonitorEngine.h AutorizationReqManager.h backOfficeUser.h SystemManager.h
+# Arquivos de cabeçalho
+HEADERS = mobileUser/mobileUser.h backOfficeUser/backOfficeUser.h LogFileManager/LogFileManager.h MonitorEngine/MonitorEngine.h AutorizationReqManager/AutorizationReqManager.h  SystemManager/SystemManager.h
 
-all : $(TARGET)
+# Regra padrão
+all: $(TARGET)
 
-#Regra Padrao
-$(TARGET) : $(OBJS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
+# Regra para o alvo principal
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) $^ -o $@ 
 
-#Regra para compilar os arquivos objetos
+# Regra para compilar os arquivos objetos
 %.o : %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-#Regra para limpar os arquivos objetos
-clean:
-	rm -f $(OBJS) $(TARGET)
-
-
-main : SystemManager.c
-	gcc -Wall -Wextra SystemManager.c -o SystemManager
-
-mobileUser : mobileUser.c
-	gcc -Wall -Wextra mobileUser.c -o mobileUser
-
-backOfficeUser : backOfficeUser.c
-	gcc -Wall -Wextra backOfficeUser.c -o backOfficeUser
-
-AutorizationReqManager : AutorizationReqManager.c
-	gcc -Wall -Wextra AutorizationReqManager.c -o AutorizationReqManager
-
-LogFileManager : LogFileManager.c
-	gcc -Wall -Wextra LogFileManager.c -o LogFileManager
-
-MonitorEngine : MonitorEngine.c
-	gcc -Wall -Wextra MonitorEngine.c -o MonitorEngine
-
+# Regra para limpar os arquivos objetos e o executável
 clean:
 	@echo "Limpando arquivos"
-	rm -f mobileUser
-	rm -f bacOfficeUser
-	rm -f AutorizationReqManager
-	rm -f LogFileManager
-	rm -f MonitorEngine
+	rm -f $(OBJS) $(TARGET)
 	@echo "Arquivos limpos"
-

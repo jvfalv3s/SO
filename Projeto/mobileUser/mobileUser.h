@@ -9,6 +9,6 @@ void handle_sigint(int sig);
 /**
  * Frees all the resorces and prints error message.
  */
-void error(char* str_to_print)
+void error(char* str_to_print);
 
 #endif

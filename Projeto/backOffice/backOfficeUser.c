@@ -27,11 +27,11 @@
 */
 
 /* Max characters a command can have */
-#define MAX_CHAR_COMMAND_AMMOUNT = 100
+#define MAX_CHAR_COMMAND_AMMOUNT 100
 
 /* Initializing some usefull variables */
 char BACKOFFICE_USER_ID[6];
-char* command = malloc(sizeof(char)*MAX_CHAR_COMMAND_AMMOUNT);
+char command [MAX_CHAR_COMMAND_AMMOUNT];
 
 /**
  * Main function.
@@ -42,6 +42,7 @@ int main() {
 
     /* Loop to read and verify commands of the BackOffice User */
     char* token;
+    char commandAux[MAX_CHAR_COMMAND_AMMOUNT + 20];
     while(1) {
         if(sprintf(command, "Waitting new command...\n") < 0) error("creating waitting new command message");
         puts(command);
@@ -54,13 +55,13 @@ int main() {
         if(token == NULL) {  // Verifyes if the command is valid
             if(sprintf(command, "invalid command\n") < 0) error("creating invalid command message");
             puts(command);
-            i--;
+            
             continue;
         }
         else if((BACKOFFICE_USER_ID != NULL) && (strcmp(token, BACKOFFICE_USER_ID) != 0)) {  // Verifyes if the backoffice user id exists and/or is compatible
             if(sprintf(command, "invalid backoffice user id\n") < 0) error("creating invalid backoffice user id message");
             puts(command);
-            i--;
+           
             continue;
         }
         strcpy(BACKOFFICE_USER_ID, token);
@@ -70,21 +71,21 @@ int main() {
         if(token == NULL) {  // Verifyes if the command is valid
             if(sprintf(command, "invalid command\n") < 0) error("creating invalid command message");
             puts(command);
-            i--;
+            
             continue;
         }
         else if(!((strcmp(token, "data_stats") == 0) || (strcmp(token, "reset") == 0))) {  // Verifyes if the second argumment is valid
                 if(sprintf(command, "invalid command\n") < 0) error("creating invalid command message");
                 puts(command);
-                i--;
+                
                 continue;
         }
             
         /* Prints the written command */
-        if(sprintf(command, "Command writen: %s\n", command) < 0) error("creating command message");
-        puts(command);
+        if(sprintf(commandAux, "Command writen: %s\n", command) < 0) error("creating command message");
+        puts(commandAux);
     }
-    free(command);
+    
 
     /*
     // Criar o named pipe para comunicação com o Authorization Requests Manager
@@ -159,17 +160,17 @@ void request_statistics(int back_pipe_fd) {
  * Handles the SIGINT signal.
  */
 void handle_sigint(int sig) {
-    free(command);
+    
 
-    puts("SIGINT received. Closing backoffice User...\n");
+    printf("SIGINT (%d) received. Closing backoffice User...\n", sig);
     exit(EXIT_SUCCESS);
 }
 
 /**
- * Frees all the resorces and prints error message.
+ * LIBERATE all the resorces and prints error message.
  */
 void error(char* str_to_print) {
-    free(command);
+    
 
     if(fprintf(stderr, "Error: %s\n", str_to_print) < 0) exit(EXIT_FAILURE);
     exit(EXIT_FAILURE);

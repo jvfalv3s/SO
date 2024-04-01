@@ -16,16 +16,17 @@
 #include <sys/ipc.h>
 #include <sys/msg.h>
 #include "mobileUser.h"
-
+#include <signal.h>
 /* Comment this line to don't show debug messages */
 #define DEBUG
 
 /* Max characters a command can have */
-#define MAX_CHAR_COMMAND_AMMOUNT = 100
+#define MAX_CHAR_COMMAND_AMMOUNT 1000
 
 /* Initializing some usefull variables */
 char MOBILE_USER_ID[6];
-char* command = malloc(sizeof(char)*MAX_CHAR_COMMAND_AMMOUNT);
+//char* command = malloc(sizeof(char)*MAX_CHAR_COMMAND_AMMOUNT); // o malloc precisa ser executado em tempo de execução (dentro de um função), começar por null
+char command[MAX_CHAR_COMMAND_AMMOUNT];
 
 /*
 #define USER_PIPE "user_pipe"
@@ -44,7 +45,7 @@ struct message_buffer {
 /**
  * Main function.
  */
-int main(int argc, char *argv[]) {
+int main(int argc, char **argv) {
     /* Error in case wrong usage of the file */
     if (argc != 7) {
         fprintf(stderr, "Use: %s <Initial_Plafond> <Autorizations_Requests_Number> <VIDEO_Interval> <MUSIC_Interval> <SOCIAL_Interval> <Data_to_Reserve>\n", argv[0]);
@@ -124,7 +125,8 @@ int main(int argc, char *argv[]) {
 
     /* Loop to read and verify commands of the Mobile User */
     char* token;
-    for (int i = 0; i < num_authorization_requests; ++i) {
+    char commandAux[MAX_CHAR_COMMAND_AMMOUNT + 20];
+    for (int i = 0; i < autorizations_requests_number; ++i) {
         if(sprintf(command, "Waitting new command...\n") < 0) error("creating waitting new command message");
         puts(command);
 
@@ -165,8 +167,8 @@ int main(int argc, char *argv[]) {
         }
 
         /* Prints the written command */
-        if(sprintf(command, "Command writen: %s\n", command) < 0) error("creating command message");
-        puts(command);
+        if(sprintf(commandAux, "Command writen: %s\n", command) < 0) error("creating command message");
+        puts(commandAux);
         
         /*
         // Gerar e enviar pedidos de serviço
@@ -179,7 +181,7 @@ int main(int argc, char *argv[]) {
         sleep(1);
         */
     }
-    free(command);
+    
 
     /*
     // Fechar o named pipe
@@ -231,17 +233,15 @@ void startMobileUser(char* command) {
  * Handles the SIGINT signal.
  */
 void handle_sigint(int sig) {
-    free(command);
 
-    puts("SIGINT received. Closing Mobile User...\n");
+    printf("SIGINT (%d) received. Closing Mobile User...\n", sig);
     exit(EXIT_SUCCESS);
 }
 
 /**
- * Frees all the resorces and prints error message.
+ * Liberates all the resorces and prints error message.
  */
 void error(char* str_to_print) {
-    free(command);
 
     if(fprintf(stderr, "Error: %s\n", str_to_print) < 0) exit(EXIT_FAILURE);
     exit(EXIT_FAILURE);

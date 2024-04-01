@@ -11,7 +11,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <semaphore.h> 
-#include <unistd.h> 
+#include <unistd.h>
+#include <ctype.h>
 #include "LogFileManager.h"
 
 sem_t mutex;
@@ -100,6 +101,6 @@ void endLogFile() {
  * Exists the program after an error printing the message in the screen and writting it in the log file.
  */
 void error(char* error_message) {
-    writeLog(logFileName, strcat("ERROR: ", strupr(error_message)));
+    writeLog(strcat("ERROR: ", error_message));
     exit(EXIT_FAILURE);
 }
