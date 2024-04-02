@@ -21,7 +21,7 @@ CFLAGS += -I./MonitorEngine
 
 
 # Nome do executável
-TARGET = SystemManager MobileUser BackOfficeUser
+TARGET = SystemManager MobileUserExe BackOfficeUser
 
 # Arquivos fonte
 SRCS = SystemManager.c AutorizationReqManager/AutorizationReqManager.c LogFileManager/LogFileManager.c MonitorEngine/MonitorEngine.c
@@ -35,7 +35,7 @@ HEADERS = mobileUser/mobileUser.h backOfficeUser/backOfficeUser.h LogFileManager
 # Regra padrão
 all: $(TARGET)
 
-MobileUser : mobileUser/mobileUser.c
+MobileUserExe : mobileUser/mobileUser.c
 
 BackOfficeUser : backOffice/backOfficeUser.c
 
