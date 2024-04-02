@@ -131,7 +131,7 @@ int main(int argc, char* argv[]) {
     writeLog("PROCESS MONITOR_ENGINE CREATED");
 
     /* Capture and handles the ^C (SIGINT) signal */
-    signal(SIGINT, endSys);
+    signal(SIGINT, handle_sigint);
 
     /* Waits for his 2 childs to end */
     for(int j = 0; j < 2; j++) wait(NULL);
@@ -143,6 +143,16 @@ int main(int argc, char* argv[]) {
 }
 
 /**
+ * Handles if the process catchs a sigint signal.
+ */
+void handle_sigint() {
+    /* Write log Signal received */
+    writeLog("SIGNAL SIGINT RECEIVED");
+
+    endSys();
+}
+
+/**
  * Ends the System Manager and it's child processes.
  * Not in final form.
  */
@@ -150,9 +160,6 @@ void endSys() {
     #ifdef DEBUG
         printf("Ending program!\n");
     #endif
-
-    /* Write log Signal received */
-    writeLog("SIGNAL SIGINT RECEIVED");
 
     /* Write log Waiting for last task to finish */
     writeLog("5G_AUTH_PLATFORM SIMULATOR WAITING FOR LAST TASKS TO FINISH");
