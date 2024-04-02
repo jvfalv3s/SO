@@ -48,7 +48,7 @@ struct message_buffer {
 int main(int argc, char **argv) {
     /* Error in case wrong usage of the file */
     if (argc != 7) {
-        fprintf(stderr, "Use: %s <Initial_Plafond> <Autorizations_Requests_Number> <VIDEO_Interval> <MUSIC_Interval> <SOCIAL_Interval> <Data_to_Reserve>\n", argv[0]);
+        fprintf(stderr, "Use: %s <Initial_Plafond> <Max_Autorizations_Requests> <VIDEO_Interval> <MUSIC_Interval> <SOCIAL_Interval> <Data_to_Reserve>\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
@@ -62,10 +62,10 @@ int main(int argc, char **argv) {
         printf("Initial Plafond = %d\n", initial_plafond);
     #endif
 
-    int autorizations_requests_number = atoi(argv[2]);
-    if(autorizations_requests_number <= 0) error("Autorizations Requests Number must be > 0");
+    int max_autorizations_requests = atoi(argv[2]);
+    if(max_autorizations_requests <= 0) error("Max Autorizations Requests must be > 0");
     #ifdef DEBUG
-        printf("Autorizations Requests Number = %d\n", autorizations_requests_number);
+        printf("Max Autorizations Requests = %d\n", max_autorizations_requests);
     #endif
 
     int VIDEO_interval = atoi(argv[3]);
