@@ -128,13 +128,16 @@ int main(int argc, char* argv[]) {
     if((ARM_PID = fork()) == 0) AutReqMan();
     writeLog("PROCESS AUTHORIZATION_REQUEST_MANAGER CREATED");
     if((ME_PID = fork()) == 0) MonEng();
-    writeLog("PROCESS AUTHORIZATION_REQUEST_MANAGER CREATED");
+    writeLog("PROCESS MONITOR_ENGINE CREATED");
 
     /* Capture and handles the ^C (SIGINT) signal */
     signal(SIGINT, endSys);
 
     /* Waits for his 2 childs to end */
     for(int j = 0; j < 2; j++) wait(NULL);
+
+    /* Ends the System Manager */
+    endSys();
 
     return 0;
 }

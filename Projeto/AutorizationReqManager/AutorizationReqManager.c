@@ -44,21 +44,23 @@ void AutReqMan() {
 /**
  * Sender Thread.
  */
-void* Sender() {
+void* Sender(void* arg) {
+    (void) arg;
     #ifdef DEBUG
         printf("Thread Sender created.");
     #endif
-    return NULL;
+    pthread_exit(NULL);
 }
 
 /**
  * Receiver Thread.
  */
-void* Receiver() {
+void* Receiver(void* arg) {
+    (void) arg;
     #ifdef DEBUG
         printf("Thread Receiver created.");
     #endif
-    return NULL;
+    pthread_exit(NULL);
 }
 
 /**
@@ -68,7 +70,7 @@ void* Receiver() {
 void endAutReqMan() {
     pthread_kill(Sender_id, SIGINT);
     pthread_kill(Sender_id, SIGINT);
-
+    
     exit(EXIT_SUCCESS);
 }
 

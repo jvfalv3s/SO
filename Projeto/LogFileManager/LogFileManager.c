@@ -37,11 +37,11 @@ void creatLogFile() {
     if((logFile = fopen(logFileName, "w")) == NULL) {
         error("Opening the config file");
     }
-    fprintf(logFile, "%02d:%02d:%02d 5G_AUTH_PLATFORM SIMULATOR STARTING", tm.tm_hour, tm.tm_min, tm.tm_sec);
+    fprintf(logFile, "%02d:%02d:%02d 5G_AUTH_PLATFORM SIMULATOR STARTING\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
     fclose(logFile);
 
     /* Prints the same message in the console */
-    printf("5G_AUTH_PLATFORM SIMULATOR STARTING");
+    printf("5G_AUTH_PLATFORM SIMULATOR STARTING\n");
 
     /* Initializes a new semaphore caled mutex to use in next times */
     sem_init(&mutex, 0, 1);
@@ -61,11 +61,11 @@ void writeLog(char* newLog) {
     if((logFile = fopen(logFileName, "a")) == NULL) {
         error("Opening the config file");
     }
-    fprintf(logFile, "%02d:%02d:%02d %s", tm.tm_hour, tm.tm_min, tm.tm_sec, newLog);
+    fprintf(logFile, "%02d:%02d:%02d %s\n", tm.tm_hour, tm.tm_min, tm.tm_sec, newLog);
     fclose(logFile);
 
     /* Prints the same message in the console */
-    printf("%02d:%02d:%02d %s", tm.tm_hour, tm.tm_min, tm.tm_sec, newLog);
+    printf("%02d:%02d:%02d %s\n", tm.tm_hour, tm.tm_min, tm.tm_sec, newLog);
 
     sem_post(&mutex);
 }
