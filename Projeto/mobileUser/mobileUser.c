@@ -127,7 +127,7 @@ int main(int argc, char **argv) {
     char* token;
     char commandAux[MAX_CHAR_COMMAND_AMMOUNT + 20];
     short logged_in = 0;
-    for (int i = 0; i < autorizations_requests_number; ++i) {
+    for (int i = 0; i < max_autorizations_requests; ++i) {
         if(sprintf(command, "Waitting new command...\n") < 0) error("creating waitting new command message");
         puts(command);
 
