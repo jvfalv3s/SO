@@ -45,6 +45,7 @@ int main(int argc, char* argv[]) {
     writeLog("PROCESS SYSTEM_MANAGER CREATED");
 
     /* Initialization of the variables obtained from the config file */
+    int MOBILE_USERS;
     int QUEUE_POS;
     int AUTH_SERVERS_MAX;
     int AUTH_PROC_TIME;
@@ -67,35 +68,42 @@ int main(int argc, char* argv[]) {
         /* The config file must follow an order so we use a counter to know which line we are */
         switch (i)
         {
-        case 0: // QUEUE_POS atribute
+        case 0:
+            if(atribute <= 0) error("MOBILE_USERS <= 0");
+            MOBILE_USERS = atribute;
+            #ifdef DEBUG
+                printf("MOBILE_USERS = %d\n", MOBILE_USERS);
+            #endif
+            break;
+        case 1: // QUEUE_POS atribute
             if(atribute < 0) error("QUEUE_POS < 0");
             QUEUE_POS = atribute;
             #ifdef DEBUG
                 printf("QUEUE_POS = %d\n", QUEUE_POS);
             #endif
             break;
-        case 1: // AUTH_SERVERS_MAX atribute
+        case 2: // AUTH_SERVERS_MAX atribute
             if(atribute < 1) error("AUTH_SERVERS_MAX < 1");
             AUTH_SERVERS_MAX = atribute;
             #ifdef DEBUG
                 printf("AUTH_SERVERS_MAX = %d\n", AUTH_SERVERS_MAX);
             #endif
             break;
-        case 2: // AUTH_PROC_TIME atribute
+        case 3: // AUTH_PROC_TIME atribute
             if(atribute < 0) error("AUTH_PROC_TIME < 0");
             AUTH_PROC_TIME = atribute;
             #ifdef DEBUG
                 printf("AUTH_PROC_TIME = %d\n", AUTH_PROC_TIME);
             #endif
             break;
-        case 3: // MAX_VIDEO_WAIT atribute
+        case 4: // MAX_VIDEO_WAIT atribute
             if(atribute < 1) error("MAX_VIDEO_WAIT < 1");
             MAX_VIDEO_WAIT = atribute;
             #ifdef DEBUG
                 printf("MAX_VIDEO_WAIT = %d\n", MAX_VIDEO_WAIT);
             #endif
             break;
-        case 4: // MAX_OTHERS_WAIT atribute
+        case 5: // MAX_OTHERS_WAIT atribute
             if(atribute < 1) error("MAX_OTHERS_WAIT < 1");
             MAX_OTHERS_WAIT = atribute;
             #ifdef DEBUG
