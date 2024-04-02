@@ -18,7 +18,7 @@ sem_t mutex;
 time_t t;
 FILE* logFile;
 struct tm tm;
-char* logFileName;
+char logFileName[100];
 
 /**
  * Creates a new log file.
@@ -100,6 +100,8 @@ void endLogFile() {
  * Exists the program after an error printing the message in the screen and writting it in the log file.
  */
 void error(char* error_message) {
-    writeLog(strcat("ERROR: ", error_message));
+    char errorLogMessage[100];
+    sprintf(errorLogMessage, "ERROR: %s", error_message);
+    writeLog(errorLogMessage);
     exit(EXIT_FAILURE);
 }
