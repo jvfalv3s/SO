@@ -12,7 +12,6 @@
 #include <time.h>
 #include <semaphore.h> 
 #include <unistd.h>
-#include <ctype.h>
 #include "LogFileManager.h"
 
 sem_t mutex;
