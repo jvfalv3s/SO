@@ -126,6 +126,7 @@ int main(int argc, char **argv) {
     /* Loop to read and verify commands of the Mobile User */
     char* token;
     char commandAux[MAX_CHAR_COMMAND_AMMOUNT + 20];
+    short logged_in = 0;
     for (int i = 0; i < autorizations_requests_number; ++i) {
         if(sprintf(command, "Waitting new command...\n") < 0) error("creating waitting new command message");
         puts(command);
@@ -134,20 +135,21 @@ int main(int argc, char **argv) {
         fgets(command, sizeof(command), stdin);
 
         /* Verification of the mobile user ID */
-        token = strtok(command, "#");
+        token = strtok(strcpy(commandAux, command), "#");
         if(token == NULL) {  // Verifyes if the command is valid
             if(sprintf(command, "invalid command\n") < 0) error("creating invalid command message");
             puts(command);
             i--;
             continue;
         }
-        else if((MOBILE_USER_ID != NULL) && (strcmp(token, MOBILE_USER_ID) != 0)) {  // Verifyes if the mobile user id exists and/or is compatible
+        else if((logged_in != 0) && (strcmp(token, MOBILE_USER_ID) != 0)) {  // Verifies if the mobile user id exists and/or is compatible
             if(sprintf(command, "invalid mobile user id\n") < 0) error("creating invalid mobile user id message");
             puts(command);
             i--;
             continue;
         }
         strcpy(MOBILE_USER_ID, token);
+        logged_in = 1;
 
         /* Verification of the other argumments */
         token = strtok(NULL, "#");
