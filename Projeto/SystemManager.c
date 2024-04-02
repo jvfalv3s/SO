@@ -60,11 +60,12 @@ int main(int argc, char* argv[]) {
     #ifdef DEBUG
         printf("Start reading file...\n");
     #endif
-    if((f = fopen(argv[0], "r")) == NULL) {
+    if((f = fopen(argv[1], "r")) == NULL) {
         error("Opening the config file");
     }
     while(fgets(buf, sizeof(buf), f)) {
         int atribute = atoi(buf);  // Transforming the strings in the file into integers
+        printf("%d",atribute);
         /* The config file must follow an order so we use a counter to know which line we are */
         switch (i)
         {
