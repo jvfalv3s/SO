@@ -5,6 +5,7 @@
         "stdio.h": "c",
         "autorizationreqmanager.h": "c",
         "errno.h": "c",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "system_error": "c"
     }
 }

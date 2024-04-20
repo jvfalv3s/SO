@@ -29,9 +29,13 @@
 /* Max characters a command can have */
 #define MAX_CHAR_COMMAND_AMMOUNT 100
 
+/* Path of the BACK PIPE */
+#define BACK_PIPE_PATH "../tmp/FIFO/back_pipe"
+
 /* Initializing some usefull variables */
 char BACKOFFICE_USER_ID[6];
 char command [MAX_CHAR_COMMAND_AMMOUNT];
+int back_pipe_fd;
 
 /**
  * Main function.
@@ -39,6 +43,13 @@ char command [MAX_CHAR_COMMAND_AMMOUNT];
 int main() {
     /* SIGINT handling */
     signal(SIGINT, handle_sigint);
+
+    /* Opening the pipe for writing */
+    back_pipe_fd = open(BACK_PIPE_PATH, O_WRONLY);
+    if (back_pipe_fd == -1) {
+        perror("Opening user pipe for writing");
+        exit(EXIT_FAILURE);
+    }
 
     /* Loop to read and verify commands of the BackOffice User */
     char* token;
@@ -81,33 +92,13 @@ int main() {
                 continue;
         }
             
-        /* Prints the written command */
-        if(sprintf(commandAux, "Command writen: %s\n", command) < 0) error("creating command message");
-        puts(commandAux);
-    }
-    
-
-    /*
-    // Criar o named pipe para comunicação com o Authorization Requests Manager
-    if (mkfifo(BACK_PIPE, 0666) == -1) {
-        if (errno != EEXIST) {
-            perror("Erro ao criar o named pipe");
-            exit(EXIT_FAILURE);
-        }
+        /* Sending command to BACK PIPE */
+        if(write(back_pipe_fd, command, strlen(command) + 1) == -1) error("sending command to back pipe");
+        puts("Command sent!\n");
     }
 
-    // Abrir o named pipe para escrita
-    int back_pipe_fd = open(BACK_PIPE, O_WRONLY);
-    if (back_pipe_fd == -1) {
-        perror("Erro ao abrir o named pipe para escrita");
-        exit(EXIT_FAILURE);
-    }
-
-    // Fechar o named pipe
+    /* Closes the back pipe file descriptor */
     close(back_pipe_fd);
-    // Remover o named pipe
-    unlink(BACK_PIPE);
-    */
 
     return 0;
 }
@@ -160,7 +151,8 @@ void request_statistics(int back_pipe_fd) {
  * Handles the SIGINT signal.
  */
 void handle_sigint(int sig) {
-    
+    /* Closes the back pipe file descriptor */
+    close(back_pipe_fd);
 
     printf("SIGINT (%d) received. Closing backoffice User...\n", sig);
     exit(EXIT_SUCCESS);
@@ -170,7 +162,8 @@ void handle_sigint(int sig) {
  * LIBERATE all the resorces and prints error message.
  */
 void error(char* str_to_print) {
-    
+    /* Closes the back pipe file descriptor */
+    close(back_pipe_fd);
 
     if(fprintf(stderr, "Error: %s\n", str_to_print) < 0) exit(EXIT_FAILURE);
     exit(EXIT_FAILURE);

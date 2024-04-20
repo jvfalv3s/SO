@@ -91,7 +91,7 @@ void endLogFile() {
 }
 
 /**
- * Exists the program after an error printing the message in the screen and writting it in the log file.
+ * Prints error in CLI and log file and ends the log file.
  */
 void error(char* error_message) {
     char errorLogMessage[100];
