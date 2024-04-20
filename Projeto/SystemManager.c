@@ -21,6 +21,7 @@
 /* Comment this line to don't show debug messages */
 #define DEBUG
 
+void handle_sigint();
 void endSys();
 
 int shmid;
