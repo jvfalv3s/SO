@@ -18,19 +18,22 @@
 #include "mobileUser.h"
 #include <signal.h>
 #include <ctype.h>
+#include <sys/time.h>
+#include <pthread.h>
 
 /* Comment this line to don't show debug messages */
 #define DEBUG
 
 /* Max characters a command can have */
-#define MAX_CHAR_COMMAND_AMMOUNT 1000
+#define MAX_CHAR_COMMAND_AMMOUNT 20
 /* Path of the USER PIPE */
 #define USER_PIPE_PATH "../tmp/FIFO/user_pipe"
 
 /* Initializing some usefull variables */
-char MOBILE_USER_ID[6];
+int MOBILE_USER_ID;
 char command[MAX_CHAR_COMMAND_AMMOUNT];
 int user_pipe_fd;
+pthread_mutex_t mutex; 
 
 /*
 #define VIDEO_STREAMING_QUEUE_KEY 5678
@@ -57,6 +60,9 @@ int main(int argc, char **argv) {
 
     /* SIGINT handling */
     signal(SIGINT, handle_sigint);
+
+    /* Getting mobile user ID (PID of the mobile user process) */
+    MOBILE_USER_ID = getpid();
 
     /* CLI arguments extraction and verification */
     int initial_plafond = atoi(argv[1]);
@@ -137,62 +143,42 @@ int main(int argc, char **argv) {
     */
 
     /* Loop to read and verify commands of the Mobile User */
-    char* token;
-    char commandAux[MAX_CHAR_COMMAND_AMMOUNT + 20];
-    short logged_in = 0;
-    for (int i = 0; i < max_autorizations_requests; ++i) {
-        if(sprintf(command, "Waitting new command...\n") < 0) error("creating waitting new command message");
-        puts(command);
+    // char* token;
+    // char commandAux[MAX_CHAR_COMMAND_AMMOUNT + 20];
+    // short logged_in = 0;
 
-        /* Waits a new command to be written */
-        fgets(command, sizeof(command), stdin);
+    /* Initializing mutex */
+    if(pthread_mutex_init(&mutex, NULL) != 0) {
+        close(user_pipe_fd);
+        perror("initializing mutex");
+        exit(EXIT_FAILURE);
+    }
 
-        /* Verification of the mobile user ID */
-        token = strtok(strcpy(commandAux, command), "#");
-        if(token == NULL || isdigit(token) == 0) {  // Verifyes if the command is valid
-            if(sprintf(command, "Invalid command\n") < 0) error("creating invalid command message");
-            puts(command);
-            i--;
-            continue;
-        }
-        else if((logged_in != 0) && (strcmp(token, MOBILE_USER_ID) != 0)) {  // Verifies if the mobile user id exists and/or is compatible
-            if(sprintf(command, "Invalid mobile user ID\n") < 0) error("creating invalid mobile user id message");
-            puts(command);
-            i--;
-            continue;
-        }
-        else if(logged_in == 0) {  // If not logged in, login and sets mobile user id
-            strcpy(MOBILE_USER_ID, token);
-            logged_in = 1;
-        }
+    /* Sending register message */
+    send_reg_message(initial_plafond);
 
-        /* Verification of the other argumments */
-        token = strtok(NULL, "#");
-        if(token == NULL) {  // Verifyes if the command is valid
-            if(sprintf(command, "Invalid command\n") < 0) error("creating invalid command message");
-            puts(command);
-            i--;
-            continue;
+    int t;
+    int i = 0;
+    long long time_S = 0, time_M = 0, time_V = 0;
+    while(i < max_autorizations_requests) {
+        t = get_millis();
+        if((t - time_S) >= SOCIAL_interval) {
+            send_social_req(data_to_reserve);
+            time_S = get_millis();
+            i++;
         }
-        else if(strtok(NULL, "#") != NULL) {  // Verifyes if there exists a third argument
-            if(!((strcmp(token, "VIDEO") == 0) || (strcmp(token, "MUSIC") == 0) || (strcmp(token, "SOCIAL") == 0))) {  // Verifyes if the second argumment is valid
-                if(sprintf(command, "Invalid service ID\n") < 0) error("creating service ID message");
-                puts(command);
-                i--;
-                continue;
-            }
+        else if((t - time_M) >= MUSIC_interval) {
+            send_music_req(data_to_reserve);
+            time_M = get_millis();
+            i++;
         }
-        else if(isdigit(token) == 0) {  // Verifies, in case of just 2 arguments, if the second is a number
-            if(sprintf(command, "Invalid second argument\n") < 0) error("creating invalid command message");
-            puts(command);
-            i--;
-            continue;
+        else if((t - time_V) >= VIDEO_interval) {
+            send_video_req(data_to_reserve);
+            time_V = get_millis();
+            i++;
         }
+        else usleep(1000); // sleep for 1000 microseconds = 1 millisecond
 
-        /* Sending command to USER PIPE */
-        if(write(user_pipe_fd, command, strlen(command) + 1) == -1) error("sending command to user pipe");
-        puts("Command sent!\n");
-        
         /*
         // Gerar e enviar pedidos de serviço
         send_data_request(user_pipe_fd, video_queue_id, initial_balance);
@@ -205,8 +191,8 @@ int main(int argc, char **argv) {
         */
     }
 
-    /* Closes the user pipe file descriptor */
-    close(user_pipe_fd);
+    /* Frees all resorces */
+    free_resorces();
 
     /*
     // Remover a fila de mensagens de vídeo
@@ -240,11 +226,76 @@ void startMobileUser(char* command) {
 */
 
 /**
+ * Sends the registation message with the mobile user ID and initial plafond.
+ */
+void send_reg_message(int initial_plafond) {
+    pthread_mutex_lock(&mutex);
+    if(sprintf(command, "%d#%d", MOBILE_USER_ID, initial_plafond) < 0) error("creating register message");
+    if(write(user_pipe_fd, command, strlen(command) + 1) == -1) error("sending register message to user pipe");
+    pthread_mutex_unlock(&mutex);
+}
+
+/**
+ * Sends a social request to user pipe.
+ */
+void send_social_req(int data_to_reserve) {
+    pthread_mutex_lock(&mutex);
+    if(sprintf(command, "%d#SOCIAL#%d", MOBILE_USER_ID, data_to_reserve) < 0) error("creating social request message");
+    if(write(user_pipe_fd, command, strlen(command) + 1) == -1) error("sending social request message to user pipe");
+    pthread_mutex_unlock(&mutex); 
+}
+
+/**
+ * Sends a music request to user pipe.
+ */
+void send_music_req(int data_to_reserve) {
+    pthread_mutex_lock(&mutex);
+    if(sprintf(command, "%d#MUSIC#%d", MOBILE_USER_ID, data_to_reserve) < 0) error("creating music request message");
+    if(write(user_pipe_fd, command, strlen(command) + 1) == -1) error("sending music request message to user pipe");
+    pthread_mutex_unlock(&mutex); 
+}
+
+/**
+ * Sends a video request to user pipe.
+ */
+void send_video_req(int data_to_reserve) {
+    pthread_mutex_lock(&mutex);
+    if(sprintf(command, "%d#VIDEO#%d", MOBILE_USER_ID, data_to_reserve) < 0) error("creating video request message");
+    if(write(user_pipe_fd, command, strlen(command) + 1) == -1) error("sending video request message to user pipe");
+    pthread_mutex_unlock(&mutex); 
+}
+
+/**
+ * Gets the milliseconds.
+ */
+long long get_millis() {
+    struct timespec ts;
+
+    /* Getting current time */
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+
+    /* Calculating milliseconds */
+    long long milliseconds = ts.tv_sec * 1000LL + ts.tv_nsec / 1000000;
+
+    return milliseconds;
+}
+
+/**
+ * Frees resorces (mutex and pipe file descriptor)
+ */
+void free_resorces() {
+    /* Closes the user pipe file descriptor */
+    close(user_pipe_fd);
+
+    /* Destroing mutex */
+    pthread_mutex_destroy(&mutex);
+}
+
+/**
  * Handles the SIGINT signal.
  */
 void handle_sigint(int sig) {
-    /* Closes the user pipe file descriptor */
-    close(user_pipe_fd);
+    free_resorces();
 
     printf("SIGINT (%d) received. Closing Mobile User...\n", sig);
     exit(EXIT_SUCCESS);
@@ -254,9 +305,65 @@ void handle_sigint(int sig) {
  * Liberates all the resorces and prints error message.
  */
 void error(char* str_to_print) {
-    /* Closes the user pipe file descriptor */
-    close(user_pipe_fd);
+    free_resorces();
 
-    if(fprintf(stderr, "Error: %s\n", str_to_print) < 0) exit(EXIT_FAILURE);
+    fprintf(stderr, "Error: %s\n", str_to_print);
     exit(EXIT_FAILURE);
 }
+
+
+
+void enganometa1() {
+    // if(sprintf(command, "waitting new command...\n") < 0) error("creating waitting new command message");
+        // puts(command);
+
+        // /* waits a new command to be written */
+        // fgets(command, sizeof(command), stdin);
+
+        // /* verification of the mobile user id */
+        // token = strtok(strcpy(commandaux, command), "#");
+        // if(token == null || isdigit(token) == 0) {  // verifyes if the command is valid
+        //     if(sprintf(command, "invalid command\n") < 0) error("creating invalid command message");
+        //     puts(command);
+        //     i--;
+        //     continue;
+        // }
+        // else if((logged_in != 0) && (strcmp(token, mobile_user_id) != 0)) {  // verifies if the mobile user id exists and/or is compatible
+        //     if(sprintf(command, "invalid mobile user id\n") < 0) error("creating invalid mobile user id message");
+        //     puts(command);
+        //     i--;
+        //     continue;
+        // }
+        // else if(logged_in == 0) {  // if not logged in, login and sets mobile user id
+        //     strcpy(mobile_user_id, token);
+        //     logged_in = 1;
+        // }
+
+        // /* verification of the other argumments */
+        // token = strtok(null, "#");
+        // if(token == null) {  // verifyes if the command is valid
+        //     if(sprintf(command, "invalid command\n") < 0) error("creating invalid command message");
+        //     puts(command);
+        //     i--;
+        //     continue;
+        // }
+        // else if(strtok(null, "#") != null) {  // verifyes if there exists a third argument
+        //     if(!((strcmp(token, "video") == 0) || (strcmp(token, "music") == 0) || (strcmp(token, "social") == 0))) {  // verifyes if the second argumment is valid
+        //         if(sprintf(command, "invalid service id\n") < 0) error("creating service id message");
+        //         puts(command);
+        //         i--;
+        //         continue;
+        //     }
+        // }
+        // else if(isdigit(token) == 0) {  // verifies, in case of just 2 arguments, if the second is a number
+        //     if(sprintf(command, "invalid second argument\n") < 0) error("creating invalid command message");
+        //     puts(command);
+        //     i--;
+        //     continue;
+        // }
+
+        // /* sending command to user pipe */
+        // if(write(user_pipe_fd, command, strlen(command) + 1) == -1) error("sending command to user pipe");
+        // puts("command sent!\n");
+}
+
