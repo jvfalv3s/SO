@@ -9,6 +9,11 @@
 #define BACKOFFICEUSER_H
 
 /**
+ * Free all the resorces.
+ */
+void free_resorces()
+
+/**
  * Handles the SIGINT signal.
  */
 void handle_sigint(int sig);

@@ -20,6 +20,7 @@
 #include <ctype.h>
 #include <sys/time.h>
 #include <pthread.h>
+#include <mqueue.h>
 
 /* Comment this line to don't show debug messages */
 #define DEBUG
@@ -28,25 +29,20 @@
 #define MAX_CHAR_COMMAND_AMMOUNT 20
 /* Path of the USER PIPE */
 #define USER_PIPE_PATH "../tmp/FIFO/user_pipe"
+/* Path of the MESSAGE QUEUE */
+#define MESSAGE_QUEUE_PATH "../tmp/FIFO/message_queue"
 
 /* Initializing some usefull variables */
 int MOBILE_USER_ID;
 char command[MAX_CHAR_COMMAND_AMMOUNT];
 int user_pipe_fd;
-pthread_mutex_t mutex; 
-
-/*
-#define VIDEO_STREAMING_QUEUE_KEY 5678
-#define MESSAGE_QUEUE_KEY 1234
-*/
-
-/* Possivel solução para pipes
-// Estrutura para as mensagens na fila
-struct message_buffer {
-    long message_type;
-    char message_text[100];
-};
-*/
+/* ---------------------------------------------------------------------------------------------------------------------------
+ * MUTEX AQUI NAO FAZ SENTIDO, TROCAR POR NAMED SEMAPHORE? assim todos os mobile users poderiam aceder e n se atropelar ao
+ * enviar para o pipe (podia controlar tmb a quantidade de pedidos e no receiver e mandar 'mandar parar' quando tivesse cheio
+ * em outras palavras n deixar avançar com o semafero)
+ */
+pthread_mutex_t mutex;  
+mqd_t mq;
 
 /**
  * Main function.
@@ -126,26 +122,13 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
 
-    /*
-    // Criar ou obter a fila de mensagens de vídeo
-    int video_queue_id = msgget(VIDEO_STREAMING_QUEUE_KEY, IPC_CREAT | 0666);
-    if (video_queue_id == -1) {
-        perror("Erro ao criar ou obter a fila de mensagens de vídeo");
+    /* Opening the message queue for reading */
+    mq = mq_open(MESSAGE_QUEUE_PATH, O_RDONLY);
+    if(mq == (mqd_t)-1) {
+        close(user_pipe_fd);
+        perror("Opening message queue for reading");
         exit(EXIT_FAILURE);
     }
-
-    // Criar ou obter a fila de mensagens
-    int message_queue_id = msgget(MESSAGE_QUEUE_KEY, IPC_CREAT | 0666);
-    if (message_queue_id == -1) {
-        perror("Erro ao criar ou obter a fila de mensagens");
-        exit(EXIT_FAILURE);
-    }
-    */
-
-    /* Loop to read and verify commands of the Mobile User */
-    // char* token;
-    // char commandAux[MAX_CHAR_COMMAND_AMMOUNT + 20];
-    // short logged_in = 0;
 
     /* Initializing mutex */
     if(pthread_mutex_init(&mutex, NULL) != 0) {
@@ -177,18 +160,7 @@ int main(int argc, char **argv) {
             time_V = get_millis();
             i++;
         }
-        else usleep(1000); // sleep for 1000 microseconds = 1 millisecond
-
-        /*
-        // Gerar e enviar pedidos de serviço
-        send_data_request(user_pipe_fd, video_queue_id, initial_balance);
-
-        // Receber alertas relacionados com os consumos dos vários serviços
-        receive_alerts(message_queue_id);
-
-        // Esperar um intervalo de tempo antes de enviar outro pedido (por exemplo, 1 segundo)
-        sleep(1);
-        */
+        else usleep(500); // sleep for 500 microseconds = 0.5 milliseconds
     }
 
     /* Frees all resorces */
@@ -286,6 +258,9 @@ long long get_millis() {
 void free_resorces() {
     /* Closes the user pipe file descriptor */
     close(user_pipe_fd);
+
+    /* Closes the message queue */
+    mq_close(mq);
 
     /* Destroing mutex */
     pthread_mutex_destroy(&mutex);
