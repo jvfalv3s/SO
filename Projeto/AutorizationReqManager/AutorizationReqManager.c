@@ -25,53 +25,42 @@
 #define BACK_PIPE_PATH "../tmp/FIFO/back_pipe"
 
 /* Initialization */
+pid_t SYS_PID;  // Parent (System Manager) PID
 pthread_t Sender_id, Receiver_id;  // Threads IDs
 int user_pipe_fd, back_pipe_fd;    // User and back pipes file descriptors
-bool userPipeCreated = false, backPipeCreated = false;  // User and back pipes creation status
+bool SenderCreated = false, ReceiverCreated = false;      // Sender and Receiver threads creation status
+bool userPipeCreated = false, backPipeCreated = false;    // User and back pipes creation status
+bool userPipeFDOpened = false, backPipeFDOpened = false;  // User and back pipes file descriptors open status
 
 /**
  * Creates the Autorization Request Manager process.
  */
-void AutReqMan(pid_t SYS_PID) {
-    /* Creates two threads, the sender and the receiver and logs their creation right after */
-    pthread_create(&Sender_id, NULL, Sender, NULL);
-    writeLog("THREAD SENDER CREATED");
-    pthread_create(&Receiver_id, NULL, Receiver, NULL);
-    writeLog("THREAD RECEIVER CREATED");
-
+void AutReqMan(pid_t sys_pid) {
+    SYS_PID = sys_pid;
+    
     /* Stays alert for sigquit signals */
     signal(SIGQUIT, endAutReqMan);
 
     /* Create USER_PIPE and BACK_PIPE */
-    if(mkfifo(USER_PIPE_PATH, 0666) == -1) {
-        error("CREATING USER PIPE");
-        kill(SYS_PID, SIGQUIT);
-        kill(0, SIGQUIT);
-        endAutReqMan();
-    }
+    if(mkfifo(USER_PIPE_PATH, 0666) == -1) autReqError("CREATING USER PIPE");
     userPipeCreated = true;
     user_pipe_fd = open(USER_PIPE_PATH, O_RDONLY);
-    if (user_pipe_fd == -1) {
-        error("OPENING USER PIPE FOR READ");
-        kill(SYS_PID, SIGQUIT);
-        kill(0, SIGQUIT);
-        endAutReqMan();
-    }
+    if (user_pipe_fd == -1) autReqError("OPENING USER PIPE FOR READ");
+    userPipeFDOpened = true;
 
-    if(mkfifo(BACK_PIPE_PATH, 0666) == -1) {
-        error("CREATING BACK PIPE");
-        kill(SYS_PID, SIGQUIT);
-        kill(0, SIGQUIT);
-        endAutReqMan();
-    }
+    if(mkfifo(BACK_PIPE_PATH, 0666) == -1) autReqError("CREATING BACK PIPE");
     backPipeCreated = true;
     back_pipe_fd = open(BACK_PIPE_PATH, O_RDONLY);
-    if (back_pipe_fd == -1) {
-        error("OPENING BACK PIPE FOR READ");
-        kill(SYS_PID, SIGQUIT);
-        kill(0, SIGQUIT);
-        endAutReqMan();
-    }
+    if (back_pipe_fd == -1) autReqError("OPENING BACK PIPE FOR READ");
+    backPipeFDOpened = true;
+
+    /* Creates two threads, the sender and the receiver and logs their creation right after */
+    pthread_create(&Sender_id, NULL, Sender, NULL);
+    SenderCreated = true;
+    writeLog("THREAD SENDER CREATED");
+    pthread_create(&Receiver_id, NULL, Receiver, NULL);
+    ReceiverCreated = true;
+    writeLog("THREAD RECEIVER CREATED");
 
     /* read example
     char message[100];
@@ -108,24 +97,42 @@ void* Receiver(void* arg) {
 }
 
 /**
- * Kills the Sender and Receiver threads.
+ * Kills System all processes sending SIGQUIT to them.
  */
-void killThreads() {
-    pthread_kill(Sender_id, SIGINT);
-    pthread_kill(Sender_id, SIGINT);
+void killSys() {
+    kill(SYS_PID, SIGQUIT);
+    kill(0, SIGQUIT);
 }
 
 /**
- * Unlink all created pipes.
+ * Kills the Sender and Receiver threads.
+ */
+void killThreads() {
+    if(SenderCreated) pthread_kill(Sender_id, SIGINT);
+    if(ReceiverCreated) pthread_kill(Sender_id, SIGINT);
+}
+
+/**
+ * Unlink all created pipes and closes all file descriptors.
  */
 void unlinkPipes() {
     if(userPipeCreated) unlink(USER_PIPE_PATH);
     if(backPipeCreated) unlink(BACK_PIPE_PATH);
+    if(userPipeFDOpened) close(user_pipe_fd);
+    if(backPipeFDOpened) close(back_pipe_fd);
+}
+
+/**
+ * Reports error ocurred printing it in screen and into log file and ends all processes.
+ */
+void autReqError(char* error_message) {
+    error(error_message);
+    killSys();
+    endAutReqMan();
 }
 
 /**
  * Ends the Autorization Request Manager and his threads.
- * Not in final form.
  */
 void endAutReqMan() {
     killThreads();

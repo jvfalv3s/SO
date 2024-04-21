@@ -24,21 +24,27 @@ void* Sender();
 void* Receiver();
 
 /**
+ * Kills System all processes sending SIGQUIT to them.
+ */
+void killSys();
+
+/**
  * Kills the Sender and Receiver threads.
  */
 void killThreads();
 
 /**
- * Unlink all created pipes.
+ * Unlink all created pipes and closes all file descriptors.
  */
-void unlinkPipes() {
-    if(userPipeCreated == 1) unlink(USER_PIPE_PATH);
-    if(backPipeCreated == 1) unlink(BACK_PIPE_PATH);
-}
+void unlinkPipes();
+
+/**
+ * Reports error ocurred printing it in screen and into log file and ends all processes.
+ */
+void autReqError(char* error_message);
 
 /**
  * Ends the Autorization Request Manager and his threads.
- * Not in final form.
  */
 void endAutReqMan();
 

@@ -16,6 +16,7 @@
 #include <sys/shm.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
+#include <stdbool.h>
 #include "./LogFileManager/LogFileManager.h"
 #include "./AutorizationReqManager/AutorizationReqManager.h"
 #include "./MonitorEngine/MonitorEngine.h"
@@ -23,21 +24,28 @@
 /* Comment this line to don't show debug messages */
 #define DEBUG
 
-#define MAX_USERS_SHM 20;
+/* Shared memory important definitions */
+#define MAX_USERS_SHM 20      // Max number users (defines shm size)
+#define SHM_PATH "./tmp/shm"  // Path to shm file
 
 void shmClose();
+void killProcess();
 void handle_sigint();
+void handle_sigquit();
 void endSys();
 
+/* Sharerd memory structur */
 typedef struct shmStruct {
     int id;
     int plafond;
 } user_info;
 
-int shm_fd;
-struct shmStruct* shm_ptr;
-char* shm_name = "SO_PROJECT_SHM";
-int shm_size = MAX_USERS_SHM * sizeof(struct shmStruct);
+/* Initializations */
+pid_t SYS_PID, ARM_PID, ME_PID;  // System processes PIDs
+bool AutReqManCreated = false, MonEngCreated = false;  // System processes creation status
+int shm_fd;                 // Shared memory file descriptor
+struct shmStruct* shm_ptr;  // Shared memory pointer
+int shm_size = MAX_USERS_SHM * sizeof(struct shmStruct);  // Shared memory size
 
 /**
  * Main Function.
@@ -54,7 +62,7 @@ int main(int argc, char* argv[]) {
     writeLog("PROCESS SYSTEM_MANAGER CREATED");
 
     /* Create a new shared memory object and maping it into address space of the process */
-    if((shm_fd = shm_open(shm_name, O_CREAT | O_RDWR, 0666)) == -1) {
+    if((shm_fd = shm_open(SHM_PATH, O_CREAT | O_RDWR, 0666)) == -1) {
         error("SHARED MEMORY OPEN FAILED");
         exit(EXIT_FAILURE);
     }
@@ -175,14 +183,18 @@ int main(int argc, char* argv[]) {
     free(buf);
 
     /* Creates the two child processes: Autorization Request Manager and the Monitor Engine writting a log after each creation */
-    pid_t SYS_PID, ARM_PID, ME_PID;
     if((ARM_PID = fork()) == 0) AutReqMan(SYS_PID);
+    AutReqManCreated = true;
     writeLog("PROCESS AUTHORIZATION_REQUEST_MANAGER CREATED");
     if((ME_PID = fork()) == 0) MonEng(SYS_PID);
+    MonEngCreated = true;
     writeLog("PROCESS MONITOR_ENGINE CREATED");
 
     /* Capture and handles the ^C (SIGINT) signal */
     signal(SIGINT, handle_sigint);
+
+    /* Capture and handles the SIGQUIT signal */
+    signal(SIGQUIT, handle_sigquit);
 
     /* Waits for his 2 childs to end */
     for(int j = 0; j < 2; j++) wait(NULL);
@@ -215,6 +227,23 @@ void shmClose() {
 }
 
 /**
+ * Kills child processes.
+ */
+void killProcess() {
+    if(AutReqManCreated || MonEngCreated) kill(0, SIGQUIT);
+    if(AutReqManCreated) waitpid(ARM_PID);
+    if(MonEngCreated) waitpid(ME_PID);
+}
+
+/**
+ * Handles if the process catchs a sigquit signal.
+ */
+void handle_sigquit() {
+    shmClose();
+    exit(EXIT_SUCCESS);
+}
+
+/**
  * Handles if the process catchs a sigint signal.
  */
 void handle_sigint() {
@@ -223,15 +252,13 @@ void handle_sigint() {
 
     /* Write log Waiting for last task to finish */
     writeLog("5G_AUTH_PLATFORM SIMULATOR WAITING FOR LAST TASKS TO FINISH");
-    kill(0, SIGQUIT);
-    for(int i = 0; i < 2; i++) wait(NULL);
+    killProcess();
 
     endSys();
 }
 
 /**
  * Ends the System Manager and it's child processes.
- * Not in final form.
  */
 void endSys() {
     #ifdef DEBUG
