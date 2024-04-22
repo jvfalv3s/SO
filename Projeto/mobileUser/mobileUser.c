@@ -19,30 +19,53 @@
 #include <signal.h>
 #include <ctype.h>
 #include <sys/time.h>
-#include <pthread.h>
-#include <mqueue.h>
+#include <semaphore.h>
+#include <stdbool.h>
 
 /* Comment this line to don't show debug messages */
 #define DEBUG
 
 /* Max characters a command can have */
 #define MAX_CHAR_COMMAND_AMMOUNT 20
+/* Max characters a message can have */
+#define MAX_CHAR_MESSAGE_AMMOUNT 100
+/* ftok arguments to create the message queue key */
+#define MQ_KEY_PATH "/message_queue"
+#define MQ_KEY_ID 'a'
 /* Path of the USER PIPE */
 #define USER_PIPE_PATH "../tmp/FIFO/user_pipe"
-/* Path of the MESSAGE QUEUE */
-#define MESSAGE_QUEUE_PATH "../tmp/FIFO/message_queue"
+/* Path to USER PIPE NAMED MUTEX SEMAPHORE */
+#define USER_PIPE_MUTEX_PATH "../tmp/NAMED_SEMS/user_pipe_mutex_sem"
+/* Path to MESSAGE QUEUE NAMED SEMAPHORE directory */
+#define MQ_NAMED_SEMAPHORE_DIR_PATH "../tmp/NAMED_SEMS/"
+
+/* Message from message queue struct */
+typedef struct mq_message {
+    long mgg_type;
+    char msg_text [MAX_CHAR_MESSAGE_AMMOUNT];
+};
 
 /* Initializing some usefull variables */
-int MOBILE_USER_ID;
+int MOBILE_USER_ID;                      // ID of the mobile user (PID)
 char command[MAX_CHAR_COMMAND_AMMOUNT];
-int user_pipe_fd;
-/* ---------------------------------------------------------------------------------------------------------------------------
- * MUTEX AQUI NAO FAZ SENTIDO, TROCAR POR NAMED SEMAPHORE? assim todos os mobile users poderiam aceder e n se atropelar ao
- * enviar para o pipe (podia controlar tmb a quantidade de pedidos e no receiver e mandar 'mandar parar' quando tivesse cheio
- * em outras palavras n deixar avançar com o semafero)
- */
-pthread_mutex_t mutex;  
-mqd_t mq;
+struct mq_message message;               // Message from message queue
+int user_pipe_fd;                        // User pipe file descriptor
+sem_t *user_pipe_mutex, *mq_named_sem;   // Named semaphores
+char* mq_named_sem_path;                 // Path to message queue named semaphore
+int msg_id;                              // Message queue id
+
+/* Status variables */
+bool userPipeFdOpened = false;
+bool userPipeMutexOpened = false;
+bool mqNamedSemCreated = false;
+
+/***************************************************
+ *                        TODO
+ * 
+ * --> receive_message() :
+ *     Function that receives a message from message
+ *     queue and processes it
+ ****************************************************/
 
 /**
  * Main function.
@@ -115,27 +138,31 @@ int main(int argc, char **argv) {
         printf("Data to Reserve = %d\n", data_to_reserve);
     #endif
 
+    /* Completed relative path to named semaphore */
+    if(sprintf(mq_named_sem_path, "%s%d", MQ_NAMED_SEMAPHORE_DIR_PATH, MOBILE_USER_ID) < 0) error("Creating mq_named_sem_path string");
+
+    /* Initializing user pipe named semaphore (mutex) */
+    user_pipe_mutex = sem_open(USER_PIPE_MUTEX_PATH, 0);
+    if (user_pipe_mutex == SEM_FAILED) error("Opening user pipe named semaphore (mutex)");
+    userPipeMutexOpened = true;
+
+    /* Initializing message queue named semaphore */
+    mq_named_sem = sem_open(mq_named_sem_path, O_CREAT, 0666, 0);
+    if (mq_named_sem == SEM_FAILED) error("Opening message queue named semaphore");
+    mqNamedSemCreated = true;
+
     /* Opening the pipe for writing */
     user_pipe_fd = open(USER_PIPE_PATH, O_WRONLY);
-    if (user_pipe_fd == -1) {
-        perror("Opening user pipe for writing");
-        exit(EXIT_FAILURE);
-    }
+    if (user_pipe_fd == -1) error("Opening user pipe for writing");
+    userPipeFdOpened = true;
+
+    /* Creating the message queue key */
+    int mq_key = ftok(MQ_KEY_PATH, MQ_KEY_ID);
+    if(mq_key == -1) error("Creating message queue key");
 
     /* Opening the message queue for reading */
-    mq = mq_open(MESSAGE_QUEUE_PATH, O_RDONLY);
-    if(mq == (mqd_t)-1) {
-        close(user_pipe_fd);
-        perror("Opening message queue for reading");
-        exit(EXIT_FAILURE);
-    }
-
-    /* Initializing mutex */
-    if(pthread_mutex_init(&mutex, NULL) != 0) {
-        close(user_pipe_fd);
-        perror("initializing mutex");
-        exit(EXIT_FAILURE);
-    }
+    msg_id = msgget(mq_key, 0400);  // 0400 --> read-only permissions
+    if (msg_id == -1) error("Getting message queue id");
 
     /* Sending register message */
     send_reg_message(initial_plafond);
@@ -144,7 +171,9 @@ int main(int argc, char **argv) {
     int i = 0;
     long long time_S = 0, time_M = 0, time_V = 0;
     while(i < max_autorizations_requests) {
-        
+        /* Tries wait to see if there is a message in message queue */
+        if(sem_trywait(mq_named_sem) == 0) receive_message();
+
         t = get_millis();
         if((t - time_S) >= SOCIAL_interval) {
             send_social_req(data_to_reserve);
@@ -166,66 +195,45 @@ int main(int argc, char **argv) {
 
     /* Frees all resorces */
     free_resorces();
-    
-    /*
-    // Remover a fila de mensagens de vídeo
-    if (msgctl(video_queue_id, IPC_RMID, NULL) == -1) {
-        perror("Erro ao encerrar a fila de mensagens de vídeo");
-        exit(EXIT_FAILURE);
-    }
-
-    // Remover a fila de mensagens
-    if (msgctl(message_queue_id, IPC_RMID, NULL) == -1) {
-        perror("Erro ao encerrar a fila de mensagens");
-        exit(EXIT_FAILURE);
-    }
-    */
 
     return 0;
 }
 
-/*
-void startMobileUser(char* command) {
-    // Cria ou conecta à Message Queue
-    int msgqid;
-    if ((msgqid = msgget(MESSAGE_QUEUE_KEY, IPC_CREAT | 0666)) == -1) {
-        perror("Erro ao criar/conectar a Message Queue");
-        exit(EXIT_FAILURE);
-    }
+/**
+ * Receives a message from message queue and processes it.
+ */
+void receive_message() {
 
-    // Envia mensagem de registo inicial
-    dprintf(user_pipe_fd, "%s#%s\n", userID, receiveID);
 }
-*/
 
 /**
  * Sends the registation message with the mobile user ID and initial plafond.
  */
 void send_reg_message(int initial_plafond) {
-    pthread_mutex_lock(&mutex);
+    sem_wait(user_pipe_mutex);
     if(sprintf(command, "%d#%d", MOBILE_USER_ID, initial_plafond) < 0) error("creating register message");
     if(write(user_pipe_fd, command, strlen(command) + 1) == -1) error("sending register message to user pipe");
-    pthread_mutex_unlock(&mutex);
+    sem_post(user_pipe_mutex);
 }
 
 /**
  * Sends a social request to user pipe.
  */
 void send_social_req(int data_to_reserve) {
-    pthread_mutex_lock(&mutex);
+    sem_wait(user_pipe_mutex);
     if(sprintf(command, "%d#SOCIAL#%d", MOBILE_USER_ID, data_to_reserve) < 0) error("creating social request message");
     if(write(user_pipe_fd, command, strlen(command) + 1) == -1) error("sending social request message to user pipe");
-    pthread_mutex_unlock(&mutex); 
+    sem_post(user_pipe_mutex);
 }
 
 /**
  * Sends a music request to user pipe.
  */
 void send_music_req(int data_to_reserve) {
-    pthread_mutex_lock(&mutex);
+    sem_wait(user_pipe_mutex);
     if(sprintf(command, "%d#MUSIC#%d", MOBILE_USER_ID, data_to_reserve) < 0) error("creating music request message");
     if(write(user_pipe_fd, command, strlen(command) + 1) == -1) error("sending music request message to user pipe");
-    pthread_mutex_unlock(&mutex); 
+    sem_post(user_pipe_mutex);
 }
 
 /**
@@ -254,17 +262,25 @@ long long get_millis() {
 }
 
 /**
+ * Closes all the semaphores already created.
+ */
+void close_sems() {
+    if(userPipeMutexOpened) sem_close(user_pipe_mutex);
+    if(mqNamedSemCreated) {
+        sem_close(mq_named_sem);
+        sem_unlink(mq_named_sem_path);
+    }
+}
+
+/**
  * Frees resorces (mutex and pipe file descriptor)
  */
 void free_resorces() {
+    /* Closes the created semaphores */
+    close_sems();
+
     /* Closes the user pipe file descriptor */
-    close(user_pipe_fd);
-
-    /* Closes the message queue */
-    mq_close(mq);
-
-    /* Destroing mutex */
-    pthread_mutex_destroy(&mutex);
+    if(userPipeFdOpened) close(user_pipe_fd);
 }
 
 /**
@@ -287,59 +303,4 @@ void error(char* str_to_print) {
     exit(EXIT_FAILURE);
 }
 
-
-
-void enganometa1() {
-    // if(sprintf(command, "waitting new command...\n") < 0) error("creating waitting new command message");
-        // puts(command);
-
-        // /* waits a new command to be written */
-        // fgets(command, sizeof(command), stdin);
-
-        // /* verification of the mobile user id */
-        // token = strtok(strcpy(commandaux, command), "#");
-        // if(token == null || isdigit(token) == 0) {  // verifyes if the command is valid
-        //     if(sprintf(command, "invalid command\n") < 0) error("creating invalid command message");
-        //     puts(command);
-        //     i--;
-        //     continue;
-        // }
-        // else if((logged_in != 0) && (strcmp(token, mobile_user_id) != 0)) {  // verifies if the mobile user id exists and/or is compatible
-        //     if(sprintf(command, "invalid mobile user id\n") < 0) error("creating invalid mobile user id message");
-        //     puts(command);
-        //     i--;
-        //     continue;
-        // }
-        // else if(logged_in == 0) {  // if not logged in, login and sets mobile user id
-        //     strcpy(mobile_user_id, token);
-        //     logged_in = 1;
-        // }
-
-        // /* verification of the other argumments */
-        // token = strtok(null, "#");
-        // if(token == null) {  // verifyes if the command is valid
-        //     if(sprintf(command, "invalid command\n") < 0) error("creating invalid command message");
-        //     puts(command);
-        //     i--;
-        //     continue;
-        // }
-        // else if(strtok(null, "#") != null) {  // verifyes if there exists a third argument
-        //     if(!((strcmp(token, "video") == 0) || (strcmp(token, "music") == 0) || (strcmp(token, "social") == 0))) {  // verifyes if the second argumment is valid
-        //         if(sprintf(command, "invalid service id\n") < 0) error("creating service id message");
-        //         puts(command);
-        //         i--;
-        //         continue;
-        //     }
-        // }
-        // else if(isdigit(token) == 0) {  // verifies, in case of just 2 arguments, if the second is a number
-        //     if(sprintf(command, "invalid second argument\n") < 0) error("creating invalid command message");
-        //     puts(command);
-        //     i--;
-        //     continue;
-        // }
-
-        // /* sending command to user pipe */
-        // if(write(user_pipe_fd, command, strlen(command) + 1) == -1) error("sending command to user pipe");
-        // puts("command sent!\n");
-}
 

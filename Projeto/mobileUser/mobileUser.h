@@ -9,6 +9,11 @@
 #define MOBILEUSER_H
 
 /**
+ * Receives a message from message queue and processes it.
+ */
+void receive_message();
+
+/**
  * Sends the registation message with the mobile user ID and initial plafond.
  */
 void send_reg_message(int initial_plafond);
@@ -32,6 +37,11 @@ void send_video_req(int data_to_reserve);
  * Gets the milliseconds.
  */
 long long get_millis();
+
+/**
+ * Closes all the semaphores already created.
+ */
+void close_sems();
 
 /**
  * Frees resorces (mutex and pipe file descriptor)
