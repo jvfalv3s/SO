@@ -33,11 +33,6 @@ void MonEng(pid_t sys_pid) {
     attr.mq_msgsize = MAX_SIZE;
     attr.mq_curmsgs = 0;
 
-    /* Quando for mandar uma mensagem para um novo utilizador criar um named semaphore com o id do user na pasta dos named semaphores
-     * Com isto podemos acrescentar ao semafero um recurso quando tiver la mais uma mensagem para o utilizador ler em primeiro da fila
-     * Fazer uma queue com os semaferos onde vai sendo atualizada conforme a message queue 
-     * NAO ACHO QUE A IDEIA FUNCIONE PENSANDO MELHOR ----- PERGUNTAR AO STOR COMO RESOLVER ESTA QUESTAO DA MESSAGE QUEUE E AS MESSAGENS SEREM LIDAS PELOS UTILIZADORES CORRETOS
-        sem_t *sem = sem_open("/my_semaphore", O_CREAT, 0666, 1);
-    */
+    
     exit(EXIT_SUCCESS);
 }

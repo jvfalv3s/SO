@@ -61,6 +61,11 @@ int main() {
     char* token;
     char commandAux[MAX_CHAR_COMMAND_AMMOUNT + 20];
     while(1) {
+        /*
+         * TODO:
+         * --> trywait for possible message in message mq and displays it in the screen
+         */
+
         if(sprintf(command, "Waitting new command...\n") < 0) error("creating waitting new command message");
         puts(command);
 
@@ -99,11 +104,12 @@ int main() {
 
         /* If the command was to reset just wait for a new command because there will be nothing to display */
         if(strcmp(token, "reset") == 0) continue;
-
-        /*
-         * TODO:
-         * --> Wait for the response of the server and displays it in the screen
-         */
+        else {
+            /*
+             * TODO: 
+             * --> wait message from the mq for command "data_stats"
+             */
+        }
     }
 
     /* Closes the back pipe file descriptor */
@@ -130,7 +136,7 @@ void startBackOfficeUser() {
 void free_resorces() {
     /* Closes the user pipe file descriptor */
     close(back_pipe_fd);
-    
+
     /* Closes the message queue */
     mq_close(mq);
 }

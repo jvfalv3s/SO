@@ -144,6 +144,7 @@ int main(int argc, char **argv) {
     int i = 0;
     long long time_S = 0, time_M = 0, time_V = 0;
     while(i < max_autorizations_requests) {
+        
         t = get_millis();
         if((t - time_S) >= SOCIAL_interval) {
             send_social_req(data_to_reserve);
@@ -165,7 +166,7 @@ int main(int argc, char **argv) {
 
     /* Frees all resorces */
     free_resorces();
-
+    
     /*
     // Remover a fila de mensagens de vídeo
     if (msgctl(video_queue_id, IPC_RMID, NULL) == -1) {

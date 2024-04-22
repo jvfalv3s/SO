@@ -220,7 +220,7 @@ void shmClose() {
         exit(EXIT_FAILURE);
     }
     /* Unlinking shared memory */
-    if (shm_unlink(shm_name) == -1) {
+    if (shm_unlink(SHM_PATH) == -1) {
         error("SHM unlink");
         exit(EXIT_FAILURE);
     }

@@ -100,8 +100,8 @@ void* Receiver(void* arg) {
  * Kills System all processes sending SIGQUIT to them.
  */
 void killSys() {
-    kill(SYS_PID, SIGQUIT);
     kill(0, SIGQUIT);
+    kill(SYS_PID, SIGQUIT);
 }
 
 /**
