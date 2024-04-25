@@ -201,7 +201,7 @@ int main(int argc, char* argv[]) {
 
     /* Ends the System Manager */
     endSys();
-
+    
     return 0;
 }
 
@@ -227,7 +227,7 @@ void shmClose() {
 }
 
 /**
- * Kills child processes.
+ * Kills child processes. ------------TODO LATER-----------
  */
 void killProcess() {
     if(AutReqManCreated || MonEngCreated) kill(0, SIGQUIT);
