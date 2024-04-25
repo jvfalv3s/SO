@@ -203,7 +203,8 @@ int main(int argc, char **argv) {
  * Receives a message from message queue and processes it.
  */
 void receive_message() {
-
+    msgrcv(msg_id, &message, sizeof(message), getpid(), NULL);
+    printf(message.msg_text);
 }
 
 /**
@@ -240,10 +241,10 @@ void send_music_req(int data_to_reserve) {
  * Sends a video request to user pipe.
  */
 void send_video_req(int data_to_reserve) {
-    pthread_mutex_lock(&mutex);
+    sem_wait(user_pipe_mutex);
     if(sprintf(command, "%d#VIDEO#%d", MOBILE_USER_ID, data_to_reserve) < 0) error("creating video request message");
     if(write(user_pipe_fd, command, strlen(command) + 1) == -1) error("sending video request message to user pipe");
-    pthread_mutex_unlock(&mutex); 
+    sem_post(user_pipe_mutex);
 }
 
 /**

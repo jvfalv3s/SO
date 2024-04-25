@@ -11,7 +11,7 @@
 /**
  * Creates the Autorization Request Manager process.
  */
-void AutReqMan(pid_t SYS_PID);
+void AutReqMan();
 
 /**
  * Sender Thread.

@@ -11,6 +11,6 @@
 /**
  * Creates the Monitor Engine process.
  */
-void MonEng(pid_t sys_pid);
+void MonEng();
 
 #endif

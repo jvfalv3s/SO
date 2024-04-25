@@ -118,18 +118,6 @@ int main() {
     return 0;
 }
 
-/*
-void startBackOfficeUser() {
-
-    // Cria ou conecta à Message Queue
-    int msgqid;
-    if ((msgqid = msgget(MESSAGE_QUEUE_KEY, IPC_CREAT | 0666)) == -1) {
-        perror("Erro ao criar/conectar a Message Queue");
-        exit(EXIT_FAILURE);
-    }
-}
-*/
-
 /**
  * Free all the resorces.
  */

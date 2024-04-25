@@ -27,7 +27,7 @@ sem_t *sem
 /**
  * Creates the Monitor Engine process.
  */
-void MonEng(pid_t sys_pid) {
+void MonEng() {
     attr.mq_flags = 0;
     attr.mq_maxmsg = 10; // Maximum number of messages in the queue
     attr.mq_msgsize = MAX_SIZE;

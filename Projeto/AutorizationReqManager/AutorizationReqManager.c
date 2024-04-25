@@ -35,8 +35,8 @@ bool userPipeFDOpened = false, backPipeFDOpened = false;  // User and back pipes
 /**
  * Creates the Autorization Request Manager process.
  */
-void AutReqMan(pid_t sys_pid) {
-    SYS_PID = sys_pid;
+void AutReqMan() {
+    SYS_PID = getppid();
     
     /* Stays alert for sigquit signals */
     signal(SIGQUIT, endAutReqMan);
