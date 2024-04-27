@@ -52,7 +52,7 @@ struct mq_message message;               // Message from message queue
 int user_pipe_fd;                        // User pipe file descriptor
 sem_t *user_pipe_mutex, *mq_named_sem;   // Named semaphores
 char* mq_named_sem_path;                 // Path to message queue named semaphore
-int msg_id;                              // Message queue id
+int mq_id;                               // Message queue id
 
 /* Status variables */
 bool userPipeFdOpened = false;
@@ -153,8 +153,8 @@ int main(int argc, char **argv) {
     if(mq_key == -1) error("Creating message queue key");
 
     /* Opening the message queue for reading */
-    msg_id = msgget(mq_key, 0400);  // 0400 --> read-only permissions
-    if (msg_id == -1) error("Getting message queue id");
+    mq_id = msgget(mq_key, 0400);  // 0400 --> read-only permissions
+    if (mq_id == -1) error("Getting message queue id");
 
     /* Sending register message */
     send_reg_message(initial_plafond);
@@ -197,7 +197,7 @@ int main(int argc, char **argv) {
  * Receives a message from message queue and prints it. Return -1 if 100% plafond reached and 0 otherwise.
  */
 int receive_message() {
-    if(msgrcv(msg_id, &message, sizeof(message), MOBILE_USER_ID, NULL) == -1) error("Receiving message from message queue");
+    if(msgrcv(mq_id, &message, sizeof(message), MOBILE_USER_ID, NULL) == -1) error("Receiving message from message queue");
     printf(message.msg_text);
     if(strcmp(message.msg_text, "ALERT: 100%% Plafond reached!") == 0) return -1;
     else return 0;

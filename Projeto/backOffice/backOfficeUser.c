@@ -23,17 +23,33 @@
 
 /* Max characters a command can have */
 #define MAX_CHAR_COMMAND_AMMOUNT 100
-
+/* Max characters a message can have */
+#define MAX_CHAR_MESSAGE_AMMOUNT 200
+/* ftok arguments to create the message queue key */
+#define MQ_KEY_PATH "/message_queue"
+#define MQ_KEY_ID 'a'
 /* Path of the BACK PIPE */
 #define BACK_PIPE_PATH "../tmp/FIFO/back_pipe"
-/* Path of the MESSAGE QUEUE */
-#define MESSAGE_QUEUE_PATH "../tmp/FIFO/message_queue"
+/* Path to MESSAGE QUEUE NAMED SEMAPHORE that indicates about periodic stats */
+#define MQ_NAMED_SEMAPHORE_P_PATH "../tmp/NAMED_SEMS/back_office_P"
+/* Path to MESSAGE QUEUE NAMED SEMAPHORE that indicates about stats response */
+#define MQ_NAMED_SEMAPHORE_R_PATH "../tmp/NAMED_SEMS/back_office_R"
+
+/* Message from message queue struct */
+typedef struct mq_message {
+    long mgg_type;
+    char msg_text [MAX_CHAR_MESSAGE_AMMOUNT];
+};
 
 /* Initializing some usefull variables */
 char* BACKOFFICE_USER_ID = "1";
 char command [MAX_CHAR_COMMAND_AMMOUNT];
+struct mq_message message;                 // Message from message queue
 int back_pipe_fd;
-mqd_t mq;
+sem_t *mq_named_sem_p, *mq_named_sem_r;
+int mq_id;
+bool backPipeFdOpened = false;
+bool mqNamedSemPCreated = false, mqNamedSemRCreated = false;
 
 /**
  * Main function.
@@ -42,31 +58,36 @@ int main() {
     /* SIGINT handling */
     signal(SIGINT, handle_sigint);
 
+    /* Initializing message queue named semaphore that indicates about periodic stats */
+    mq_named_sem_p = sem_open(MQ_NAMED_SEMAPHORE_P_PATH, O_CREAT, 0666, 0);
+    if (mq_named_sem_p == SEM_FAILED) error("Opening message queue named semaphore P");
+    mqNamedSemPCreated = true;
+
+    /* Initializing message queue named semaphore that indicates about stats response */
+    mq_named_sem_r = sem_open(MQ_NAMED_SEMAPHORE_R_PATH, O_CREAT, 0666, 0);
+    if (mq_named_sem_r == SEM_FAILED) error("Opening message queue named semaphore R");
+    mqNamedSemRCreated = true;
+
     /* Opening the pipe for writing */
     back_pipe_fd = open(BACK_PIPE_PATH, O_WRONLY);
-    if (back_pipe_fd == -1) {
-        perror("Opening user pipe for writing");
-        exit(EXIT_FAILURE);
-    }
+    if (back_pipe_fd == -1) error("Opening back office user pipe for writing");
+    backPipeFdOpened = true;
+
+    /* Creating the message queue key */
+    int mq_key = ftok(MQ_KEY_PATH, MQ_KEY_ID);
+    if(mq_key == -1) error("Creating message queue key");
 
     /* Opening the message queue for reading */
-    mq = mq_open(MESSAGE_QUEUE_PATH, O_RDONLY);
-    if(mq == (mqd_t)-1) {
-        close(back_pipe_fd);
-        perror("Opening message queue for reading");
-        exit(EXIT_FAILURE);
-    }
+    mq_id = msgget(mq_key, 0400);  // 0400 --> read-only permissions
+    if (mq_id == -1) error("Getting message queue id");
 
     /* Loop to read and verify commands of the BackOffice User */
     char* token;
     char commandAux[MAX_CHAR_COMMAND_AMMOUNT + 20];
     while(1) {
-        /*
-         * TODO:
-         * --> trywait for possible message in message mq and displays it in the screen
-         */
+        while(sem_trywait(mq_named_sem_p) == 0) receive_message();
 
-        if(sprintf(command, "Waitting new command...\n") < 0) error("creating waitting new command message");
+        if(sprintf(command, "Waitting new command...\n") < 0) error("Creating waitting new command message");
         puts(command);
 
         /* Waits a new command to be written */
@@ -75,58 +96,71 @@ int main() {
         /* Verification of the backoffice user ID */
         token = strtok(command, "#");
         if(token == NULL) {  // Verifyes if the command is valid
-            if(sprintf(command, "invalid command\n") < 0) error("creating invalid command message");
+            if(sprintf(command, "invalid command\n") < 0) error("Creating invalid command message");
             puts(command);
             continue;
         }
         else if(strcmp(token, BACKOFFICE_USER_ID) != 0) {  // Verifyes if the backoffice user id is compatible
-            if(sprintf(command, "invalid backoffice user id\n") < 0) error("creating invalid backoffice user id message");
+            if(sprintf(command, "invalid backoffice user id\n") < 0) error("Creating invalid backoffice user id message");
             puts(command);
             continue;
         }
 
-        /* Verification of the other argumments */
-        token = strtok(NULL, "#");
+        /* Verification of the second argumment */
+        token = strtok(NULL, "");
         if(token == NULL) {  // Verifyes if the command is valid
-            if(sprintf(command, "invalid command\n") < 0) error("creating invalid command message");
+            if(sprintf(command, "invalid command\n") < 0) error("Creating invalid command message");
             puts(command);
             continue;
         }
         else if(!((strcmp(token, "data_stats") == 0) || (strcmp(token, "reset") == 0))) {  // Verifyes if the second argumment is valid
-            if(sprintf(command, "invalid command\n") < 0) error("creating invalid command message");
+            if(sprintf(command, "invalid command\n") < 0) error("Creating invalid command message");
             puts(command);
             continue;
         }
             
         /* Sending command to BACK PIPE */
-        if(write(back_pipe_fd, command, strlen(command) + 1) == -1) error("sending command to back pipe");
+        if(write(back_pipe_fd, command, strlen(command) + 1) == -1) error("Sending command to back pipe");
         puts("Command sent!\n");
 
         /* If the command was to reset just wait for a new command because there will be nothing to display */
         if(strcmp(token, "reset") == 0) continue;
+        /* Otherwises waits for a response */
         else {
-            /*
-             * TODO: 
-             * --> wait message from the mq for command "data_stats"
-             */
+            sem_wait(mq_named_sem_r);
+            receive_message();
         }
     }
 
-    /* Closes the back pipe file descriptor */
-    close(back_pipe_fd);
+    free_resorces();
 
     return 0;
+}
+
+/**
+ * Receives a message from message queue and prints it.
+ */
+int receive_message() {
+    if(msgrcv(mq_id, &message, sizeof(message), 1, NULL) == -1) error("Receiving message from message queue");
+    puts(message.msg_text);
 }
 
 /**
  * Free all the resorces.
  */
 void free_resorces() {
-    /* Closes the user pipe file descriptor */
-    close(back_pipe_fd);
+    /* Closes the back office user pipe file descriptor */
+    if(backPipeFdOpened) close(back_pipe_fd);
 
-    /* Closes the message queue */
-    mq_close(mq);
+    /* Closes and unlink the semaphores */
+    if(mqNamedSemPCreated) {
+        sem_close(mq_named_sem_p);
+        sem_unlink(MQ_NAMED_SEMAPHORE_P_PATH);
+    }
+    if(mqNamedSemRCreated) {
+        sem_close(mq_named_sem_r);
+        sem_unlink(MQ_NAMED_SEMAPHORE_R_PATH);
+    }
 }
 
 /**
@@ -134,7 +168,7 @@ void free_resorces() {
  */
 void handle_sigint(int sig) {
     /* Closes the back pipe file descriptor */
-    close(back_pipe_fd);
+    free_resorces();
 
     printf("SIGINT (%d) received. Closing backoffice User...\n", sig);
     exit(EXIT_SUCCESS);
@@ -144,8 +178,7 @@ void handle_sigint(int sig) {
  * Frees all the resorces and prints error message.
  */
 void error(char* str_to_print) {
-    /* Closes the back pipe file descriptor */
-    close(back_pipe_fd);
+    free_resorces();
 
     fprintf(stderr, "Error: %s\n", str_to_print);
     exit(EXIT_FAILURE);

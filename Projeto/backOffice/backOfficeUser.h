@@ -9,9 +9,14 @@
 #define BACKOFFICEUSER_H
 
 /**
+ * Receives a message from message queue and prints it.
+ */
+int receive_message();
+
+/**
  * Free all the resorces.
  */
-void free_resorces()
+void free_resorces();
 
 /**
  * Handles the SIGINT signal.
