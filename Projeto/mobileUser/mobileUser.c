@@ -59,14 +59,6 @@ bool userPipeFdOpened = false;
 bool userPipeMutexOpened = false;
 bool mqNamedSemCreated = false;
 
-/***************************************************
- *                        TODO
- * 
- * --> receive_message() :
- *     Function that receives a message from message
- *     queue and processes it
- ****************************************************/
-
 /**
  * Main function.
  */
