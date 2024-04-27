@@ -231,6 +231,7 @@ void shmClose() {
  */
 void killProcess() {
     if(AutReqManCreated || MonEngCreated) kill(0, SIGQUIT);
+    //  while(wait(NULL) != -1);
     if(AutReqManCreated) waitpid(ARM_PID);
     if(MonEngCreated) waitpid(ME_PID);
 }

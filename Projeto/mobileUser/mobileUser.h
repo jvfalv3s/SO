@@ -9,9 +9,9 @@
 #define MOBILEUSER_H
 
 /**
- * Receives a message from message queue and processes it.
+ * Receives a message from message queue and prints it. Return -1 if 100% plafond reached and 0 otherwise.
  */
-void receive_message();
+int receive_message();
 
 /**
  * Sends the registation message with the mobile user ID and initial plafond.
