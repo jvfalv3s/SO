@@ -33,6 +33,24 @@
 #define OTHER_MQ_KEY_PATH "other_message_queue"
 #define MQ_KEY_ID 'a'
 
+
+// Use a struct to encapsulate global variables
+typedef struct global_data {
+    pid_t SYS_PID;
+    pthread_t Sender_id, Receiver_id;
+    int user_pipe_fd, back_pipe_fd;
+    bool SenderCreated, ReceiverCreated;
+    bool userPipeCreated, backPipeCreated;
+    bool userPipeFDOpened, backPipeFDOpened;
+    struct queue vid_queue;
+    struct queue other_queue;
+    struct vid_mq_message vid_message;
+    struct other_mq_message other_message;
+    bool vid_queueCreated, other_queueCreated;
+    pthread_cond_t cv;
+    pthread_mutex_t mutex;
+} global_data;
+
 /* Message from message queue struct */
 typedef struct vid_mq_message {
     long mgg_type;

@@ -65,6 +65,9 @@ void MonEng(pid_t SYS_PID, int consumo_critico,int id_usuario) {
 
         // Compilação de estatísticas
         // Código para compilar estatísticas periódicas
+
+    
+
     }
 }
 
