@@ -198,7 +198,7 @@ int main(int argc, char **argv) {
  */
 int receive_message() {
     if(msgrcv(mq_id, &message, sizeof(message), MOBILE_USER_ID, NULL) == -1) error("Receiving message from message queue");
-    printf(message.msg_text);
+    puts(message.msg_text);
     if(strcmp(message.msg_text, "ALERT: 100%% Plafond reached!") == 0) return -1;
     else return 0;
 }

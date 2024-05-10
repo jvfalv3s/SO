@@ -140,7 +140,7 @@ int main() {
 /**
  * Receives a message from message queue and prints it.
  */
-int receive_message() {
+void receive_message() {
     if(msgrcv(mq_id, &message, sizeof(message), 1, NULL) == -1) error("Receiving message from message queue");
     puts(message.msg_text);
 }

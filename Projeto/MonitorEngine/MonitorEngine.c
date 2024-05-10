@@ -12,25 +12,37 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <signal.h> 
-#include <mqueue.h>
+#include <sys/ipc.h> 
+#include <sys/msg.h> 
 #include <semaphore.h>
 
 #define MAX_SIZE 1024
-#define MESSAGE_QUEUE_PATH "../tmp/FIFO/message_queue"
 #define NAMED_SEMAPHORES_PATH "../tmp/FIFO/NAMED_SEMAPHORES/"
+#define MAX_CHAR_MESSAGE_AMMOUNT 100
+/* ftok arguments to create the message queue key */
+#define MQ_KEY_PATH "/message_queue"
+#define MQ_KEY_ID 'a'
 
-mqd_t mq;
-struct mq_attr attr;
+/* Message from message queue struct */
+typedef struct mq_message {
+    long mgg_type;
+    char msg_text [MAX_CHAR_MESSAGE_AMMOUNT];
+};
+
+int mq_id;                               // Message queue id
+struct mq_message message;               // Message from message queue
+char* mq_named_sem_path;                 // Path to message queue named semaphore
 sem_t *sem;
 pid_t SYS_PID;
 
 void MonEng(pid_t SYS_PID, int consumo_critico,int id_usuario) {
-    // Inicialização da fila de mensagens
-    mq = mq_open(MESSAGE_QUEUE_PATH, O_CREAT | O_RDWR, 0666, &attr);
-    if (mq == -1) {
-        perror("mq_open");
-        exit(EXIT_FAILURE);
-    }
+    /* Creating the message queue key */
+    int mq_key = ftok(MQ_KEY_PATH, MQ_KEY_ID);
+    if(mq_key == -1) error("Creating message queue key");
+
+    /* Opening the message queue for reading */
+    mq_id = msgget(mq_key, IPC_CREAT | 0200);  // 0200 --> write-only permissions
+    if(mq_id == -1) error("Getting message queue id");
 
     // Inicialização do semáforo nomeado
     sem = sem_open(NAMED_SEMAPHORES_PATH, O_CREAT | O_RDWR, 0666, 1);
