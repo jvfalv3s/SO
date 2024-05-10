@@ -163,7 +163,7 @@ void killSys() {
  */
 void killThreads() {
     if(SenderCreated) pthread_kill(Sender_id, SIGINT);
-    if(ReceiverCreated) pthread_kill(Sender_id, SIGINT);
+    if(ReceiverCreated) pthread_kill(Receiver_id, SIGINT);
 }
 
 /**
