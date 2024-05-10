@@ -183,12 +183,12 @@ int main(int argc, char* argv[]) {
     free(buf);
 
     /* Creates the two child processes: Autorization Request Manager and the Monitor Engine writting a log after each creation */
-    if((ARM_PID = fork()) == 0) AutReqMan();
-    AutReqManCreated = true;
-    writeLog("PROCESS AUTHORIZATION_REQUEST_MANAGER CREATED");
     if((ME_PID = fork()) == 0) MonEng();
     MonEngCreated = true;
     writeLog("PROCESS MONITOR_ENGINE CREATED");
+    if((ARM_PID = fork()) == 0) AutReqMan(ME_PID);
+    AutReqManCreated = true;
+    writeLog("PROCESS AUTHORIZATION_REQUEST_MANAGER CREATED");
 
     /* Capture and handles the ^C (SIGINT) signal */
     signal(SIGINT, handle_sigint);

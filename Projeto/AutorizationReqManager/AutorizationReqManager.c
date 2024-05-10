@@ -18,60 +18,36 @@
 #include <signal.h> 
 #include <pthread.h>
 #include <stdbool.h>
+#include <sys/select.h>
 #include "../LogFileManager/LogFileManager.h"
 #include "./AutorizationReqManager.h"
 
 /* Comment this line to don't show debug messages */
 #define DEBUG
 
+#define BUF_SIZE 100
 #define MAX_CHAR_COMMAND 30
 /* Paths to user and back pipe */
 #define USER_PIPE_PATH "user_pipe"
 #define BACK_PIPE_PATH "back_pipe"
-/* ftok arguments to create the message queue key */
-#define VID_MQ_KEY_PATH "video_message_queue"
-#define OTHER_MQ_KEY_PATH "other_message_queue"
-#define MQ_KEY_ID 'a'
-
-
-// Use a struct to encapsulate global variables
-typedef struct global_data {
-    pid_t SYS_PID;
-    pthread_t Sender_id, Receiver_id;
-    int user_pipe_fd, back_pipe_fd;
-    bool SenderCreated, ReceiverCreated;
-    bool userPipeCreated, backPipeCreated;
-    bool userPipeFDOpened, backPipeFDOpened;
-    struct queue vid_queue;
-    struct queue other_queue;
-    struct vid_mq_message vid_message;
-    struct other_mq_message other_message;
-    bool vid_queueCreated, other_queueCreated;
-    pthread_cond_t cv;
-    pthread_mutex_t mutex;
-} global_data;
 
 /* Message from message queue struct */
-typedef struct vid_mq_message {
-    long mgg_type;
-    int data_to_reserve;
-}vid_mq_message;
-
-/* Message from message queue struct */
-typedef struct other_mq_message {
-    long mgg_type;
+typedef struct message {
+    int id;
     char command[MAX_CHAR_COMMAND];
     int data_to_reserve;
-}other_mq_message;
+}message;
 
 typedef struct queue {
-    int mq_id;
-    int queue_pos;
+    struct message* messages;
+    int read_pos;
+    int write_pos;
     int max_queue_pos;
 }queue;
 
 /* Initialization */
 pid_t SYS_PID;  // Parent (System Manager) PID
+pid_t MON_EN_PID;
 pthread_t Sender_id, Receiver_id;  // Threads IDs
 int user_pipe_fd, back_pipe_fd;    // User and back pipes file descriptors
 bool SenderCreated = false, ReceiverCreated = false;      // Sender and Receiver threads creation status
@@ -80,8 +56,6 @@ bool userPipeFDOpened = false, backPipeFDOpened = false;  // User and back pipes
 
 struct queue vid_queue;                  
 struct queue other_queue;                
-struct vid_mq_message vid_message;       // Message from message queue
-struct other_mq_message other_message;   // Message from message queue
 bool vid_queueCreated = false, other_queueCreated = false;
 
 pthread_cond_t cv = PTHREAD_COND_INITIALIZER;
@@ -90,40 +64,30 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 /**
  * Creates the Autorization Request Manager process.
  */
-void AutReqMan(int MAX_QUEUE_POS) {
+void AutReqMan(pid_t monitor_engine_pid, int MAX_QUEUE_POS) {
     SYS_PID = getppid();
+    MON_EN_PID = monitor_engine_pid;
     
     /* Stays alert for sigquit signals */
     signal(SIGQUIT, endAutReqMan);
 
-    /* Create USER_PIPE and BACK_PIPE */
+    /* Creating USER_PIPE and BACK_PIPE */
     if(mkfifo(USER_PIPE_PATH, 0666) == -1) autReqError("CREATING USER PIPE");
     userPipeCreated = true;
-    user_pipe_fd = open(USER_PIPE_PATH, O_RDONLY);
-    if (user_pipe_fd == -1) autReqError("OPENING USER PIPE FOR READ");
-    userPipeFDOpened = true;
-
     if(mkfifo(BACK_PIPE_PATH, 0666) == -1) autReqError("CREATING BACK PIPE");
     backPipeCreated = true;
-    back_pipe_fd = open(BACK_PIPE_PATH, O_RDONLY);
-    if (back_pipe_fd == -1) autReqError("OPENING BACK PIPE FOR READ");
-    backPipeFDOpened = true;
 
     /* Creating VIDEO QUEUE and OTHER QUEUE */
-    int vid_mq_key = ftok(VID_MQ_KEY_PATH, MQ_KEY_ID);
-    if(vid_mq_key == -1) error("Creating message queue key");
-    vid_queue.mq_id = msgget(vid_mq_key, IPC_CREAT | 0666);
-    if(vid_queue.mq_id == -1) error("Getting message queue id");
+    vid_queue.messages = (struct message*) malloc(MAX_QUEUE_POS * sizeof(struct message));
     vid_queueCreated = true;
-    vid_queue.queue_pos = 0;
+    vid_queue.read_pos = 0;
+    vid_queue.write_pos = 0;
     vid_queue.max_queue_pos = MAX_QUEUE_POS;
 
-    int other_mq_key = ftok(OTHER_MQ_KEY_PATH, MQ_KEY_ID);
-    if(other_mq_key == -1) error("Creating message queue key");
-    other_queue.mq_id = msgget(other_mq_key, IPC_CREAT | 0666);
-    if(other_queue.mq_id == -1) error("Getting message queue id");
+    other_queue.messages = (struct message*) malloc(MAX_QUEUE_POS * sizeof(struct message));
     other_queueCreated = true;
-    other_queue.queue_pos = 0;
+    other_queue.read_pos = 0;
+    other_queue.write_pos = 0;~
     other_queue.max_queue_pos = MAX_QUEUE_POS;
     
     /* Creates two threads, the sender and the receiver and logs their creation right after */
@@ -133,11 +97,6 @@ void AutReqMan(int MAX_QUEUE_POS) {
     pthread_create(&Receiver_id, NULL, Receiver, NULL);
     ReceiverCreated = true;
     writeLog("THREAD RECEIVER CREATED");
-
-    /* read example
-    char message[100];
-    read(user_pipe_fd, message, sizeof(message));
-    */
 
     /* Waits the threads to end */
     pthread_join(Sender_id, NULL);
@@ -165,7 +124,101 @@ void* Receiver(void* arg) {
     #ifdef DEBUG
         printf("Thread Receiver created.");
     #endif
+
+    /* Opening USER_PIPE and BACK_PIPE */
+    user_pipe_fd = open(USER_PIPE_PATH, O_RDONLY);
+    if (user_pipe_fd == -1) autReqError("OPENING USER PIPE FOR READ");
+    userPipeFDOpened = true;
+    back_pipe_fd = open(BACK_PIPE_PATH, O_RDONLY);
+    if (back_pipe_fd == -1) autReqError("OPENING BACK PIPE FOR READ");
+    backPipeFDOpened = true;
+
+    fd_set read_set;
+    struct queue* queue_ptr;
+    int nready;
+    int nread;
+    char buf[MAX_CHAR_COMMAND];
+    char* arg1;
+    char* arg2;
+    char* arg3;
+    char* log_message;
+
+    /* Clear the descriptor set */
+    FD_ZERO(&read_set);
+
+    /* Gets the max fd */
+    int maxfdp = user_pipe_fd;
+    if(back_pipe_fd > maxfdp) maxfdp = back_pipe_fd;
+    maxfdp++;
+
+    while(true) {
+        /* Sets all pipes in the read set */
+        FD_SET(user_pipe_fd, &read_set);
+        FD_SET(back_pipe_fd, &read_set);
+
+        /* Selects the ready descriptor (the pipe with information in) */
+        nready = select(maxfdp, &read_set, NULL, NULL, NULL);
+
+        if(nready > 0) {
+            if(FD_ISSET(user_pipe_fd, &read_set)) {
+                nread = read(user_pipe_fd, buf, sizeof(buf));
+                if(nread == -1) autReqError("READING FROM USER PIPE");
+                buf[nread] = '\0';
+                #ifdef DEBUG
+                    printf("buf = %s\n", buf);
+                #endif
+                div_buf_info(buf, arg1, arg2, arg3);
+                if(strcmp(arg2, "VIDEO") == 0) queue_ptr = &vid_queue;
+                else queue_ptr = &other_queue;
+
+                pthread_mutex_lock(&mutex);
+                write_in_queue(queue_ptr, arg1, arg2, arg3);
+                pthread_mutex_unlock(&mutex);
+            }
+
+            if(FD_ISSET(back_pipe_fd, &read_set)) {
+                nread = read(back_pipe_fd, buf, sizeof(buf));
+                if(nread == -1) autReqError("READING FROM BACK PIPE");
+                buf[nread] = '\0';
+                #ifdef DEBUG
+                    printf("buf = %s\n", buf);
+                #endif
+                div_buf_info(buf, arg1, arg2, arg3);
+
+                pthread_mutex_lock(&mutex);
+                write_in_queue(&other_queue, arg1, arg2, arg3);
+                pthread_mutex_unlock(&mutex);
+            }
+        }
+    }
+
     pthread_exit(NULL);
+}
+
+/**
+ * Divides buffer info from pipes to the given char pointers.
+*/
+void div_buf_info(char* buf, char* arg1, char* arg2, char* arg3) {
+    arg1 = strtok(buf, "#");
+    arg2 = strtok(NULL, "#");
+    arg3 = strtok(NULL, "#");
+}
+
+/**
+ * Writes in a queue the new message (data, can be null).
+ */
+void write_in_queue(struct queue* queue_ptr, char* ID, char* command, char* data) {
+    char* log_message;
+    if(((queue_ptr->write_pos+1) % queue_ptr->max_queue_pos) == queue_ptr->read_pos) {
+        if(sprintf(log_message, "RECEIVER: WARNING -> QUEUE IS FULL (ID = %s)", ID) < 0) autReqError("CREATING WARNING LOG MESSAGE");
+        writeLog(log_message);
+    }
+    else {
+        queue_ptr->messages[queue_ptr->write_pos].id = atoi(ID);
+        queue_ptr->messages[queue_ptr->write_pos].command = command;
+        if(data != NULL) queue_ptr->messages[queue_ptr->write_pos].data_to_reserve = atoi(data);
+        queue_ptr->write_pos = (queue_ptr->write_pos+1) % queue_ptr->max_queue_pos;
+    }
 }
 
 /**
