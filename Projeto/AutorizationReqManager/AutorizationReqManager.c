@@ -72,7 +72,7 @@ void AutReqMan() {
     pthread_join(Receiver_id, NULL);
 
     exit(EXIT_SUCCESS);
-}
+}      
 
 /**
  * Sender Thread.
