@@ -186,7 +186,7 @@ int main(int argc, char* argv[]) {
     if((ME_PID = fork()) == 0) MonEng();
     MonEngCreated = true;
     writeLog("PROCESS MONITOR_ENGINE CREATED");
-    if((ARM_PID = fork()) == 0) AutReqMan(ME_PID);
+    if((ARM_PID = fork()) == 0) AutReqMan(ME_PID, QUEUE_POS, AUTH_SERVERS_MAX, AUTH_PROC_TIME, MAX_VIDEO_WAIT, MAX_OTHERS_WAIT);
     AutReqManCreated = true;
     writeLog("PROCESS AUTHORIZATION_REQUEST_MANAGER CREATED");
 
