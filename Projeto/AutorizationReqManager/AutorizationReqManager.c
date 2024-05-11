@@ -16,6 +16,7 @@
 #include <sys/ipc.h>
 #include <sys/msg.h>
 #include <signal.h> 
+#include <time.h>
 #include <pthread.h>
 #include <stdbool.h>
 #include <sys/select.h>
@@ -36,6 +37,7 @@ typedef struct message {
     int id;
     char command[MAX_CHAR_COMMAND];
     int data_to_reserve;
+    time_t request_time;
 }message;
 
 typedef struct queue {
@@ -43,16 +45,28 @@ typedef struct queue {
     int read_pos;
     int write_pos;
     int max_queue_pos;
+    int n_empty;
 }queue;
+
+typedef struct auth_eng{
+    pid_t pid;
+    int pipe_read_fd;
+    int pipe_write_fd;
+    int busy;
+    time_t l_request_time;
+}auth_eng;
 
 /* Initialization */
 pid_t SYS_PID;  // Parent (System Manager) PID
 pid_t MON_EN_PID;
+int MAX_QUEUE_POS, AUTH_SERVERS_MAX, AUTH_PROC_TIME, MAX_VIDEO_WAIT, MAX_OTHERS_WAIT;
 pthread_t Sender_id, Receiver_id;  // Threads IDs
 int user_pipe_fd, back_pipe_fd;    // User and back pipes file descriptors
 bool SenderCreated = false, ReceiverCreated = false;      // Sender and Receiver threads creation status
 bool userPipeCreated = false, backPipeCreated = false;    // User and back pipes creation status
 bool userPipeFDOpened = false, backPipeFDOpened = false;  // User and back pipes file descriptors open status
+
+struct auth_eng* auth_engs;
 
 struct queue vid_queue;                  
 struct queue other_queue;                
@@ -64,9 +78,14 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 /**
  * Creates the Autorization Request Manager process.
  */
-void AutReqMan(pid_t monitor_engine_pid, int MAX_QUEUE_POS) {
+void AutReqMan(pid_t monitor_engine_pid, int max_queue_pos, int auth_servers_max, int auth_proc_time, int max_video_wait, int max_other_wait) {
     SYS_PID = getppid();
     MON_EN_PID = monitor_engine_pid;
+    MAX_QUEUE_POS = max_queue_pos;
+    AUTH_SERVERS_MAX = auth_servers_max;
+    AUTH_PROC_TIME = auth_proc_time;
+    MAX_VIDEO_WAIT = max_video_wait;
+    MAX_OTHERS_WAIT = max_other_wait;
     
     /* Stays alert for sigquit signals */
     signal(SIGQUIT, endAutReqMan);
@@ -83,12 +102,31 @@ void AutReqMan(pid_t monitor_engine_pid, int MAX_QUEUE_POS) {
     vid_queue.read_pos = 0;
     vid_queue.write_pos = 0;
     vid_queue.max_queue_pos = MAX_QUEUE_POS;
+    vid_queue.n_empty = MAX_QUEUE_POS;
 
     other_queue.messages = (struct message*) malloc(MAX_QUEUE_POS * sizeof(struct message));
     other_queueCreated = true;
     other_queue.read_pos = 0;
-    other_queue.write_pos = 0;~
+    other_queue.write_pos = 0;
     other_queue.max_queue_pos = MAX_QUEUE_POS;
+    other_queue.n_empty = MAX_QUEUE_POS;
+
+    /* Creating all the authorizations engines */
+    int tmp_pipe[2];
+    auth_engs = (struct auth_eng*) malloc(AUTH_SERVERS_MAX * sizeof(struct auth_eng));
+    for(int i = 0; i < AUTH_SERVERS_MAX; i++) {
+        auth_engs[i].busy = 0;
+        auth_engs[i].l_request_time = 0;
+        pipe(tmp_pipe);
+        auth_engs[i].pipe_read_fd = tmp_pipe[0];
+        auth_engs[i].pipe_write_fd = tmp_pipe[1];
+        if((auth_engs[i].pid = fork()) == 0) {
+            close(auth_engs[i].pipe_write_fd);
+            AuthEngine(auth_engs[i], monitor_engine_pid);
+            exit(EXIT_SUCCESS);
+        }
+        close(auth_engs[i].pipe_read_fd);
+    }
     
     /* Creates two threads, the sender and the receiver and logs their creation right after */
     pthread_create(&Sender_id, NULL, Sender, NULL);
@@ -105,6 +143,12 @@ void AutReqMan(pid_t monitor_engine_pid, int MAX_QUEUE_POS) {
     exit(EXIT_SUCCESS);
 }      
 
+/***********************************************************************
+ *                                                                     *
+ *                               THREADS                               *
+ *                                                                     *
+ ***********************************************************************/
+
 /**
  * Sender Thread.
  */
@@ -113,6 +157,18 @@ void* Sender(void* arg) {
     #ifdef DEBUG
         printf("Thread Sender created.");
     #endif
+
+    while(true) {
+        pthread_mutex_lock(&mutex);
+
+        while((vid_queue.n_empty == vid_queue.max_queue_pos) && (other_queue.n_empty == other_queue.max_queue_pos)) {
+            pthread_cond_wait(&cv, &mutex);
+        }
+
+        update_queues();
+
+    }
+
     pthread_exit(NULL);
 }
 
@@ -195,6 +251,13 @@ void* Receiver(void* arg) {
     pthread_exit(NULL);
 }
 
+
+/***********************************************************************
+ *                                                                     *
+ *                           HELP FUNCTIONS                            *
+ *                                                                     *
+ ***********************************************************************/
+
 /**
  * Divides buffer info from pipes to the given char pointers.
 */
@@ -217,9 +280,62 @@ void write_in_queue(struct queue* queue_ptr, char* ID, char* command, char* data
         queue_ptr->messages[queue_ptr->write_pos].id = atoi(ID);
         queue_ptr->messages[queue_ptr->write_pos].command = command;
         if(data != NULL) queue_ptr->messages[queue_ptr->write_pos].data_to_reserve = atoi(data);
+        queue_ptr->messages[queue_ptr->write_pos].request_time = time(0);
         queue_ptr->write_pos = (queue_ptr->write_pos+1) % queue_ptr->max_queue_pos;
     }
 }
+
+/**
+ * Gets a message from the queue indicated by the pointer and return the data in the struct indicated by the pointer.
+ */
+void get_from_queue(struct queue* queue_ptr, struct message* request) {
+    request->id = queue_ptr->messages[queue_ptr->read_pos].id;
+    strcpy(request->command, queue_ptr->messages[queue_ptr->read_pos].command);
+    request->data_to_reserve = queue_ptr->messages[queue_ptr->read_pos].data_to_reserve;
+    request->request_time = queue_ptr->messages[queue_ptr->read_pos].request_time;
+}
+
+/**
+ * Updates the queues eliminating expired requests.
+ */
+void update_queues() {
+    struct queue* queue_ptr;
+    struct message request;
+    int max_time;
+    int checked;
+    double dif;
+    char* log_message;
+
+    for(int i = 0; i < 2; i++) {
+        if(i == 0) {
+            queue_ptr = &vid_queue;
+            max_time = MAX_VIDEO_WAIT;
+        }
+        else {
+            queue_ptr = &other_queue;
+            max_time = MAX_OTHERS_WAIT;
+        }
+
+        checked = 0;
+        while((queue_ptr->max_queue_pos - queue_ptr->n_empty - checked) > 0) {
+            dif = difftime(queue_ptr->messages[queue_ptr->read_pos].request_time, time(0));
+            if(dif > mat_time * 1000) {
+                get_from_queue(queue_ptr, &request);
+                if(sprintf(log_message, "SENDER: WARNING -> DELITING EXPIRED REQUEST (ID = %s)", request.id) < 0) autReqError("CREATING WARNING LOG MESSAGE");
+                writeLog(log_message);
+            }
+            queue_ptr->read_pos = (queue_ptr->read_pos + 1) % queue_ptr->max_queue_pos;
+            checked++;
+        }
+    }
+}
+
+
+/***********************************************************************
+ *                                                                     *
+ *                   RESOURCES MANAGEMENT FUNCTIONS                    *
+ *                                                                     *
+ ***********************************************************************/
 
 /**
  * Kills System all processes sending SIGQUIT to them.
