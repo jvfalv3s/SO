@@ -5,8 +5,8 @@
  * --> João Vitor Fraga Maia Alves           Nº: 2016122878
  **********************************************************/
 
-#ifndef MONITORENGINE_H
-#define MONITORENGINE_H
+#ifndef MONITOR_ENGINE_H
+#define MONITOR_ENGINE_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,4 +25,9 @@ extern sem_t *sem;
 extern pid_t SYS_PID;
 
 void MonEng(pid_t SYS_PID);
+<<<<<<< HEAD
 #endif
+=======
+
+#endif /* MONITOR_ENGINE_H */
+>>>>>>> 6d21f96a26017b68d78d11465c1b395f46933c43

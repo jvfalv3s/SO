@@ -41,7 +41,7 @@ typedef struct shmStruct {
 } user_info;
 
 /* Initializations */
-pid_t SYS_PID, ARM_PID, ME_PID;  // System processes PIDs
+pid_t ARM_PID, ME_PID;  // System processes PIDs
 bool AutReqManCreated = false, MonEngCreated = false;  // System processes creation status
 int shm_fd;                 // Shared memory file descriptor
 struct shmStruct* shm_ptr;  // Shared memory pointer
@@ -183,12 +183,12 @@ int main(int argc, char* argv[]) {
     free(buf);
 
     /* Creates the two child processes: Autorization Request Manager and the Monitor Engine writting a log after each creation */
-    if((ARM_PID = fork()) == 0) AutReqMan(SYS_PID);
-    AutReqManCreated = true;
-    writeLog("PROCESS AUTHORIZATION_REQUEST_MANAGER CREATED");
-    if((ME_PID = fork()) == 0) MonEng(SYS_PID);
+    if((ME_PID = fork()) == 0) MonEng();
     MonEngCreated = true;
     writeLog("PROCESS MONITOR_ENGINE CREATED");
+    if((ARM_PID = fork()) == 0) AutReqMan(ME_PID);
+    AutReqManCreated = true;
+    writeLog("PROCESS AUTHORIZATION_REQUEST_MANAGER CREATED");
 
     /* Capture and handles the ^C (SIGINT) signal */
     signal(SIGINT, handle_sigint);
@@ -201,7 +201,7 @@ int main(int argc, char* argv[]) {
 
     /* Ends the System Manager */
     endSys();
-
+    
     return 0;
 }
 
@@ -227,10 +227,11 @@ void shmClose() {
 }
 
 /**
- * Kills child processes.
+ * Kills child processes. ------------TODO LATER-----------
  */
 void killProcess() {
     if(AutReqManCreated || MonEngCreated) kill(0, SIGQUIT);
+    //  while(wait(NULL) != -1);
     if(AutReqManCreated) waitpid(ARM_PID);
     if(MonEngCreated) waitpid(ME_PID);
 }
