@@ -48,14 +48,6 @@ typedef struct queue {
     int n_empty;
 }queue;
 
-typedef struct auth_eng{
-    pid_t pid;
-    int pipe_read_fd;
-    int pipe_write_fd;
-    int busy;
-    time_t l_request_time;
-}auth_eng;
-
 /* Initialization */
 pid_t SYS_PID;  // Parent (System Manager) PID
 pid_t MON_EN_PID;
@@ -115,7 +107,7 @@ void AutReqMan(pid_t monitor_engine_pid, int max_queue_pos, int auth_servers_max
     int tmp_pipe[2];
     auth_engs = (struct auth_eng*) malloc(AUTH_SERVERS_MAX * sizeof(struct auth_eng));
     for(int i = 0; i < AUTH_SERVERS_MAX; i++) {
-        auth_engs[i].busy = 0;
+        auth_engs[i].busy = false;
         auth_engs[i].l_request_time = 0;
         pipe(tmp_pipe);
         auth_engs[i].pipe_read_fd = tmp_pipe[0];

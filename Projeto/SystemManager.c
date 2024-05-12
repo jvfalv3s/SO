@@ -35,17 +35,33 @@ void handle_sigquit();
 void endSys();
 
 /* Sharerd memory structur */
-typedef struct shmStruct {
+typedef struct user {
     int id;
-    int plafond;
-} user_info;
+    int current_plafond;
+    int max_plafond;
+} user;
+
+typedef struct auth_eng{
+    pid_t pid;
+    int pipe_read_fd;
+    int pipe_write_fd;
+    bool busy;
+    time_t l_request_time;
+}auth_eng;
+
+typedef struct shm_struct {
+    struct user[MAX_USERS_SHM];
+    struct auth_eng* auth_engs;
+    int n_users;
+    int n_auth_engs;
+}shm_struct;
 
 /* Initializations */
 pid_t ARM_PID, ME_PID;  // System processes PIDs
 bool AutReqManCreated = false, MonEngCreated = false;  // System processes creation status
-int shm_fd;                 // Shared memory file descriptor
-struct shmStruct* shm_ptr;  // Shared memory pointer
-int shm_size = MAX_USERS_SHM * sizeof(struct shmStruct);  // Shared memory size
+int shm_fd;                  // Shared memory file descriptor
+struct shm_struct* shm_ptr;  // Shared memory pointer
+int shm_size = sizeof(struct shm_struct);  // Shared memory size
 
 /**
  * Main Function.
