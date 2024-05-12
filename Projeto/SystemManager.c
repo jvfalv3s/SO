@@ -20,41 +20,13 @@
 #include "./LogFileManager/LogFileManager.h"
 #include "./AutorizationReqManager/AutorizationReqManager.h"
 #include "./MonitorEngine/MonitorEngine.h"
-
-/* Comment this line to don't show debug messages */
-#define DEBUG
-
-/* Shared memory important definitions */
-#define MAX_USERS_SHM 20      // Max number users (defines shm size)
-#define SHM_PATH "./tmp/shm"  // Path to shm file
+#include "ShmData.h"
 
 void shmClose();
 void killProcess();
 void handle_sigint();
 void handle_sigquit();
 void endSys();
-
-/* Sharerd memory structur */
-typedef struct user {
-    int id;
-    int current_plafond;
-    int max_plafond;
-} user;
-
-typedef struct auth_eng{
-    pid_t pid;
-    int pipe_read_fd;
-    int pipe_write_fd;
-    bool busy;
-    time_t l_request_time;
-}auth_eng;
-
-typedef struct shm_struct {
-    struct user[MAX_USERS_SHM];
-    struct auth_eng* auth_engs;
-    int n_users;
-    int n_auth_engs;
-}shm_struct;
 
 /* Initializations */
 pid_t ARM_PID, ME_PID;  // System processes PIDs
@@ -202,7 +174,7 @@ int main(int argc, char* argv[]) {
     if((ME_PID = fork()) == 0) MonEng();
     MonEngCreated = true;
     writeLog("PROCESS MONITOR_ENGINE CREATED");
-    if((ARM_PID = fork()) == 0) AutReqMan(ME_PID, QUEUE_POS, AUTH_SERVERS_MAX, AUTH_PROC_TIME, MAX_VIDEO_WAIT, MAX_OTHERS_WAIT);
+    if((ARM_PID = fork()) == 0) AutReqMan(shm_ptr, ME_PID, QUEUE_POS, AUTH_SERVERS_MAX, AUTH_PROC_TIME, MAX_VIDEO_WAIT, MAX_OTHERS_WAIT);
     AutReqManCreated = true;
     writeLog("PROCESS AUTHORIZATION_REQUEST_MANAGER CREATED");
 
