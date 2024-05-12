@@ -22,9 +22,7 @@
 #include <sys/select.h>
 #include "../LogFileManager/LogFileManager.h"
 #include "./AutorizationReqManager.h"
-
-/* Comment this line to don't show debug messages */
-#define DEBUG
+#include "ShmData.h"
 
 #define BUF_SIZE 100
 #define MAX_CHAR_COMMAND 30
@@ -70,7 +68,7 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 /**
  * Creates the Autorization Request Manager process.
  */
-void AutReqMan(pid_t monitor_engine_pid, int max_queue_pos, int auth_servers_max, int auth_proc_time, int max_video_wait, int max_other_wait) {
+void AutReqMan(struct shm_struct* shm_ptr, pid_t monitor_engine_pid, int max_queue_pos, int auth_servers_max, int auth_proc_time, int max_video_wait, int max_other_wait) {
     SYS_PID = getppid();
     MON_EN_PID = monitor_engine_pid;
     MAX_QUEUE_POS = max_queue_pos;
@@ -89,32 +87,20 @@ void AutReqMan(pid_t monitor_engine_pid, int max_queue_pos, int auth_servers_max
     backPipeCreated = true;
 
     /* Creating VIDEO QUEUE and OTHER QUEUE */
-    vid_queue.messages = (struct message*) malloc(MAX_QUEUE_POS * sizeof(struct message));
-    vid_queueCreated = true;
-    vid_queue.read_pos = 0;
-    vid_queue.write_pos = 0;
-    vid_queue.max_queue_pos = MAX_QUEUE_POS;
-    vid_queue.n_empty = MAX_QUEUE_POS;
-
-    other_queue.messages = (struct message*) malloc(MAX_QUEUE_POS * sizeof(struct message));
-    other_queueCreated = true;
-    other_queue.read_pos = 0;
-    other_queue.write_pos = 0;
-    other_queue.max_queue_pos = MAX_QUEUE_POS;
-    other_queue.n_empty = MAX_QUEUE_POS;
+    create_queues();
 
     /* Creating all the authorizations engines */
     int tmp_pipe[2];
-    auth_engs = (struct auth_eng*) malloc(AUTH_SERVERS_MAX * sizeof(struct auth_eng));
+    shm_ptr->auth_engs = (struct auth_eng*) malloc(AUTH_SERVERS_MAX * sizeof(struct auth_eng));
     for(int i = 0; i < AUTH_SERVERS_MAX; i++) {
-        auth_engs[i].busy = false;
-        auth_engs[i].l_request_time = 0;
         pipe(tmp_pipe);
-        auth_engs[i].pipe_read_fd = tmp_pipe[0];
-        auth_engs[i].pipe_write_fd = tmp_pipe[1];
-        if((auth_engs[i].pid = fork()) == 0) {
-            close(auth_engs[i].pipe_write_fd);
-            AuthEngine(auth_engs[i], monitor_engine_pid);
+        shm_ptr->auth_engs[i].pipe_read_fd = tmp_pipe[0];
+        shm_ptr->auth_engs[i].pipe_write_fd = tmp_pipe[1];
+        shm_ptr->auth_engs[i].busy = false;
+        shm_ptr->auth_engs[i].l_request_time = 0;
+        if((shm_ptr->auth_engs[i].pid = fork()) == 0) {
+            close(shm_ptr->auth_engs[i].pipe_write_fd);
+            AuthEngine(shm_ptr, i, monitor_engine_pid);
             exit(EXIT_SUCCESS);
         }
         close(auth_engs[i].pipe_read_fd);
@@ -134,6 +120,7 @@ void AutReqMan(pid_t monitor_engine_pid, int max_queue_pos, int auth_servers_max
 
     exit(EXIT_SUCCESS);
 }      
+
 
 /***********************************************************************
  *                                                                     *
@@ -158,6 +145,7 @@ void* Sender(void* arg) {
         }
 
         update_queues();
+
 
     }
 
@@ -249,6 +237,26 @@ void* Receiver(void* arg) {
  *                           HELP FUNCTIONS                            *
  *                                                                     *
  ***********************************************************************/
+
+/**
+ * Creates the 2 queues, vid_queue and other_queue.
+ */
+void create_queues() {
+    struct queue* queue_ptr;
+    for(int i = 0; i < 2; i++) {
+        if(i == 0) queue_ptr = &vid_queue;
+        else queue_ptr = &other_queue;
+
+        queue_ptr.messages = (struct message*) malloc(MAX_QUEUE_POS * sizeof(struct message));
+        queue_ptr.read_pos = 0;
+        queue_ptr.write_pos = 0;
+        queue_ptr.max_queue_pos = MAX_QUEUE_POS;
+        queue_ptr.n_empty = MAX_QUEUE_POS;
+
+        if(i == 0)  vid_queueCreated = true;
+        else other_queueCreated = true;
+    }
+}
 
 /**
  * Divides buffer info from pipes to the given char pointers.
