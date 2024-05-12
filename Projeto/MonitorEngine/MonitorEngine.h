@@ -25,9 +25,7 @@ extern sem_t *sem;
 extern pid_t SYS_PID;
 
 void MonEng(pid_t SYS_PID);
-<<<<<<< HEAD
-#endif
-=======
+void plafondThreshold(int sinal);
 
-#endif /* MONITOR_ENGINE_H */
->>>>>>> 6d21f96a26017b68d78d11465c1b395f46933c43
+#endif
+

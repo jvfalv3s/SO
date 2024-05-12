@@ -31,7 +31,7 @@ typedef struct auth_eng{
 }auth_eng;
 
 typedef struct shm_struct {
-    struct user[MAX_USERS_SHM];
+    struct user users[MAX_USERS_SHM];
     struct auth_eng* auth_engs;
     int n_users;
     int n_auth_engs;
