@@ -64,6 +64,8 @@ int main(int argc, char* argv[]) {
         exit(EXIT_FAILURE);
     }
 
+    /* **************** SEMAFERO PARA SHM **************** */
+
     /* Initialization of the variables obtained from the config file */
     int MOBILE_USERS;
     int QUEUE_POS;
@@ -171,7 +173,7 @@ int main(int argc, char* argv[]) {
     free(buf);
 
     /* Creates the two child processes: Autorization Request Manager and the Monitor Engine writting a log after each creation */
-    if((ME_PID = fork()) == 0) MonEng();
+    if((ME_PID = fork()) == 0) MonEng(shm_ptr);
     MonEngCreated = true;
     writeLog("PROCESS MONITOR_ENGINE CREATED");
     if((ARM_PID = fork()) == 0) AutReqMan(shm_ptr, ME_PID, QUEUE_POS, AUTH_SERVERS_MAX, AUTH_PROC_TIME, MAX_VIDEO_WAIT, MAX_OTHERS_WAIT);

@@ -33,6 +33,12 @@ typedef struct auth_eng{
 typedef struct shm_struct {
     struct user users[MAX_USERS_SHM];
     struct auth_eng* auth_engs;
+    int total_VIDEO_data;
+    int total_VIDEO_auths;
+    int total_MUSIC_data;
+    int total_MUSIC_auths;
+    int total_SOCIAL_data;
+    int total_SOCIAL_auths;
     int n_users;
     int n_auth_engs;
 }shm_struct;
