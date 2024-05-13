@@ -8,6 +8,11 @@
 #ifndef AUTORIZATIONREQMANAGER_H
 #define AUTORIZATIONREQMANAGER_H
 
+#define BUF_SIZE 100
+/* Paths to user and back pipe */
+#define USER_PIPE_PATH "user_pipe"
+#define BACK_PIPE_PATH "back_pipe"
+
 /**
  * Creates the Autorization Request Manager process.
  */
