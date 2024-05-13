@@ -33,14 +33,14 @@
 /* Max characters a message can have */
 #define MAX_CHAR_MESSAGE_AMMOUNT 100
 /* ftok arguments to create the message queue key */
-#define MQ_KEY_PATH "/message_queue"
+#define MQ_KEY_PATH "/tmp/message_queue"
 #define MQ_KEY_ID 'a'
 /* Path of the USER PIPE */
-#define USER_PIPE_PATH "../tmp/FIFO/user_pipe"
+#define USER_PIPE_PATH "/tmp/user_pipe"
 /* Path to USER PIPE NAMED MUTEX SEMAPHORE */
-#define USER_PIPE_MUTEX_PATH "../tmp/NAMED_SEMS/user_pipe_mutex_sem"
+#define USER_PIPE_MUTEX_PATH "/tmp/user_pipe_mutex_sem"
 /* Path to MESSAGE QUEUE NAMED SEMAPHORE directory */
-#define MQ_NAMED_SEMAPHORE_DIR_PATH "mq_sem_"
+#define MQ_NAMED_SEMAPHORE_DIR_PATH "/tmp/mq_sem_"
 
 /* Message from message queue struct */
 typedef struct mq_message {
