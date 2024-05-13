@@ -28,12 +28,12 @@ void AutReqMan();
 /**
  * Sender Thread.
  */
-void* Sender();
+void* Sender(void* arg);
 
 /**
  * Receiver Thread.
  */
-void* Receiver();
+void* Receiver(void* arg);
 
 
 /***********************************************************************
@@ -90,9 +90,19 @@ void send_req_to(int auth_eng_num, struct message request);
 void logQueuesReqs();
 
 /**
+ * Sends SIGQUIT to all group processes and wait Monitor Engine to end to end.
+ */
+void killProcesses();
+
+/**
  * Kills the Sender and Receiver threads.
  */
 void killThreads();
+
+/**
+ * Deletes all Authorizations Engines and free all their resources from shared memory.
+ */
+void deleteAllAuthEngs();
 
 /**
  * Unlink all created pipes and closes all file descriptors.

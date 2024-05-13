@@ -12,14 +12,16 @@
 
 void shmClose();
 void killProcess();
-void handle_sigint();
 void handle_sigquit();
+void handle_sigint();
 void endSys();
 
 /* Initializations */
 int shm_fd;  // Shared memory file descriptor
-bool ConfigFileOpened = false;
 FILE* f;
+char* buf;
+bool ConfigFileClosed = true;
+bool bufFree = true;
 
 /**
  * Main Function.
@@ -54,7 +56,8 @@ int main(int argc, char* argv[]) {
     if(shm_sem == SEM_FAILED) error("OPENING SHARED MEMORY SEMAPHORE");
     shmSemCreated = true;
 
-    char* buf = (char*) malloc(sizeof(char)*100);
+    buf = (char*) malloc(sizeof(char)*100);
+    bufFree = false;
     int i = 0;
 
     /* Reads the config file and obtain all the configurations from it and also verifies if everythin is valid */
@@ -66,7 +69,7 @@ int main(int argc, char* argv[]) {
         shmClose();
         exit(EXIT_FAILURE);
     }
-    ConfigFileOpened = true;
+    ConfigFileClosed = false;
     while(fgets(buf, sizeof(buf), f)) {
         int atribute = atoi(buf);  // Transforming the strings in the file into integers
         printf("%d",atribute);
@@ -150,7 +153,9 @@ int main(int argc, char* argv[]) {
         printf("File readed!\n");
     #endif
     fclose(f); // closes the config file
+    ConfigFileClosed = true;
     free(buf);
+    bufFree = true;
 
     SYS_PID = getpid();
 
@@ -182,8 +187,10 @@ int main(int argc, char* argv[]) {
  * Closes and frees shared memory.
  */
 void shmClose() {
-    if(ConfigFileOpened) fclose(f);
-    
+    if(!bufFree) free(buf);
+    if(!ConfigFileClosed) fclose(f);
+    if(shm_ptr->auth_engs != NULL) free(shm_ptr->auth_engs);
+
     /* Unmaping shared memory */
     if(munmap(shm_ptr, shm_size) == -1) {
         error("SHM unmap");

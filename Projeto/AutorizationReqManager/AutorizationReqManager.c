@@ -23,6 +23,7 @@ int user_pipe_fd, back_pipe_fd;    // User and back pipes file descriptors
 bool SenderCreated = false, ReceiverCreated = false;      // Sender and Receiver threads creation status
 bool userPipeCreated = false, backPipeCreated = false;    // User and back pipes creation status
 bool userPipeFDOpened = false, backPipeFDOpened = false;  // User and back pipes file descriptors open status
+bool using_sem = false;
 
 struct queue vid_queue;                  
 struct queue other_queue;                
@@ -57,9 +58,11 @@ void AutReqMan() {
 
     /* Creating all the authorizations engines */
     sem_wait(shm_sem);
+    using_sem = true;
     shm_ptr->auth_engs = (struct auth_eng*) malloc((AUTH_SERVERS_MAX+1) * sizeof(struct auth_eng));
     for(int i = 0; i < AUTH_SERVERS_MAX; i++) create_auth_eng(i);
     sem_post(shm_sem);
+    using_sem = false;
     
     /* Creates two threads, the sender and the receiver and logs their creation right after */
     pthread_create(&Sender_id, NULL, Sender, NULL);
@@ -105,6 +108,7 @@ void* Sender(void* arg) {
         update_queues();
 
         sem_wait(shm_sem);
+        using_sem = true;
         check_auth_busy();
 
         if(any_queue_is(1.00)) create_auth_eng(AUTH_SERVERS_MAX);
@@ -112,6 +116,7 @@ void* Sender(void* arg) {
 
         auth_eng_num = get_auth_eng_num();
         sem_post(shm_sem);
+        using_sem = false;
 
         if(auth_eng_num != -1) {
             if(vid_queue.n_empty != vid_queue.max_queue_pos) {
@@ -239,12 +244,12 @@ void create_queues() {
     for(int i = 0; i < 2; i++) {
         if(i == 0) queue_ptr = &vid_queue;
         else queue_ptr = &other_queue;
-
-        queue_ptr.messages = (struct message*) malloc(QUEUE_POS * sizeof(struct message));
-        queue_ptr.read_pos = 0;
-        queue_ptr.write_pos = 0;
-        queue_ptr.max_queue_pos = QUEUE_POS;
-        queue_ptr.n_empty = QUEUE_POS;
+        
+        queue_ptr->messages = (struct message*) malloc(QUEUE_POS * sizeof(struct message));
+        queue_ptr->read_pos = 0;
+        queue_ptr->write_pos = 0;
+        queue_ptr->max_queue_pos = QUEUE_POS;
+        queue_ptr->n_empty = QUEUE_POS;
 
         if(i == 0)  vid_queueCreated = true;
         else other_queueCreated = true;
@@ -336,10 +341,12 @@ bool any_queue_is(double percentage) {
  */
 void send_req_to(int auth_eng_num, struct message request) {
     sem_wait(shm_sem);
+    using_sem = true;
     write(shm_ptr->auth_engs[auth_eng_num].pipe_write_fd, request, sizeof(struct message));
     shm_ptr->auth_engs[auth_eng_num].l_request_time = time(0);
     shm_ptr->auth_engs[auth_eng_num].busy = true;
     sem_post(shm_sem);
+    using_sem = false;
 }
 
 
@@ -406,12 +413,44 @@ void logQueuesReqs() {
 }
 
 /**
+ * Sends SIGQUIT to all group processes and wait Monitor Engine to end to end.
+ */
+void killProcesses() {
+    int status;
+    signal(SIGQUIT, SIG_IGN);
+    kill(0, SIGQUIT);
+    waitpid(ME_PID, &status, WNOHANG);
+}
+
+/**
  * Kills the Sender and Receiver threads.
  */
 void killThreads() {
     if(SenderCreated) pthread_kill(Sender_id, SIGINT);
     if(ReceiverCreated) pthread_kill(Receiver_id, SIGINT);
 
+}
+
+/**
+ * Deletes all Authorizations Engines and free all their resources from shared memory.
+ */
+void deleteAllAuthEngs() {
+    int engs;
+    int total = AUTH_SERVERS_MAX+1;
+    
+    while(true) {
+        sem_wait(shm_sem);
+        using_sem = true;
+        engs = shm_ptr->n_auth_engs;
+        sem_post(shm_sem);
+        using_sem = false;
+
+        if(engs <= 0) break;
+        else {
+            for(int i = 0; i < total; i++) remove_auth_eng(i);
+        }
+        sleep(1);
+    }
 }
 
 /**
@@ -437,12 +476,13 @@ void autReqError(char* error_message) {
  * Ends the Autorization Request Manager and his threads.
  */
 void endAutReqMan() {
-    int status;
-    signal(SIGQUIT, SIG_IGN);
-    kill(0, SIGQUIT);
-    while(waitpid(-1, &status, WNOHANG) > 0);
+    if(using_sem) sem_post(shm_sem);
+    deleteAllAuthEngs();
+    killProcesses();
     killThreads();
     logQueuesReqs();
+    if(vid_queue.messages != NULL) free(vid_queue.messages);
+    if(other_queue.messages != NULL) free(other_queue.messages);
     unlinkPipes();
     exit(EXIT_SUCCESS);
 }

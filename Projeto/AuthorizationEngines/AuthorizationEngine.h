@@ -43,4 +43,14 @@ void process_user_req(int auth_eng_num, struct message request);
  */
 void process_back_user_req(struct message request)
 
+/**
+ * Handles an error in Authorization Engine.
+ */
+void AuthEngError(char* error_message)
+
+/**
+ * Ends Authotization Engine freeing all the resources.
+ */
+void endAuthEng()
+
 #endif

@@ -16,8 +16,30 @@
 #include <mqueue.h>
 #include <semaphore.h>
 
+/**
+ *  This function is responsible for the Monitor Engine
+ */
 void MonEng();
-void plafondThreshold(int sinal);
+
+/**
+ *    Process alerts when certain signals are received
+ */
+void process_alerts();
+
+/**
+ *   Sends statistics to the back user and to the log file
+ */
+void sendStatistics();
+
+/**
+ *   Handle errors in the Monitor Engine
+ */
+void MonEngError(char* error_message);
+
+/**
+ *   End the Monitor Engine
+ */
+void endMonEng();
 
 #endif
 
