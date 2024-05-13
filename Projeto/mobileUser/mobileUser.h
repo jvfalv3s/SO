@@ -20,6 +20,7 @@
 #include <sys/msg.h>
 #include <signal.h>
 #include <ctype.h>
+#include <time.h>
 #include <sys/time.h>
 #include <semaphore.h>
 #include <stdbool.h>
@@ -45,7 +46,7 @@
 typedef struct mq_message {
     long mgg_type;
     char msg_text [MAX_CHAR_MESSAGE_AMMOUNT];
-};
+}mq_message;
 
 int mq_id;  // Message queue id
 

@@ -158,7 +158,7 @@ int main(int argc, char **argv) {
  * Receives a message from message queue and prints it. Return -1 if 100% plafond reached and 0 otherwise.
  */
 int receive_message() {
-    if(msgrcv(mq_id, &message, sizeof(message), MOBILE_USER_ID, NULL) == -1) error("Receiving message from message queue");
+    if(msgrcv(mq_id, &message, sizeof(message), MOBILE_USER_ID, 0) == -1) error("Receiving message from message queue");
     puts(message.msg_text);
     if(strcmp(message.msg_text, "ALERT: 100%% Plafond reached!") == 0) return -1;
     else return 0;

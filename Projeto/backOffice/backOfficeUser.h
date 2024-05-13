@@ -22,6 +22,7 @@
 #include <sys/msg.h>
 #include <pthread.h>
 #include <stdbool.h>
+#include <semaphore.h>
 
 /* Comment this line to don't show debug messages */
 #define DEBUG
@@ -44,14 +45,14 @@
 typedef struct mq_message {
     long mgg_type;
     char msg_text [MAX_CHAR_MESSAGE_AMMOUNT];
-};
+}mq_message;
 
 int mq_id;
 
 /**
  * Receives a message from message queue and prints it.
  */
-int receive_message();
+void receive_message();
 
 /**
  * Free all the resorces.

@@ -48,7 +48,6 @@ int main() {
 
     /* Loop to read and verify commands of the BackOffice User */
     char* token;
-    char commandAux[MAX_CHAR_COMMAND_AMMOUNT + 20];
     while(true) {
         while(sem_trywait(mq_named_sem_p) == 0) receive_message();
 
@@ -106,7 +105,7 @@ int main() {
  * Receives a message from message queue and prints it.
  */
 void receive_message() {
-    if(msgrcv(mq_id, &message, sizeof(message), 1, NULL) == -1) error("Receiving message from message queue");
+    if(msgrcv(mq_id, &message, sizeof(message), 1, 0) == -1) error("Receiving message from message queue");
     puts(message.msg_text);
 }
 
