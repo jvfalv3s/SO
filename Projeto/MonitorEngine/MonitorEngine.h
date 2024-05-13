@@ -24,7 +24,7 @@ extern mqd_t mq;
 extern sem_t *sem;
 extern pid_t SYS_PID;
 
-void MonEng(pid_t SYS_PID);
+void MonEng();
 void plafondThreshold(int sinal);
 
 #endif
