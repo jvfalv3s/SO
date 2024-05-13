@@ -15,28 +15,6 @@
 #include "ShmData.h"
 #include "HelpData.h"
 
-#define BUF_SIZE 100
-#define MAX_CHAR_COMMAND 30
-/* Paths to user and back pipe */
-#define USER_PIPE_PATH "user_pipe"
-#define BACK_PIPE_PATH "back_pipe"
-
-/* Message from message queue struct */
-typedef struct message {
-    int id;
-    char command[MAX_CHAR_COMMAND];
-    int data_to_reserve;
-    time_t request_time;
-}message;
-
-typedef struct queue {
-    struct message* messages;
-    int read_pos;
-    int write_pos;
-    int max_queue_pos;
-    int n_empty;
-}queue;
-
 /* Initialization */
 pthread_t Sender_id, Receiver_id;  // Threads IDs
 int user_pipe_fd, back_pipe_fd;    // User and back pipes file descriptors
@@ -68,8 +46,10 @@ void AutReqMan() {
     create_queues();
 
     /* Creating all the authorizations engines */
+    sem_wait(shm_sem);
     shm_ptr->auth_engs = (struct auth_eng*) malloc((AUTH_SERVERS_MAX+1) * sizeof(struct auth_eng));
     for(int i = 0; i < AUTH_SERVERS_MAX; i++) create_auth_eng(i);
+    sem_post(shm_sem);
     
     /* Creates two threads, the sender and the receiver and logs their creation right after */
     pthread_create(&Sender_id, NULL, Sender, NULL);
@@ -114,11 +94,15 @@ void* Sender(void* arg) {
 
         update_queues();
 
+        sem_wait(shm_sem);
         check_auth_busy();
+
         if(any_queue_is(1.00)) create_auth_eng(AUTH_SERVERS_MAX);
         else if(any_queue_is(0.50)) remove_auth_eng(AUTH_SERVERS_MAX);
 
         auth_eng_num = get_auth_eng_num();
+        sem_post(shm_sem);
+
         if(auth_eng_num != -1) {
             if(vid_queue.n_empty != vid_queue.max_queue_pos) {
                 get_from_queue(&vid_queue, &request);
@@ -227,7 +211,6 @@ void* Receiver(void* arg) {
             }
         }
     }
-
     pthread_exit(NULL);
 }
 
@@ -247,11 +230,11 @@ void create_queues() {
         if(i == 0) queue_ptr = &vid_queue;
         else queue_ptr = &other_queue;
 
-        queue_ptr.messages = (struct message*) malloc(MAX_QUEUE_POS * sizeof(struct message));
+        queue_ptr.messages = (struct message*) malloc(QUEUE_POS * sizeof(struct message));
         queue_ptr.read_pos = 0;
         queue_ptr.write_pos = 0;
-        queue_ptr.max_queue_pos = MAX_QUEUE_POS;
-        queue_ptr.n_empty = MAX_QUEUE_POS;
+        queue_ptr.max_queue_pos = QUEUE_POS;
+        queue_ptr.n_empty = QUEUE_POS;
 
         if(i == 0)  vid_queueCreated = true;
         else other_queueCreated = true;
@@ -336,6 +319,17 @@ void update_queues() {
 bool any_queue_is(double percentage){
     if((vid_queue.n_empty/vid_queue.max_queue_pos) <= percentage) return true;
     else return false;
+}
+
+/**
+ * Sends a request to an authorization engine.
+ */
+void send_req_to(int auth_eng_num, struct message request) {
+    sem_wait(shm_sem);
+    write(shm_ptr->auth_engs[auth_eng_num].pipe_write_fd, request, sizeof(struct message));
+    shm_ptr->auth_engs[auth_eng_num].l_request_time = time(0);
+    shm_ptr->auth_engs[auth_eng_num].busy = true;
+    sem_post(shm_sem);
 }
 
 

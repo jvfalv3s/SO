@@ -8,6 +8,28 @@
 #ifndef AUTORIZATIONREQMANAGER_H
 #define AUTORIZATIONREQMANAGER_H
 
+#define BUF_SIZE 100
+#define MAX_CHAR_COMMAND 30
+/* Paths to user and back pipe */
+#define USER_PIPE_PATH "user_pipe"
+#define BACK_PIPE_PATH "back_pipe"
+
+/* Message from message queue struct */
+typedef struct message {
+    int id;
+    char command[MAX_CHAR_COMMAND];
+    int data_to_reserve;
+    time_t request_time;
+}message;
+
+typedef struct queue {
+    struct message* messages;
+    int read_pos;
+    int write_pos;
+    int max_queue_pos;
+    int n_empty;
+}queue;
+
 /**
  * Creates the Autorization Request Manager process.
  */

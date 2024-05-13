@@ -22,6 +22,7 @@ void AuthEngine(int auth_eng_num) {
     }
     writeLog(log_message);
 
+
 }
 
 /**
@@ -41,6 +42,18 @@ void create_auth_eng(int auth_num) {
         exit(EXIT_SUCCESS);
     }
     close(shm_ptr->auth_engs[auth_num].pipe_read_fd);
+}
+
+/**
+ * Deletes an authorization engine if it's not busy.
+ */
+void remove_auth_eng(int auth_num) {
+    if((shm_ptr->auth_engs[auth_num].pid != 0) && (!shm_ptr->auth_engs[auth_num].busy)) {
+        kill(shm_ptr->auth_engs[auth_num].pid, SIGQUIT);
+        shm_ptr->auth_engs[auth_num].pid = 0;
+        shm_ptr->auth_engs[auth_num].busy = false;
+        close(shm_ptr->auth_engs[auth_num].pipe_write_fd);
+    }
 }
 
 /**
