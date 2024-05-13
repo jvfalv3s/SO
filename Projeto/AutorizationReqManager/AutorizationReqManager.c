@@ -15,7 +15,7 @@
 #include "../ShmData.h"
 #include "../HelpData.h"
 #include "../IntQueues.h"
-/**/
+
 /* Initialization */
 pthread_t Sender_id, Receiver_id;  // Threads IDs
 int user_pipe_fd, back_pipe_fd;    // User and back pipes file descriptors

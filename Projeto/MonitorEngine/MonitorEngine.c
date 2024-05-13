@@ -7,31 +7,14 @@
 #include <sys/msg.h> 
 #include <semaphore.h>
 #include <time.h>
-#include "MonitorEngine.h"
-#include "ShmData.h"
-#include "HelpData.h"
-
-#define MAX_SIZE 1024
-#define MQ_SEM_PATH "mq_sem"
-#define MAX_CHAR_MESSAGE_AMMOUNT 100
-/* ftok arguments to create the message queue key */
-#define MQ_KEY_PATH "/message_queue"
-#define MQ_KEY_ID 'a'
-
-int mq_id;                               // Message queue id
-struct mq_message message;               // Message from message queue
-char* mq_named_sem_path;                 // Path to message queue named semaphore
-sem_t *sem;
-
-/* Message from message queue struct */
-typedef struct mq_message {
-    long mgg_type;
-    char msg_text [MAX_CHAR_MESSAGE_AMMOUNT];
-};
+#include "./MonitorEngine.h"
+#include "../ShmData.h"
+#include "../HelpData.h"
+#include "../MessageQueue.h"
 
 void MonEng() {
     /* Creating the message queue key */
-    int mq_key = ftok(MQ_KEY_PATH, MQ_KEY_ID);
+    mq_key = ftok(MQ_KEY_PATH, MQ_KEY_ID);
     if(mq_key == -1) error("Creating message queue key");
 
     /* Opening the message queue for reading */
