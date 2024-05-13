@@ -4,20 +4,12 @@
  * --> Gonçalo José Carrajola Gaio           Nº: 2022224905
  * --> João Vitor Fraga Maia Alves           Nº: 2016122878
  **********************************************************/
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <signal.h> 
-#include <sys/ipc.h> 
 #include <sys/msg.h> 
 #include <semaphore.h>
-#include <stdbool.h>
 #include <time.h>
-#include <pthread.h>
-#include "ShmData.h"
 #include "MonitorEngine.h"
+#include "ShmData.h"
+#include "HelpData.h"
 
 #define MAX_SIZE 1024
 #define MQ_SEM_PATH "mq_sem"
@@ -26,12 +18,10 @@
 #define MQ_KEY_PATH "/message_queue"
 #define MQ_KEY_ID 'a'
 
-struct shm_struct* shm_ptr;
 int mq_id;                               // Message queue id
 struct mq_message message;               // Message from message queue
 char* mq_named_sem_path;                 // Path to message queue named semaphore
 sem_t *sem;
-pid_t SYS_PID;
 
 /* Message from message queue struct */
 typedef struct mq_message {
@@ -39,19 +29,7 @@ typedef struct mq_message {
     char msg_text [MAX_CHAR_MESSAGE_AMMOUNT];
 };
 
-//criar threads para monitorar o consumo de dados e gerar alertas
-//declaracao das threads 
-pthread_t thread_monitor, thread_alerts, thread_plafond, thread_stats, thread_exit;
-PTHREAD_MUTEX_INITIALIZER; // Mutex for users array
-
-//mutex para proteger a estrutura de dados dos usuarios
-pthread_mutex_t users_mutex = PTHREAD_MUTEX_INITIALIZER; 
-
-//funcao para verificar a atualizacao dos planfods dos usuarios
-
-void MonEng(struct shm_struct* shmPtr, pid_t SYS_PID, int consumo_critico,int id_usuario) {
-    shm_ptr = shmPtr;
-
+void MonEng() {
     /* Creating the message queue key */
     int mq_key = ftok(MQ_KEY_PATH, MQ_KEY_ID);
     if(mq_key == -1) error("Creating message queue key");

@@ -5,40 +5,29 @@
  * --> João Vitor Fraga Maia Alves           Nº: 2016122878
  **********************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/ipc.h>
 #include <sys/msg.h>
-#include <signal.h> 
 #include <time.h>
-#include <pthread.h>
-#include <stdbool.h>
-#include <sys/select.h>
 #include "../LogFileManager/LogFileManager.h"
 #include "./AuthorizationEngine.h"
 #include "ShmData.h"
-
-struct shm_struct* shm_ptr;
-int AUTH_PROC_TIME;
+#include "HelpData.h"
 
 /**
  * Implements an Authorization Engine.
  */
-void AuthEngine(struct shm_struct* shmPtr, int auth_proc_time) {
-    shm_ptr = shmPtr;
-    AUTH_PROC_TIME = auth_proc_time;
+void AuthEngine(int auth_eng_num) {
+    char* log_message;
+    if(sprintf(log_message, "AUTHORIZATION_ENGINE %d READY", auth_eng_num) < 0) {
+        error("CREATING AUTHORIZATON ENGINE READY LOG MESSSAGE");
+    }
+    writeLog(log_message);
+
 }
 
 /**
  * Creates a new authorization engine.
  */
-void create_auth_eng(int auth_num, pid_t monitor_engine_pid) {
+void create_auth_eng(int auth_num) {
     int tmp_pipe[2];
     pipe(tmp_pipe);
     shm_ptr->auth_engs[auth_num].pipe_read_fd = tmp_pipe[0];
@@ -48,7 +37,7 @@ void create_auth_eng(int auth_num, pid_t monitor_engine_pid) {
     if((shm_ptr->auth_engs[auth_num].pid = fork()) == 0) {
         shm_ptr->n_auth_engs++;
         close(shm_ptr->auth_engs[auth_num].pipe_write_fd);
-        AuthEngine(shm_ptr, auth_num, monitor_engine_pid);
+        AuthEngine(auth_num);
         exit(EXIT_SUCCESS);
     }
     close(shm_ptr->auth_engs[auth_num].pipe_read_fd);

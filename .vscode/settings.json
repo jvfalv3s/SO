@@ -6,6 +6,8 @@
         "autorizationreqmanager.h": "c",
         "errno.h": "c",
         "stdbool.h": "c",
-        "system_error": "c"
+        "system_error": "c",
+        "types.h": "c",
+        "stat.h": "c"
     }
 }

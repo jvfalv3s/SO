@@ -5,8 +5,17 @@
  * --> João Vitor Fraga Maia Alves           Nº: 2016122878
  **********************************************************/
 
-#ifndef SHM_DATA_H
-#define SHM_DATA_H
+#ifndef SHMDATA_H
+#define SHMDATA_H
+
+#include <fcntl.h>
+#include <sys/shm.h>
+#include <sys/mman.h>
+#include <sys/ipc.h>
+#include <signal.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 /* Comment this line to don't show debug messages */
 #define DEBUG
@@ -42,5 +51,8 @@ typedef struct shm_struct {
     int n_users;
     int n_auth_engs;
 }shm_struct;
+
+struct shm_struct* shm_ptr;
+int shm_size = sizeof(struct shm_struct);
 
 #endif

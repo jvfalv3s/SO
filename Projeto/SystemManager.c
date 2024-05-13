@@ -4,23 +4,11 @@
  * --> Gonçalo José Carrajola Gaio           Nº: 2022224905
  * --> João Vitor Fraga Maia Alves           Nº: 2016122878
  **********************************************************/
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <signal.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
-#include <sys/stat.h>
-#include <sys/mman.h>
-#include <stdbool.h>
 #include "./LogFileManager/LogFileManager.h"
 #include "./AutorizationReqManager/AutorizationReqManager.h"
 #include "./MonitorEngine/MonitorEngine.h"
 #include "ShmData.h"
+#include "HelpData.h"
 
 void shmClose();
 void killProcess();
@@ -29,11 +17,7 @@ void handle_sigquit();
 void endSys();
 
 /* Initializations */
-pid_t ARM_PID, ME_PID;  // System processes PIDs
-bool AutReqManCreated = false, MonEngCreated = false;  // System processes creation status
-int shm_fd;                  // Shared memory file descriptor
-struct shm_struct* shm_ptr;  // Shared memory pointer
-int shm_size = sizeof(struct shm_struct);  // Shared memory size
+int shm_fd;  // Shared memory file descriptor
 
 /**
  * Main Function.
@@ -65,14 +49,6 @@ int main(int argc, char* argv[]) {
     }
 
     /* **************** SEMAFERO PARA SHM **************** */
-
-    /* Initialization of the variables obtained from the config file */
-    int MOBILE_USERS;
-    int QUEUE_POS;
-    int AUTH_SERVERS_MAX;
-    int AUTH_PROC_TIME;
-    int MAX_VIDEO_WAIT;
-    int MAX_OTHERS_WAIT;
 
     FILE* f;
     char* buf = (char*) malloc(sizeof(char)*100);
@@ -172,11 +148,13 @@ int main(int argc, char* argv[]) {
     fclose(f); // closes the config file
     free(buf);
 
+    SYS_PID = getpid();
+
     /* Creates the two child processes: Autorization Request Manager and the Monitor Engine writting a log after each creation */
-    if((ME_PID = fork()) == 0) MonEng(shm_ptr);
+    if((ME_PID = fork()) == 0) MonEng();
     MonEngCreated = true;
     writeLog("PROCESS MONITOR_ENGINE CREATED");
-    if((ARM_PID = fork()) == 0) AutReqMan(shm_ptr, ME_PID, QUEUE_POS, AUTH_SERVERS_MAX, AUTH_PROC_TIME, MAX_VIDEO_WAIT, MAX_OTHERS_WAIT);
+    if((ARM_PID = fork()) == 0) AutReqMan();
     AutReqManCreated = true;
     writeLog("PROCESS AUTHORIZATION_REQUEST_MANAGER CREATED");
 

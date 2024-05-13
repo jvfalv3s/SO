@@ -5,25 +5,15 @@
  * --> João Vitor Fraga Maia Alves           Nº: 2016122878
  **********************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/ipc.h>
 #include <sys/msg.h>
-#include <signal.h> 
 #include <time.h>
 #include <pthread.h>
-#include <stdbool.h>
 #include <sys/select.h>
 #include "../LogFileManager/LogFileManager.h"
 #include "./AutorizationReqManager.h"
 #include "./AuthorizationEngine.h"
 #include "ShmData.h"
+#include "HelpData.h"
 
 #define BUF_SIZE 100
 #define MAX_CHAR_COMMAND 30
@@ -48,17 +38,11 @@ typedef struct queue {
 }queue;
 
 /* Initialization */
-struct shm_struct* shm_ptr;
-pid_t SYS_PID;  // Parent (System Manager) PID
-pid_t MON_EN_PID;
-int MAX_QUEUE_POS, AUTH_SERVERS_MAX, AUTH_PROC_TIME, MAX_VIDEO_WAIT, MAX_OTHERS_WAIT;
 pthread_t Sender_id, Receiver_id;  // Threads IDs
 int user_pipe_fd, back_pipe_fd;    // User and back pipes file descriptors
 bool SenderCreated = false, ReceiverCreated = false;      // Sender and Receiver threads creation status
 bool userPipeCreated = false, backPipeCreated = false;    // User and back pipes creation status
 bool userPipeFDOpened = false, backPipeFDOpened = false;  // User and back pipes file descriptors open status
-
-struct auth_eng* auth_engs;
 
 struct queue vid_queue;                  
 struct queue other_queue;                
@@ -70,16 +54,7 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 /**
  * Creates the Autorization Request Manager process.
  */
-void AutReqMan(struct shm_struct* shmPtr, pid_t monitor_engine_pid, int max_queue_pos, int auth_servers_max, int auth_proc_time, int max_video_wait, int max_other_wait) {
-    shm_ptr = shmPtr;
-    SYS_PID = getppid();
-    MON_EN_PID = monitor_engine_pid;
-    MAX_QUEUE_POS = max_queue_pos;
-    AUTH_SERVERS_MAX = auth_servers_max;
-    AUTH_PROC_TIME = auth_proc_time;
-    MAX_VIDEO_WAIT = max_video_wait;
-    MAX_OTHERS_WAIT = max_other_wait;
-    
+void AutReqMan() {
     /* Stays alert for sigquit signals */
     signal(SIGQUIT, endAutReqMan);
 
@@ -94,7 +69,7 @@ void AutReqMan(struct shm_struct* shmPtr, pid_t monitor_engine_pid, int max_queu
 
     /* Creating all the authorizations engines */
     shm_ptr->auth_engs = (struct auth_eng*) malloc((AUTH_SERVERS_MAX+1) * sizeof(struct auth_eng));
-    for(int i = 0; i < AUTH_SERVERS_MAX; i++) create_auth_eng(i, MON_EN_PID);
+    for(int i = 0; i < AUTH_SERVERS_MAX; i++) create_auth_eng(i);
     
     /* Creates two threads, the sender and the receiver and logs their creation right after */
     pthread_create(&Sender_id, NULL, Sender, NULL);
@@ -140,7 +115,7 @@ void* Sender(void* arg) {
         update_queues();
 
         check_auth_busy();
-        if(any_queue_is(1.00)) create_auth_eng(AUTH_SERVERS_MAX, MON_EN_PID);
+        if(any_queue_is(1.00)) create_auth_eng(AUTH_SERVERS_MAX);
         else if(any_queue_is(0.50)) remove_auth_eng(AUTH_SERVERS_MAX);
 
         auth_eng_num = get_auth_eng_num();
