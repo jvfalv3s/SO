@@ -74,6 +74,7 @@ void create_auth_eng(int auth_num) {
 void remove_auth_eng(int auth_num) {
     if((shm_ptr->auth_engs[auth_num].pid != 0) && (!shm_ptr->auth_engs[auth_num].busy)) {
         kill(shm_ptr->auth_engs[auth_num].pid, SIGQUIT);
+        shm_ptr->n_auth_engs--;
         shm_ptr->auth_engs[auth_num].pid = 0;
         shm_ptr->auth_engs[auth_num].busy = false;
         close(shm_ptr->auth_engs[auth_num].pipe_write_fd);
@@ -196,3 +197,6 @@ void process_back_user_req(struct message request) {
         shm_ptr->total_VIDEO_data = 0;
     }
 }
+
+
+

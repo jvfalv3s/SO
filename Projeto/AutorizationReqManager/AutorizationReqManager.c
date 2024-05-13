@@ -119,7 +119,7 @@ void* Sender(void* arg) {
                 send_req_to(auth_eng_num, request);
 
                 if(sprintf(log_message, "SENDER: VIDEO AUTHORIZATION REQUEST (ID = %d) SENT FOR PROCESSING ON AUTHORIZATION_ENGINE %d", request.id, auth_eng_num) < 0) {
-                    error("CREATING SENDER VIDEO AUTHORIZATION REQUEST LOG MESSAGE");
+                    autReqError("CREATING SENDER VIDEO AUTHORIZATION REQUEST LOG MESSAGE");
                 }
                 writeLog(log_message);
             }
@@ -129,13 +129,13 @@ void* Sender(void* arg) {
 
                 if(strcmp(request.command, "SOCIAL") == 0) {
                     if(sprintf(log_message, "SENDER: SOCIAL AUTHORIZATION REQUEST (ID = %d) SENT FOR PROCESSING ON AUTHORIZATION_ENGINE %d", request.id, auth_eng_num+1) < 0) {
-                        error("CREATING SENDER SOCIAL AUTHORIZATION REQUEST LOG MESSAGE");
+                        autReqError("CREATING SENDER SOCIAL AUTHORIZATION REQUEST LOG MESSAGE");
                     }
                     writeLog(log_message);
                 }
                 else if(strcmp(request.command, "MUSIC") == 0) {
                     if(sprintf(log_message, "SENDER: MUSIC AUTHORIZATION REQUEST (ID = %d) SENT FOR PROCESSING ON AUTHORIZATION_ENGINE %d", request.id, auth_eng_num+1) < 0) {
-                        error("CREATING SENDER MUSIC AUTHORIZATION REQUEST LOG MESSAGE");
+                        autReqError("CREATING SENDER MUSIC AUTHORIZATION REQUEST LOG MESSAGE");
                     }
                     writeLog(log_message);
                 }
@@ -349,12 +349,23 @@ void send_req_to(int auth_eng_num, struct message request) {
  *                                                                     *
  ***********************************************************************/
 
-/**
- * Kills System all processes sending SIGQUIT to them.
- */
-void killSys() {
-    kill(0, SIGQUIT);
-    kill(SYS_PID, SIGQUIT);
+void logQueuesReqs() {
+    struct queue* queue_ptr;
+    struct message request;
+    char* log_message;
+    for(int i = 0; i < 2; i++) {
+        if(i == 0) queue_ptr = &vid_queue;
+        else queue_ptr = &other_queue;
+        for(int j = 0; j < (queue_ptr->max_queue_pos - queue_ptr->n_empty); j++) {
+            get_from_queue(queue_ptr, &request);
+            if(strcmp(request.command, "VIDEO") == 0 || strcmp(request.command, "MUSIC") == 0 || strcmp(request.command, "SOCIAL") == 0) {
+
+            }
+            else {
+                
+            }
+        }
+    }
 }
 
 /**
@@ -363,6 +374,7 @@ void killSys() {
 void killThreads() {
     if(SenderCreated) pthread_kill(Sender_id, SIGINT);
     if(ReceiverCreated) pthread_kill(Receiver_id, SIGINT);
+
 }
 
 /**
@@ -380,7 +392,7 @@ void unlinkPipes() {
  */
 void autReqError(char* error_message) {
     error(error_message);
-    killSys();
+    kill(SYS_PID, SIGQUIT);
     endAutReqMan();
 }
 
@@ -388,7 +400,12 @@ void autReqError(char* error_message) {
  * Ends the Autorization Request Manager and his threads.
  */
 void endAutReqMan() {
+    int status;
+    signal(SIGQUIT, SIG_IGN);
+    kill(0, SIGQUIT);
+    while(waitpid(-1, &status, WNOHANG) > 0);
     killThreads();
+    logQueuesReqs();
     unlinkPipes();
     exit(EXIT_SUCCESS);
 }
