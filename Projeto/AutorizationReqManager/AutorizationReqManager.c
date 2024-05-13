@@ -34,23 +34,6 @@
 #define MQ_KEY_ID 'a'
 
 
-// Use a struct to encapsulate global variables
-typedef struct global_data {
-    pid_t SYS_PID;
-    pthread_t Sender_id, Receiver_id;
-    int user_pipe_fd, back_pipe_fd;
-    bool SenderCreated, ReceiverCreated;
-    bool userPipeCreated, backPipeCreated;
-    bool userPipeFDOpened, backPipeFDOpened;
-    struct queue vid_queue;
-    struct queue other_queue;
-    struct vid_mq_message vid_message;
-    struct other_mq_message other_message;
-    bool vid_queueCreated, other_queueCreated;
-    pthread_cond_t cv;
-    pthread_mutex_t mutex;
-} global_data;
-
 /* Message from message queue struct */
 typedef struct vid_mq_message {
     long mgg_type;
@@ -72,6 +55,7 @@ typedef struct queue {
 
 /* Initialization */
 pid_t SYS_PID;  // Parent (System Manager) PID
+pid_t MON_EN_PID;
 pthread_t Sender_id, Receiver_id;  // Threads IDs
 int user_pipe_fd, back_pipe_fd;    // User and back pipes file descriptors
 bool SenderCreated = false, ReceiverCreated = false;      // Sender and Receiver threads creation status
@@ -90,8 +74,9 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 /**
  * Creates the Autorization Request Manager process.
  */
-void AutReqMan(int MAX_QUEUE_POS) {
+void AutReqMan(int monitor_engine_pid , int MAX_QUEUE_POS) {
     SYS_PID = getppid();
+    MON_EN_PID = monitor_engine_pid;
     
     /* Stays alert for sigquit signals */
     signal(SIGQUIT, endAutReqMan);

@@ -16,7 +16,7 @@ estatisticas periodicas (30s) para o Backoffice  User */
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include <signal.h> 
+#include <signal.h>
 #include <sys/ipc.h> 
 #include <sys/msg.h> 
 #include <semaphore.h>
@@ -27,6 +27,15 @@ estatisticas periodicas (30s) para o Backoffice  User */
 /* ftok arguments to create the message queue key */
 #define MQ_KEY_PATH "/message_queue"
 #define MQ_KEY_ID 'a'
+
+
+//cria as funções signal para 80, 90 e 100%
+
+//essas funcões tem que implementar uma mensagem pro log (wirtelog o que eu qurioser)
+
+//vou ter que enviar a mesma mensagem pro message queue.
+
+//ligar do ARM pra ca, usando o PID MON EN -> pesquisar como se faz isso. slides (8/9)
 
 /* Message from message queue struct */
 typedef struct mq_message {
@@ -59,7 +68,6 @@ void MonEng(int consumo_critico,int id_usuario) {
     while (1) {
         // Monitoramento contínuo do consumo de dados
         // Código para ler o consumo de dados de cada usuário e comparar com os limites
-
         // Geração de alertas
         if (consumo_critico) {
             // Envio de mensagem de alerta para a fila de mensagens
@@ -72,3 +80,8 @@ void MonEng(int consumo_critico,int id_usuario) {
         // Código para compilar estatísticas periódicas
     }
 }
+
+
+caso chegou no patamar, manda um kill(pid mon, sinal qlqr)
+
+signal(3, funcao ola);

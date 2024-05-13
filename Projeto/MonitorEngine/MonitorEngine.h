@@ -24,6 +24,7 @@ extern mqd_t mq;
 extern sem_t *sem;
 extern pid_t SYS_PID;
 
-void MonEng(pid_t SYS_PID);
+void MonEng(int consumo_critico,int id_usuario);
+void calculateStatistics();
 
 #endif /* MONITOR_ENGINE_H */
