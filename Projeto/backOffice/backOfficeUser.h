@@ -8,6 +8,46 @@
 #ifndef BACKOFFICEUSER_H
 #define BACKOFFICEUSER_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <string.h>
+#include <errno.h>
+#include <stdio.h>
+#include <signal.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+#include <pthread.h>
+#include <stdbool.h>
+
+/* Comment this line to don't show debug messages */
+#define DEBUG
+
+/* Max characters a command can have */
+#define MAX_CHAR_COMMAND_AMMOUNT 100
+/* Max characters a message can have */
+#define MAX_CHAR_MESSAGE_AMMOUNT 200
+/* ftok arguments to create the message queue key */
+#define MQ_KEY_PATH "/message_queue"
+#define MQ_KEY_ID 'a'
+/* Path of the BACK PIPE */
+#define BACK_PIPE_PATH "back_pipe"
+/* Path to MESSAGE QUEUE NAMED SEMAPHORE that indicates about periodic stats */
+#define MQ_NAMED_SEMAPHORE_P_PATH "back_sem_P"
+/* Path to MESSAGE QUEUE NAMED SEMAPHORE that indicates about stats response */
+#define MQ_NAMED_SEMAPHORE_R_PATH "back_sem_R"
+
+/* Message from message queue struct */
+typedef struct mq_message {
+    long mgg_type;
+    char msg_text [MAX_CHAR_MESSAGE_AMMOUNT];
+};
+
+int mq_id;
+
 /**
  * Receives a message from message queue and prints it.
  */

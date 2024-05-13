@@ -121,15 +121,17 @@ void sendStatistics() {
 }
 
 void MonEngError(char* error_message) {
+    signal(SIGQUIT, SIG_IGN);
     kill(SYS_PID, SIGQUIT);
+    kill(0, SIGQUIT);
     endMonEng();
 }
 
 void endMonEng() {
-    if(mqSemCreated) {
-        sem_close(sem);
-        sem_unlink(MQ_SEM_PATH);
-    }
+    sem_trywait(shm_sem);
+    sem_post(shm_sem);
+    int status;
+    while(waitpid(0, &status, WNOHANG) > 0);
     if(mqCreated) msgctl(mq_id, IPC_RMID, NULL);
     exit(EXIT_SUCCESS);
 }

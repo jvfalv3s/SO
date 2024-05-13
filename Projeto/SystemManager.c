@@ -18,6 +18,8 @@ void endSys();
 
 /* Initializations */
 int shm_fd;  // Shared memory file descriptor
+bool ConfigFileOpened = false;
+FILE* f;
 
 /**
  * Main Function.
@@ -52,7 +54,6 @@ int main(int argc, char* argv[]) {
     if(shm_sem == SEM_FAILED) error("OPENING SHARED MEMORY SEMAPHORE");
     shmSemCreated = true;
 
-    FILE* f;
     char* buf = (char*) malloc(sizeof(char)*100);
     int i = 0;
 
@@ -65,6 +66,7 @@ int main(int argc, char* argv[]) {
         shmClose();
         exit(EXIT_FAILURE);
     }
+    ConfigFileOpened = true;
     while(fgets(buf, sizeof(buf), f)) {
         int atribute = atoi(buf);  // Transforming the strings in the file into integers
         printf("%d",atribute);
@@ -167,7 +169,8 @@ int main(int argc, char* argv[]) {
     signal(SIGQUIT, handle_sigquit);
 
     /* Waits for his 2 childs to end */
-    for(int j = 0; j < 2; j++) wait(NULL);
+    int status;
+    while(waitpid(-1, &status, WNOHANG) > 0);
 
     /* Ends the System Manager */
     endSys();
@@ -179,37 +182,45 @@ int main(int argc, char* argv[]) {
  * Closes and frees shared memory.
  */
 void shmClose() {
+    if(ConfigFileOpened) fclose(f);
+    
     /* Unmaping shared memory */
-    if (munmap(shm_ptr, shm_size) == -1) {
+    if(munmap(shm_ptr, shm_size) == -1) {
         error("SHM unmap");
         exit(EXIT_FAILURE);
     }
     /* Closing shared memory */
-    if (close(shm_fd) == -1) {
+    if(close(shm_fd) == -1) {
         error("SHM close");
         exit(EXIT_FAILURE);
     }
     /* Unlinking shared memory */
-    if (shm_unlink(SHM_PATH) == -1) {
+    if(shm_unlink(SHM_PATH) == -1) {
         error("SHM unlink");
         exit(EXIT_FAILURE);
     }
 }
 
 /**
- * Kills child processes. ------------TODO LATER-----------
+ * Kills child processes.
  */
 void killProcess() {
+    int status;
+    signal(SIGQUIT, SIG_IGN);
+    /* Write log Waiting for last task to finish */
+    writeLog("5G_AUTH_PLATFORM SIMULATOR WAITING FOR LAST TASKS TO FINISH");
     if(AutReqManCreated || MonEngCreated) kill(0, SIGQUIT);
-    //  while(wait(NULL) != -1);
-    if(AutReqManCreated) waitpid(ARM_PID);
-    if(MonEngCreated) waitpid(ME_PID);
+    while(waitpid(-1, &status, WNOHANG) > 0);
 }
 
 /**
  * Handles if the process catchs a sigquit signal.
  */
 void handle_sigquit() {
+    /* Write log Waiting for last task to finish */
+    writeLog("5G_AUTH_PLATFORM SIMULATOR WAITING FOR LAST TASKS TO FINISH");
+    int status;
+    while(waitpid(-1, &status, WNOHANG) > 0);
     shmClose();
     exit(EXIT_SUCCESS);
 }

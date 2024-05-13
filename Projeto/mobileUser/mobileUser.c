@@ -5,45 +5,7 @@
  * --> João Vitor Fraga Maia Alves           Nº: 2016122878
  **********************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <string.h>
-#include <errno.h>
-#include <sys/ipc.h>
-#include <sys/msg.h>
 #include "mobileUser.h"
-#include <signal.h>
-#include <ctype.h>
-#include <sys/time.h>
-#include <semaphore.h>
-#include <stdbool.h>
-
-/* Comment this line to don't show debug messages */
-#define DEBUG
-
-/* Max characters a command can have */
-#define MAX_CHAR_COMMAND_AMMOUNT 20
-/* Max characters a message can have */
-#define MAX_CHAR_MESSAGE_AMMOUNT 100
-/* ftok arguments to create the message queue key */
-#define MQ_KEY_PATH "/message_queue"
-#define MQ_KEY_ID 'a'
-/* Path of the USER PIPE */
-#define USER_PIPE_PATH "../tmp/FIFO/user_pipe"
-/* Path to USER PIPE NAMED MUTEX SEMAPHORE */
-#define USER_PIPE_MUTEX_PATH "../tmp/NAMED_SEMS/user_pipe_mutex_sem"
-/* Path to MESSAGE QUEUE NAMED SEMAPHORE directory */
-#define MQ_NAMED_SEMAPHORE_DIR_PATH "mq_sem_"
-
-/* Message from message queue struct */
-typedef struct mq_message {
-    long mgg_type;
-    char msg_text [MAX_CHAR_MESSAGE_AMMOUNT];
-};
 
 /* Initializing some usefull variables */
 pid_t MOBILE_USER_ID;                    // ID of the mobile user (PID)
@@ -52,7 +14,6 @@ struct mq_message message;               // Message from message queue
 int user_pipe_fd;                        // User pipe file descriptor
 sem_t *user_pipe_mutex, *mq_named_sem;   // Named semaphores
 char* mq_named_sem_path;                 // Path to message queue named semaphore
-int mq_id;                               // Message queue id
 
 /* Status variables */
 bool userPipeFdOpened = false;
