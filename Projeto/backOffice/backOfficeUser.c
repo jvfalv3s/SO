@@ -29,11 +29,11 @@
 #define MQ_KEY_PATH "/message_queue"
 #define MQ_KEY_ID 'a'
 /* Path of the BACK PIPE */
-#define BACK_PIPE_PATH "../tmp/FIFO/back_pipe"
+#define BACK_PIPE_PATH "back_pipe"
 /* Path to MESSAGE QUEUE NAMED SEMAPHORE that indicates about periodic stats */
-#define MQ_NAMED_SEMAPHORE_P_PATH "../tmp/NAMED_SEMS/back_office_P"
+#define MQ_NAMED_SEMAPHORE_P_PATH "back_sem_P"
 /* Path to MESSAGE QUEUE NAMED SEMAPHORE that indicates about stats response */
-#define MQ_NAMED_SEMAPHORE_R_PATH "../tmp/NAMED_SEMS/back_office_R"
+#define MQ_NAMED_SEMAPHORE_R_PATH "back_sem_R"
 
 /* Message from message queue struct */
 typedef struct mq_message {
@@ -84,7 +84,7 @@ int main() {
     /* Loop to read and verify commands of the BackOffice User */
     char* token;
     char commandAux[MAX_CHAR_COMMAND_AMMOUNT + 20];
-    while(1) {
+    while(true) {
         while(sem_trywait(mq_named_sem_p) == 0) receive_message();
 
         if(sprintf(command, "Waitting new command...\n") < 0) error("Creating waitting new command message");

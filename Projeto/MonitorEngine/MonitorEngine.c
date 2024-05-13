@@ -18,55 +18,7 @@
 #include "../ShmData.h"
 #include "../HelpData.h"
 #include "../MessageQueue.h"
-
-#define MAX_STATISTICS_SIZE 256 // Tamanho máximo para as estatísticas
-
-//funcao para processar os avisos
-void process_alerts() {
-    float plafond_percentage;
-    while (1) {
-        // sem_wait();
-        for(int i = 0; i < shm_ptr->n_users; i++) {
-            plafond_percentage = (float)shm_ptr->users[i].current_plafond / shm_ptr->users[i].max_plafond;
-            message.mgg_type = shm_ptr->users[i].id;
-            if (plafond_percentage >= 100) {
-                // Plafond de 100% atingido para este usuário
-                sprintf(message.msg_text, "Alerta: Seu plafond de dados foi totalmente utilizado.");
-                msgsnd(mq_id, &message, sizeof(message), 0);
-            } else if (plafond_percentage >= 90) {
-                // Plafond de 90% ou mais atingido para este usuário
-                sprintf(message.msg_text, "Alerta: Seu plafond de dados está quase totalmente utilizado.");
-                msgsnd(mq_id, &message, sizeof(message), 0);
-            } else if (plafond_percentage >= 80) {
-                // Plafond de 80% ou mais atingido para este usuário
-                sprintf(message.msg_text, "Alerta: Seu plafond de dados está quase 80%% utilizado.");
-                msgsnd(mq_id, &message, sizeof(message), 0);
-            }
-        }
-        // sem_wait();
-    }
-}
-
-void endMonEng() {
-    sem_close(sem);
-    sem_unlink(MQ_SEM_PATH);
-    msgctl(mq_id, IPC_RMID, NULL);
-    exit(EXIT_SUCCESS);
-}
-
-void handle_sigquit() {
-    endMonEng();
-    exit(EXIT_SUCCESS);
-}
-
-void sendStatistics(const char* stats){
-    printf("Estatísticas: %s\n", stats); // Imprime as estatísticas no terminal
-}
-
-void error(const char* msg) {
-    perror(msg);
-    exit(EXIT_FAILURE);
-}
+#include "../LogFileManager/LogFileManager.h"
 
 void MonEng() {
     /* Creating the message queue key */
@@ -76,46 +28,108 @@ void MonEng() {
     /* Opening the message queue for reading */
     mq_id = msgget(mq_key, IPC_CREAT | 0200);  // 0200 --> write-only permissions
     if(mq_id == -1) error("Getting message queue id");
+    mqCreated = true;
 
-    // Inicialização do semáforo nomeado
-    sem = sem_open(MQ_SEM_PATH, O_CREAT | O_RDWR, 0666, 1);
-    if (sem == SEM_FAILED) {
-        perror("sem_open");
-        exit(EXIT_FAILURE);
-    }
-
-    signal(SIGQUIT, handle_sigquit);
+    signal(SIGQUIT, endMonEng);
     signal(SIGUSR1, process_alerts);
 
     while(true) {
-        // send temp stats from back user
-        // Obtenha suas estatísticas e as armazene na variável 'statistics'
-        char statistics[MAX_STATISTICS_SIZE]; // Suponha que você tenha suas estatísticas em uma string
-
-        // Formate as estatísticas em uma string
-        sprintf(statistics, "Estatísticas: %s", "suas_estatisticas_aqui");
-
-        // Envie as estatísticas para o terminal
-        sendStatistics(statistics);
-
+        // Envie as estatísticas para o back user pela msg queue e para o log
+        sendStatistics();
 
         sleep(30);
     }
     endMonEng();
 }
 
+//funcao para processar os avisos
+void process_alerts() {
+    char* mq_sem_path;
+    float plafond_percentage;
 
+    sem_wait(shm_sem);
+    for(int i = 0; i < shm_ptr->n_users; i++) {
+        plafond_percentage = (float)shm_ptr->users[i].current_plafond / shm_ptr->users[i].max_plafond;
+        message.mgg_type = shm_ptr->users[i].id;
 
+        if(plafond_percentage >= 1 && (!shm_ptr->users[i].alert100sent)) {
+            // Plafond de 100% atingido para este usuário
+            strcpy(message.msg_text, "ALERT: YOUR PLAFOND REACHED 100%%.");
+            msgsnd(mq_id, &message, sizeof(message), 0);
 
+            if(sprintf(mq_sem_path, "%s%d", MQ_NAMED_SEMAPHORE_GEN_PATH, shm_ptr->users[i].id) < 0) {
+                MonEngError("CREATING MESSAGE QUEUE SEMAPHORE PATH");
+            }
+            mq_sem = sem_open(mq_sem_path, 0);
+            sem_post(mq_sem);
+            sem_close(mq_sem);
 
+            shm_ptr->users[i].alert100sent = true;
+        }
+        else if (plafond_percentage >= 0.9 && (!shm_ptr->users[i].alert90sent)) {
+            // Plafond de 90% ou mais atingido para este usuário
+            strcpy(message.msg_text, "ALERT: YOUR PLAFOND REACHED 90%%.");
+            msgsnd(mq_id, &message, sizeof(message), 0);
 
-/*
-criar um semáforo nomeado para controlar o acesso à fila de mensagens e à memória compartilhada
-inicializar o semáforo com o valor 1
-criar um sinal para o monitoramento do consumo de dados
-criar um sinal para o envio de alertas
-criar um sinal para a compilação de estatísticas
-criar um sinal para a finalização do processo
-mandar ao log e ao terminal a mensagem de que o Monitor Engine foi criado e o plafond de cada usuário nos parametros esperados
-no caso 80%, 90% e 100% do plafond
-*/
+            if(sprintf(mq_sem_path, "%s%d", MQ_NAMED_SEMAPHORE_GEN_PATH, shm_ptr->users[i].id) < 0) {
+                MonEngError("CREATING MESSAGE QUEUE SEMAPHORE PATH");
+            }
+            mq_sem = sem_open(mq_sem_path, 0);
+            sem_post(mq_sem);
+            sem_close(mq_sem);
+
+            shm_ptr->users[i].alert90sent = true;
+        }
+        else if (plafond_percentage >= 0.8 && (!shm_ptr->users[i].alert80sent)) {
+            // Plafond de 80% ou mais atingido para este usuário
+            strcpy(message.msg_text, "ALERT: YOUR PLAFOND REACHED 80%%.");
+            msgsnd(mq_id, &message, sizeof(message), 0);
+
+            if(sprintf(mq_sem_path, "%s%d", MQ_NAMED_SEMAPHORE_GEN_PATH, shm_ptr->users[i].id) < 0) {
+                MonEngError("CREATING MESSAGE QUEUE SEMAPHORE PATH");
+            }
+            mq_sem = sem_open(mq_sem_path, 0);
+            sem_post(mq_sem);
+            sem_close(mq_sem);
+
+            shm_ptr->users[i].alert80sent = true;
+        }
+    }
+    sem_post(shm_sem);
+}
+
+void sendStatistics() {
+    struct mq_message stats_message;
+    char* mq_sem_path;
+    stats_message.mgg_type = 1;
+
+    sem_wait(shm_sem);
+    if(sprintf(stats_message.msg_text, "STATS\nSERVICE / TOTAL DATA / AUTH REQS\nVIDEO:  %d  %d\nMUSIC:  %d  %d\nSOCIAL:  %d  %d", shm_ptr->total_VIDEO_data, shm_ptr->total_VIDEO_auths,
+               shm_ptr->total_MUSIC_data, shm_ptr->total_MUSIC_auths, shm_ptr->total_SOCIAL_data, shm_ptr->total_SOCIAL_auths) < 0) {
+        MonEngError("CREATING STATS MESSAGE");
+    }
+    sem_post(shm_sem);
+
+    writelog(stats_message.msg_text);
+
+    msgsnd(mq_id, &stats_message, sizeof(stats_message), 0);
+
+    stcpy(mq_sem_path, MQ_NAMED_BACK_SEM_P);
+    mq_sem = sem_open(mq_sem_path, 0);
+    sem_post(mq_sem);
+    sem_close(mq_sem);
+}
+
+void MonEngError(char* error_message) {
+    kill(SYS_PID, SIGQUIT);
+    endMonEng();
+}
+
+void endMonEng() {
+    if(mqSemCreated) {
+        sem_close(sem);
+        sem_unlink(MQ_SEM_PATH);
+    }
+    if(mqCreated) msgctl(mq_id, IPC_RMID, NULL);
+    exit(EXIT_SUCCESS);
+}

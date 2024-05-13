@@ -31,6 +31,9 @@ typedef struct user {
     int id;
     int current_plafond;
     int max_plafond;
+    bool alert80sent;
+    bool alert90sent;
+    bool alert100sent;
 } user;
 
 typedef struct auth_eng{

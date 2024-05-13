@@ -85,9 +85,9 @@ void send_req_to(int auth_eng_num, struct message request);
  ***********************************************************************/
 
 /**
- * Kills System all processes sending SIGQUIT to them.
+ * Logs all the requests in VIDEO and OTHER queues that were not executed.
  */
-void killSys();
+void logQueuesReqs();
 
 /**
  * Kills the Sender and Receiver threads.

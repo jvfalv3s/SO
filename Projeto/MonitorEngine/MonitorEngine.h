@@ -16,14 +16,6 @@
 #include <mqueue.h>
 #include <semaphore.h>
 
-#define MAX_SIZE 1024
-#define MESSAGE_QUEUE_PATH "../tmp/FIFO/message_queue"
-#define NAMED_SEMAPHORES_PATH "../tmp/FIFO/NAMED_SEMAPHORES/"
-
-extern mqd_t mq;
-extern sem_t *sem;
-extern pid_t SYS_PID;
-
 void MonEng();
 void plafondThreshold(int sinal);
 

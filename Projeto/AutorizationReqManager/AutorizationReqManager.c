@@ -349,6 +349,9 @@ void send_req_to(int auth_eng_num, struct message request) {
  *                                                                     *
  ***********************************************************************/
 
+/**
+ * Logs all the requests in VIDEO and OTHER queues that were not executed.
+ */
 void logQueuesReqs() {
     struct queue* queue_ptr;
     struct message request;
@@ -359,10 +362,44 @@ void logQueuesReqs() {
         for(int j = 0; j < (queue_ptr->max_queue_pos - queue_ptr->n_empty); j++) {
             get_from_queue(queue_ptr, &request);
             if(strcmp(request.command, "VIDEO") == 0 || strcmp(request.command, "MUSIC") == 0 || strcmp(request.command, "SOCIAL") == 0) {
-
+                if(strcmp(request.command, "SOCIAL") == 0) {
+                    if(sprintf(log_message, "SOCIAL AUTHORIZATION REQUEST (ID = %d) OF %d DATA CANCELED", request.id, request.data_to_reserve) < 0) {
+                        autReqError("CREATING SOCIAL AUTHORIZATION REQUEST CANCELED LOG MESSAGE");
+                    }
+                    writeLog(log_message);
+                }
+                else if(strcmp(request.command, "MUSIC") == 0) {
+                    if(sprintf(log_message, "MUSIC AUTHORIZATION REQUEST (ID = %d) OF %d DATA CANCELED", request.id, request.data_to_reserve) < 0) {
+                        autReqError("CREATING MUSIC AUTHORIZATION REQUEST CANCELED LOG MESSAGE");
+                    }
+                    writeLog(log_message);
+                }
+                else if(strcmp(request.command, "VIDEO") == 0) {
+                    if(sprintf(log_message, "VIDEO AUTHORIZATION REQUEST (ID = %d) OF %d DATA CANCELED", request.id, request.data_to_reserve) < 0) {
+                        autReqError("CREATING VIDEO AUTHORIZATION REQUEST CANCELED LOG MESSAGE");
+                    }
+                    writeLog(log_message);
+                }
             }
             else {
-                
+                if(strcmp(request.command, "data_stats") == 0) {
+                    if(sprintf(log_message, "DATA STATS REQUEST (ID = %d) CANCELED", request.id) < 0) {
+                        autReqError("CREATING DATA STATS CANCELED LOG MESSAGE");
+                    }
+                    writeLog(log_message);
+                }
+                else if(strcmp(request.command, "reset") == 0) {
+                    if(sprintf(log_message, "RESET REQUEST (ID = %d) CANCELED", request.id) < 0) {
+                        autReqError("CREATING RESET CANCELED LOG MESSAGE");
+                    }
+                    writeLog(log_message);
+                }
+                else {
+                    if(sprintf(log_message, "REGIST REQUEST (ID = %d) CANCELED", request.id) < 0) {
+                        autReqError("CREATING REGIST REQUEST CANCELED LOG MESSAGE");
+                    }
+                    writeLog(log_message);
+                }
             }
         }
     }

@@ -37,7 +37,7 @@
 /* Path to USER PIPE NAMED MUTEX SEMAPHORE */
 #define USER_PIPE_MUTEX_PATH "../tmp/NAMED_SEMS/user_pipe_mutex_sem"
 /* Path to MESSAGE QUEUE NAMED SEMAPHORE directory */
-#define MQ_NAMED_SEMAPHORE_DIR_PATH "../tmp/NAMED_SEMS/"
+#define MQ_NAMED_SEMAPHORE_DIR_PATH "mq_sem_"
 
 /* Message from message queue struct */
 typedef struct mq_message {
