@@ -48,7 +48,9 @@ int main(int argc, char* argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    /* **************** SEMAFERO PARA SHM **************** */
+    shm_sem = sem_open(SHM_SEM_PATH, O_CREAT, 0666, 1);
+    if(shm_sem == SEM_FAILED) error("OPENING SHARED MEMORY SEMAPHORE");
+    shmSemCreated = true;
 
     FILE* f;
     char* buf = (char*) malloc(sizeof(char)*100);

@@ -58,5 +58,6 @@ struct shm_struct* shm_ptr;
 int shm_size = sizeof(struct shm_struct);
 
 sem_t* shm_sem;
+bool shmSemCreated = false;
 
 #endif
