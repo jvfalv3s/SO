@@ -12,8 +12,9 @@
 #include "../LogFileManager/LogFileManager.h"
 #include "./AutorizationReqManager.h"
 #include "./AuthorizationEngine.h"
-#include "ShmData.h"
-#include "HelpData.h"
+#include "../ShmData.h"
+#include "../HelpData.h"
+#include "../IntQueues.h"
 
 /* Initialization */
 pthread_t Sender_id, Receiver_id;  // Threads IDs
@@ -81,7 +82,7 @@ void* Sender(void* arg) {
     #ifdef DEBUG
         printf("Thread Sender created.");
     #endif
-
+    
     struct message request;
     char* log_message;
     int auth_eng_num;

@@ -9,20 +9,43 @@
 #include <time.h>
 #include "../LogFileManager/LogFileManager.h"
 #include "./AuthorizationEngine.h"
-#include "ShmData.h"
-#include "HelpData.h"
+#include "../IntQueues.h"
+#include "../ShmData.h"
+#include "../HelpData.h"
 
 /**
  * Implements an Authorization Engine.
  */
 void AuthEngine(int auth_eng_num) {
     char* log_message;
-    if(sprintf(log_message, "AUTHORIZATION_ENGINE %d READY", auth_eng_num) < 0) {
+    if(sprintf(log_message, "AUTHORIZATION_ENGINE %d READY", auth_eng_num+1) < 0) {
         error("CREATING AUTHORIZATON ENGINE READY LOG MESSSAGE");
     }
     writeLog(log_message);
+    
+    struct message request;
+    while(true) {
+        read(shm_ptr->auth_engs[auth_eng_num].pipe_read_fd, &request)
+        usleep(AUTH_PROC_TIME * 1000.0);
 
+        sem_wait(shm_sem);
+        if(request.id == 1) {
+            process_user_req(request);
+        } else {
+            process_back_user_req(request);
+        }
+        sem_post(shm_sem);
 
+        if(strcmp(request.command, "SOCIAL") == 0) {
+            writelog("AUTHORIZATION_ENGINE %d: SOCIAL AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id);
+        }
+        else if(strcmp(request.command, "MUSIC") == 0) {
+            writelog("AUTHORIZATION_ENGINE %d: MUSIC AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id);
+        }
+        else if(strcmp(request.command, "VIDEO") == 0) {
+            writelog("AUTHORIZATION_ENGINE %d: VIDEO AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id);
+        }
+    }
 }
 
 /**
@@ -84,3 +107,10 @@ int get_auth_eng_num() {
 }
 
 
+void process_user_req(struct message request) {
+
+}
+
+void process_back_user_req(struct message request) {
+    
+}
