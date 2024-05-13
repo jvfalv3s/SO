@@ -5,21 +5,16 @@
  * --> João Vitor Fraga Maia Alves           Nº: 2016122878
  **********************************************************/
 #include <sys/msg.h> 
-#include <sys/types.h> // Add this line
-#include <fcntl.h> // Add this line
-#include <semaphore.h>
 #include <time.h>
-#include <signal.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h>
 #include "./MonitorEngine.h"
 #include "../ShmData.h"
 #include "../HelpData.h"
 #include "../MessageQueue.h"
 #include "../LogFileManager/LogFileManager.h"
 
+/**
+ *  This function is responsible for the Monitor Engine
+ */
 void MonEng() {
     /* Creating the message queue key */
     mq_key = ftok(MQ_KEY_PATH, MQ_KEY_ID);
@@ -27,11 +22,11 @@ void MonEng() {
 
     /* Opening the message queue for reading */
     mq_id = msgget(mq_key, IPC_CREAT | 0200);  // 0200 --> write-only permissions
-    if(mq_id == -1) error("Getting message queue id");
-    mqCreated = true;
+    if(mq_id == -1) error("Getting message queue id"); // Error if the message queue was not created
+    mqCreated = true; // Flag to indicate that the message queue was created
 
-    signal(SIGQUIT, endMonEng);
-    signal(SIGUSR1, process_alerts);
+    signal(SIGQUIT, endMonEng); // Signal to end the Monitor Engine
+    signal(SIGUSR1, process_alerts); // Signal to process alerts
 
     while(true) {
         // Envie as estatísticas para o back user pela msg queue e para o log
@@ -39,99 +34,108 @@ void MonEng() {
 
         sleep(30);
     }
-    endMonEng();
+    endMonEng(); //call for the end of the Monitor Engine function
 }
 
-//funcao para processar os avisos
+/**
+ *    Process alerts when certain signals are received
+ */
 void process_alerts() {
-    char* mq_sem_path;
-    float plafond_percentage;
+    char* mq_sem_path; // Message queue semaphore path
+    float plafond_percentage; 
 
+    
     sem_wait(shm_sem);
     for(int i = 0; i < shm_ptr->n_users; i++) {
-        plafond_percentage = (float)shm_ptr->users[i].current_plafond / shm_ptr->users[i].max_plafond;
+        plafond_percentage = (float)shm_ptr->users[i].current_plafond / shm_ptr->users[i].max_plafond; //calculate the percentage of the plafond used by the user
         message.mgg_type = shm_ptr->users[i].id;
 
-        if(plafond_percentage >= 1 && (!shm_ptr->users[i].alert100sent)) {
-            // Plafond de 100% atingido para este usuário
-            strcpy(message.msg_text, "ALERT: YOUR PLAFOND REACHED 100%%.");
-            msgsnd(mq_id, &message, sizeof(message), 0);
-
+        if(plafond_percentage >= 1 && (!shm_ptr->users[i].alert100sent)) { //100% usage of the plafond reached for this user
+            
+            strcpy(message.msg_text, "ALERT: YOUR PLAFOND REACHED 100%%."); // Copy the message to the message queue
+            msgsnd(mq_id, &message, sizeof(message), 0); // Send the message to the message queue
             if(sprintf(mq_sem_path, "%s%d", MQ_NAMED_SEMAPHORE_GEN_PATH, shm_ptr->users[i].id) < 0) {
-                MonEngError("CREATING MESSAGE QUEUE SEMAPHORE PATH");
+                MonEngError("CREATING MESSAGE QUEUE SEMAPHORE PATH"); // Error if the semaphore path was not created
             }
-            mq_sem = sem_open(mq_sem_path, 0);
-            sem_post(mq_sem);
-            sem_close(mq_sem);
+            mq_sem = sem_open(mq_sem_path, 0); 
+            sem_post(mq_sem); 
+            sem_close(mq_sem); 
 
-            shm_ptr->users[i].alert100sent = true;
+            shm_ptr->users[i].alert100sent = true; // Flag to indicate that the alert was sent
         }
-        else if (plafond_percentage >= 0.9 && (!shm_ptr->users[i].alert90sent)) {
-            // Plafond de 90% ou mais atingido para este usuário
-            strcpy(message.msg_text, "ALERT: YOUR PLAFOND REACHED 90%%.");
-            msgsnd(mq_id, &message, sizeof(message), 0);
+        else if (plafond_percentage >= 0.9 && (!shm_ptr->users[i].alert90sent)) { //90% or more plafond reached for this user
+            strcpy(message.msg_text, "ALERT: YOUR PLAFOND REACHED 90%%."); // Copy the message to the message queue
+            msgsnd(mq_id, &message, sizeof(message), 0); // Send the message to the message queue
 
             if(sprintf(mq_sem_path, "%s%d", MQ_NAMED_SEMAPHORE_GEN_PATH, shm_ptr->users[i].id) < 0) {
-                MonEngError("CREATING MESSAGE QUEUE SEMAPHORE PATH");
+                MonEngError("CREATING MESSAGE QUEUE SEMAPHORE PATH");// Error if the semaphore path was not created
             }
-            mq_sem = sem_open(mq_sem_path, 0);
-            sem_post(mq_sem);
-            sem_close(mq_sem);
+            mq_sem = sem_open(mq_sem_path, 0); 
+            sem_post(mq_sem); 
+            sem_close(mq_sem); 
 
-            shm_ptr->users[i].alert90sent = true;
+            shm_ptr->users[i].alert90sent = true; // Flag to indicate that the alert was sent
         }
-        else if (plafond_percentage >= 0.8 && (!shm_ptr->users[i].alert80sent)) {
-            // Plafond de 80% ou mais atingido para este usuário
-            strcpy(message.msg_text, "ALERT: YOUR PLAFOND REACHED 80%%.");
-            msgsnd(mq_id, &message, sizeof(message), 0);
+        else if (plafond_percentage >= 0.8 && (!shm_ptr->users[i].alert80sent)) { //80% or more plafond reached for this user
+            strcpy(message.msg_text, "ALERT: YOUR PLAFOND REACHED 80%%."); // Copy the message to the message queue
+            msgsnd(mq_id, &message, sizeof(message), 0); // Send the message to the message queue
 
             if(sprintf(mq_sem_path, "%s%d", MQ_NAMED_SEMAPHORE_GEN_PATH, shm_ptr->users[i].id) < 0) {
-                MonEngError("CREATING MESSAGE QUEUE SEMAPHORE PATH");
+                MonEngError("CREATING MESSAGE QUEUE SEMAPHORE PATH"); // Error if the semaphore path was not created
             }
-            mq_sem = sem_open(mq_sem_path, 0);
+            mq_sem = sem_open(mq_sem_path, 0); 
             sem_post(mq_sem);
-            sem_close(mq_sem);
+            sem_close(mq_sem); 
 
-            shm_ptr->users[i].alert80sent = true;
+            shm_ptr->users[i].alert80sent = true; // Flag to indicate that the alert was sent
         }
     }
     sem_post(shm_sem);
 }
 
+
+/**
+ *   Sends statistics to the back user and to the log file
+ */
 void sendStatistics() {
-    struct mq_message stats_message;
-    char* mq_sem_path;
-    stats_message.mgg_type = 1;
+    struct mq_message stats_message; //Trough this struct we will send the statistics to the back user
+    char* mq_sem_path; // Message queue semaphore path
+    stats_message.mgg_type = 1; // Message type for the statistics
 
-    sem_wait(shm_sem);
-    if(sprintf(stats_message.msg_text, "STATS\nSERVICE / TOTAL DATA / AUTH REQS\nVIDEO:  %d  %d\nMUSIC:  %d  %d\nSOCIAL:  %d  %d", shm_ptr->total_VIDEO_data, shm_ptr->total_VIDEO_auths,
+    if(sprintf(stats_message.msg_text, "STATS\nSERVICE / TOTAL DATA / AUTH REQS\nVIDEO:  %d  %d\nMUSIC:  %d  %d\nSOCIAL:  %d  %d", shm_ptr->total_VIDEO_data, shm_ptr->total_VIDEO_auths, // Copy the message to the message queue
                shm_ptr->total_MUSIC_data, shm_ptr->total_MUSIC_auths, shm_ptr->total_SOCIAL_data, shm_ptr->total_SOCIAL_auths) < 0) {
-        MonEngError("CREATING STATS MESSAGE");
+        MonEngError("CREATING STATS MESSAGE"); // Error if the message was not created
     }
-    sem_post(shm_sem);
+    sem_post(shm_sem); 
 
-    writelog(stats_message.msg_text);
+    writelog(stats_message.msg_text); // Write the message with the statistics to the log file
 
-    msgsnd(mq_id, &stats_message, sizeof(stats_message), 0);
+    msgsnd(mq_id, &stats_message, sizeof(stats_message), 0); // Send the message with the statistics to the message queue
 
-    stcpy(mq_sem_path, MQ_NAMED_BACK_SEM_P);
+    stcpy(mq_sem_path, MQ_NAMED_BACK_SEM_P); //This part of the code is responsible for sending the statistics to the back user
     mq_sem = sem_open(mq_sem_path, 0);
     sem_post(mq_sem);
     sem_close(mq_sem);
 }
 
+/**
+ *   Handle errors in the Monitor Engine
+ */
 void MonEngError(char* error_message) {
-    signal(SIGQUIT, SIG_IGN);
-    kill(SYS_PID, SIGQUIT);
-    kill(0, SIGQUIT);
-    endMonEng();
+    signal(SIGQUIT, SIG_IGN); //Ignore the signal to end the Monitor Engine
+    kill(SYS_PID, SIGQUIT); //Send the signal to end the system
+    kill(0, SIGQUIT); //Send the signal to end the Monitor Engine
+    endMonEng(); //call for the end of the Monitor Engine function
 }
 
+/**
+ *   End the Monitor Engine
+ */
 void endMonEng() {
     sem_trywait(shm_sem);
     sem_post(shm_sem);
-    int status;
-    while(waitpid(0, &status, WNOHANG) > 0);
-    if(mqCreated) msgctl(mq_id, IPC_RMID, NULL);
-    exit(EXIT_SUCCESS);
+    int status; //obtain the status of the child process
+    while(waitpid(0, &status, WNOHANG) > 0); //wait for the child process to end
+    if(mqCreated) msgctl(mq_id, IPC_RMID, NULL); //remove the message queue
+    exit(EXIT_SUCCESS); //exit the Monitor Engine
 }
