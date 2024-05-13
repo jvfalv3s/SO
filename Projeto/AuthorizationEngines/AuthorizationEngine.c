@@ -30,11 +30,21 @@ void AuthEngine(int auth_eng_num) {
 
         sem_wait(shm_sem);
         if(request.id == 1) {
-            process_user_req(auth_eng_num, request);
+            process_user_req(request);
         } else {
             process_back_user_req(request);
         }
         sem_post(shm_sem);
+
+        if(strcmp(request.command, "SOCIAL") == 0) {
+            writelog("AUTHORIZATION_ENGINE %d: SOCIAL AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id);
+        }
+        else if(strcmp(request.command, "MUSIC") == 0) {
+            writelog("AUTHORIZATION_ENGINE %d: MUSIC AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id);
+        }
+        else if(strcmp(request.command, "VIDEO") == 0) {
+            writelog("AUTHORIZATION_ENGINE %d: VIDEO AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id);
+        }
     }
 }
 
@@ -97,39 +107,8 @@ int get_auth_eng_num() {
 }
 
 
-void process_user_req(int auth_eng_num, struct message request) {
-    if(strcmp(request.command, "VIDEO") == 0 || strcmp(request.command, "MUSIC") == 0 || strcmp(request.command, "SOCIAL") == 0) {
-        int i;
-        for(i = 0; i < shm_ptr->n_users; i++) {
-            if(request.id == shm_ptr->users[i].id) break;
-        }
+void process_user_req(struct message request) {
 
-        if(request.data_to_reserve <= shm_ptr->users[i].current_plafond) {
-            shm_ptr->users[i].current_plafond = shm_ptr->users[i].current_plafond - request.data_to_reserve;
-            
-            if(strcmp(request.command, "VIDEO") == 0) {
-                shm_ptr->total_VIDEO_auths++;
-                shm_ptr->total_VIDEO_data = shm_ptr->total_VIDEO_data + request.data_to_reserve;
-                writelog("AUTHORIZATION_ENGINE %d: VIDEO AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id);
-            }
-            else if(strcmp(request.command, "MUSIC") == 0) {
-                shm_ptr->total_MUSIC_auths++;
-                shm_ptr->total_MUSIC_data = shm_ptr->total_MUSIC_data + request.data_to_reserve;
-                writelog("AUTHORIZATION_ENGINE %d: MUSIC AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id);
-            }
-            else {
-                shm_ptr->total_SOCIAL_auths++;
-                shm_ptr->total_SOCIAL_data = shm_ptr->total_SOCIAL_data + request.data_to_reserve;
-                writelog("AUTHORIZATION_ENGINE %d: SOCIAL AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id);
-            }
-        }
-        if(shm_ptr->users[i].current_plafond/shm_ptr->users[i].max_plafond <= 80) {
-            kill(shm_ptr->auth_engs[auth_eng_num].pid, SIGUSR1);
-        }
-    }
-    else {
-
-    }
 }
 
 void process_back_user_req(struct message request) {

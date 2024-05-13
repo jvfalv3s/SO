@@ -7,9 +7,9 @@
 #include <sys/msg.h> 
 #include <semaphore.h>
 #include <time.h>
-#include "./MonitorEngine.h"
-#include "../ShmData.h"
-#include "../HelpData.h"
+#include "MonitorEngine.h"
+#include "ShmData.h"
+#include "HelpData.h"
 
 #define MAX_SIZE 1024
 #define MQ_SEM_PATH "mq_sem"
