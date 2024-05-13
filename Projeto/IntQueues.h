@@ -1,6 +1,8 @@
 #ifndef INTQUEUES_H
 #define INTQUEUES_H
 
+#include <time.h>
+
 #define MAX_CHAR_COMMAND 30
 
 /* Message from message queue struct */

@@ -14,11 +14,11 @@
 #include <unistd.h>
 #include "LogFileManager.h"
 
-sem_t mutex;
+static sem_t mutex;
 time_t t;
 FILE* logFile;
 struct tm tm;
-char logFileName = "log";
+char *logFileName = "log";
 
 /**
  * Creates a new log file.

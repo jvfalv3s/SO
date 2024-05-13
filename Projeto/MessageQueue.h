@@ -9,7 +9,7 @@
 #define MQ_NAMED_BACK_SEM_R "back_sem_R"
 
 /* ftok arguments to create the message queue key */
-#define MQ_KEY_PATH "/message_queue"
+#define MQ_KEY_PATH "/tmp/message_queue"
 #define MQ_KEY_ID 'a'
 
 /* Message from message queue struct */
@@ -17,11 +17,5 @@ typedef struct mq_message {
     long mgg_type;
     char msg_text [MAX_CHAR_MESSAGE_AMMOUNT];
 }mq_message;
-
-struct mq_message message;
-int mq_key;
-int mq_id;
-bool mqCreated = false;
-sem_t* mq_sem;
 
 #endif

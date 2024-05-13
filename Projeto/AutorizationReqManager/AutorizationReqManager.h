@@ -10,8 +10,11 @@
 
 #define BUF_SIZE 100
 /* Paths to user and back pipe */
-#define USER_PIPE_PATH "user_pipe"
-#define BACK_PIPE_PATH "back_pipe"
+#define USER_PIPE_PATH "/tmp/user_pipe"
+#define BACK_PIPE_PATH "/tmp/back_pipe"
+#include "../IntQueues.h"
+
+#include <stdbool.h>
 
 /**
  * Creates the Autorization Request Manager process.
@@ -50,7 +53,7 @@ void create_queues();
 /**
  * Divides buffer info from pipes to the given char pointers.
 */
-void div_buf_info(char* buf, char* arg1, char* arg2, char* arg3);
+void div_buf_info(char* buf, char** arg1, char** arg2, char** arg3);
 
 /**
  * Writes in a queue the new message (data, can be null).

@@ -17,6 +17,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <semaphore.h>
+#include <stdbool.h>
 
 /* Comment this line to don't show debug messages */
 #define DEBUG
@@ -56,11 +57,5 @@ typedef struct shm_struct {
     int n_users;
     int n_auth_engs;
 }shm_struct;
-
-struct shm_struct* shm_ptr;
-int shm_size = sizeof(struct shm_struct);
-
-sem_t* shm_sem;
-bool shmSemCreated = false;
 
 #endif

@@ -9,9 +9,11 @@
 #include <time.h>
 #include <pthread.h>
 #include <sys/select.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include "../LogFileManager/LogFileManager.h"
 #include "./AutorizationReqManager.h"
-#include "./AuthorizationEngine.h"
+#include "../AuthorizationEngines/AuthorizationEngine.h"
 #include "../ShmData.h"
 #include "../HelpData.h"
 #include "../IntQueues.h"
@@ -24,6 +26,26 @@ bool SenderCreated = false, ReceiverCreated = false;      // Sender and Receiver
 bool userPipeCreated = false, backPipeCreated = false;    // User and back pipes creation status
 bool userPipeFDOpened = false, backPipeFDOpened = false;  // User and back pipes file descriptors open status
 bool using_sem = false;
+
+mq_message mq_msg;
+int mq_key;
+int mq_id;
+bool mqCreated = false;
+sem_t* mq_sem;
+
+extern int MOBILE_USERS;
+extern int QUEUE_POS;
+extern int AUTH_SERVERS_MAX;
+extern int AUTH_PROC_TIME;
+extern int MAX_VIDEO_WAIT;
+extern int MAX_OTHERS_WAIT;
+extern bool AutReqManCreated;
+extern bool MonEngCreated;
+extern struct shm_struct* shm_ptr;
+extern int shm_size;
+extern sem_t* shm_sem;
+extern bool shmSemCreated;
+extern pid_t SYS_PID, ARM_PID, ME_PID;
 
 struct queue vid_queue;                  
 struct queue other_queue;                
@@ -39,9 +61,12 @@ void AutReqMan() {
     /* Stays alert for sigquit signals */
     signal(SIGQUIT, endAutReqMan);
 
-    /* Creating the message queue key */
+    /* Creating the message queue key 
     mq_key = ftok(MQ_KEY_PATH, MQ_KEY_ID);
     if(mq_key == -1) error("Creating message queue key");
+    */
+
+    mq_key = 1234;
 
     /* Opening the message queue for reading */
     mq_id = msgget(mq_key, IPC_CREAT | 0200);  // 0200 --> write-only permissions
@@ -96,7 +121,7 @@ void* Sender(void* arg) {
     #endif
     
     struct message request;
-    char* log_message;
+    char log_message[1024];
     int auth_eng_num;
     while(true) {
         pthread_mutex_lock(&mutex);
@@ -176,7 +201,6 @@ void* Receiver(void* arg) {
     char* arg1;
     char* arg2;
     char* arg3;
-    char* log_message;
 
     /* Clear the descriptor set */
     FD_ZERO(&read_set);
@@ -202,7 +226,7 @@ void* Receiver(void* arg) {
                 #ifdef DEBUG
                     printf("buf = %s\n", buf);
                 #endif
-                div_buf_info(buf, arg1, arg2, arg3);
+                div_buf_info(buf, &arg1, &arg2, &arg3);
                 if(strcmp(arg2, "VIDEO") == 0) queue_ptr = &vid_queue;
                 else queue_ptr = &other_queue;
 
@@ -218,7 +242,7 @@ void* Receiver(void* arg) {
                 #ifdef DEBUG
                     printf("buf = %s\n", buf);
                 #endif
-                div_buf_info(buf, arg1, arg2, arg3);
+                div_buf_info(buf, &arg1, &arg2, &arg3);
 
                 pthread_mutex_lock(&mutex);
                 write_in_queue(&other_queue, arg1, arg2, arg3);
@@ -259,24 +283,24 @@ void create_queues() {
 /**
  * Divides buffer info from pipes to the given char pointers.
 */
-void div_buf_info(char* buf, char* arg1, char* arg2, char* arg3) {
-    arg1 = strtok(buf, "#");
-    arg2 = strtok(NULL, "#");
-    arg3 = strtok(NULL, "#");
+void div_buf_info(char* buf, char** arg1, char** arg2, char** arg3) {
+    *arg1 = strtok(buf, "#");
+    *arg2 = strtok(NULL, "#");
+    *arg3 = strtok(NULL, "#");
 }
 
 /**
  * Writes in a queue the new message (data, can be null).
  */
 void write_in_queue(struct queue* queue_ptr, char* ID, char* command, char* data) {
-    char* log_message;
+    char log_message[100];
     if(((queue_ptr->write_pos+1) % queue_ptr->max_queue_pos) == queue_ptr->read_pos) {
         if(sprintf(log_message, "RECEIVER: WARNING -> QUEUE IS FULL (ID = %s)", ID) < 0) autReqError("CREATING WARNING LOG MESSAGE");
         writeLog(log_message);
     }
     else {
         queue_ptr->messages[queue_ptr->write_pos].id = atoi(ID);
-        queue_ptr->messages[queue_ptr->write_pos].command = command;
+        strcpy(queue_ptr->messages[queue_ptr->write_pos].command, command);
         if(data != NULL) queue_ptr->messages[queue_ptr->write_pos].data_to_reserve = atoi(data);
         queue_ptr->messages[queue_ptr->write_pos].request_time = time(0);
         queue_ptr->write_pos = (queue_ptr->write_pos+1) % queue_ptr->max_queue_pos;
@@ -302,7 +326,7 @@ void update_queues() {
     int max_time;
     int checked;
     double dif;
-    char* log_message;
+    char log_message[100];
 
     for(int i = 0; i < 2; i++) {
         if(i == 0) {
@@ -319,7 +343,7 @@ void update_queues() {
             dif = difftime(queue_ptr->messages[queue_ptr->read_pos].request_time, time(0));
             if(dif > max_time * 1000) {
                 get_from_queue(queue_ptr, &request);
-                if(sprintf(log_message, "SENDER: WARNING -> DELITING EXPIRED REQUEST (ID = %s)", request.id) < 0) autReqError("CREATING WARNING LOG MESSAGE");
+                if(sprintf(log_message, "SENDER: WARNING -> DELITING EXPIRED REQUEST (ID = %d)", request.id) < 0) autReqError("CREATING WARNING LOG MESSAGE");
                 writeLog(log_message);
             }
             queue_ptr->read_pos = (queue_ptr->read_pos + 1) % queue_ptr->max_queue_pos;
@@ -342,7 +366,7 @@ bool any_queue_is(double percentage) {
 void send_req_to(int auth_eng_num, struct message request) {
     sem_wait(shm_sem);
     using_sem = true;
-    write(shm_ptr->auth_engs[auth_eng_num].pipe_write_fd, request, sizeof(struct message));
+    write(shm_ptr->auth_engs[auth_eng_num].pipe_write_fd, &request, sizeof(struct message));
     shm_ptr->auth_engs[auth_eng_num].l_request_time = time(0);
     shm_ptr->auth_engs[auth_eng_num].busy = true;
     sem_post(shm_sem);
@@ -362,7 +386,7 @@ void send_req_to(int auth_eng_num, struct message request) {
 void logQueuesReqs() {
     struct queue* queue_ptr;
     struct message request;
-    char* log_message;
+    char log_message[1024];
     for(int i = 0; i < 2; i++) {
         if(i == 0) queue_ptr = &vid_queue;
         else queue_ptr = &other_queue;

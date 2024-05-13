@@ -109,9 +109,12 @@ int main(int argc, char **argv) {
     if (user_pipe_fd == -1) error("Opening user pipe for writing");
     userPipeFdOpened = true;
 
-    /* Creating the message queue key */
+    /* Creating the message queue key 
     int mq_key = ftok(MQ_KEY_PATH, MQ_KEY_ID);
     if(mq_key == -1) error("Creating message queue key");
+    */
+
+    int mq_key = 1234;
 
     /* Opening the message queue for reading */
     mq_id = msgget(mq_key, 0400);  // 0400 --> read-only permissions

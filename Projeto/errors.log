@@ -1,0 +1,1938 @@
+In file included from SystemManager.c:8:
+./AutorizationReqManager/AutorizationReqManager.h:60:28: warning: ‘struct queue’ declared inside parameter list will not be visible outside of this definition or declaration
+   60 | void write_in_queue(struct queue* queue_ptr, char* ID, char* command, char* data);
+      |                            ^~~~~
+./AutorizationReqManager/AutorizationReqManager.h:65:53: warning: ‘struct message’ declared inside parameter list will not be visible outside of this definition or declaration
+   65 | void get_from_queue(struct queue* queue_ptr, struct message* request);
+      |                                                     ^~~~~~~
+./AutorizationReqManager/AutorizationReqManager.h:65:28: warning: ‘struct queue’ declared inside parameter list will not be visible outside of this definition or declaration
+   65 | void get_from_queue(struct queue* queue_ptr, struct message* request);
+      |                            ^~~~~
+./AutorizationReqManager/AutorizationReqManager.h:80:43: warning: ‘struct message’ declared inside parameter list will not be visible outside of this definition or declaration
+   80 | void send_req_to(int auth_eng_num, struct message request);
+      |                                           ^~~~~~~
+In file included from AutorizationReqManager/AutorizationReqManager.c:13:
+AutorizationReqManager/./AutorizationReqManager.h:60:28: warning: ‘struct queue’ declared inside parameter list will not be visible outside of this definition or declaration
+   60 | void write_in_queue(struct queue* queue_ptr, char* ID, char* command, char* data);
+      |                            ^~~~~
+AutorizationReqManager/./AutorizationReqManager.h:65:53: warning: ‘struct message’ declared inside parameter list will not be visible outside of this definition or declaration
+   65 | void get_from_queue(struct queue* queue_ptr, struct message* request);
+      |                                                     ^~~~~~~
+AutorizationReqManager/./AutorizationReqManager.h:65:28: warning: ‘struct queue’ declared inside parameter list will not be visible outside of this definition or declaration
+   65 | void get_from_queue(struct queue* queue_ptr, struct message* request);
+      |                            ^~~~~
+AutorizationReqManager/./AutorizationReqManager.h:80:43: warning: ‘struct message’ declared inside parameter list will not be visible outside of this definition or declaration
+   80 | void send_req_to(int auth_eng_num, struct message request);
+      |                                           ^~~~~~~
+In file included from AutorizationReqManager/AutorizationReqManager.c:14:
+AutorizationReqManager/../AuthorizationEngines/AuthorizationEngine.h:39:48: warning: ‘struct message’ declared inside parameter list will not be visible outside of this definition or declaration
+   39 | void process_user_req(int auth_eng_num, struct message request);
+      |                                                ^~~~~~~
+AutorizationReqManager/../AuthorizationEngines/AuthorizationEngine.h:44:35: warning: ‘struct message’ declared inside parameter list will not be visible outside of this definition or declaration
+   44 | void process_back_user_req(struct message request)
+      |                                   ^~~~~~~
+AutorizationReqManager/../AuthorizationEngines/AuthorizationEngine.h:44:43: error: parameter 1 (‘request’) has incomplete type
+   44 | void process_back_user_req(struct message request)
+      |                            ~~~~~~~~~~~~~~~^~~~~~~
+AutorizationReqManager/../AuthorizationEngines/AuthorizationEngine.h: In function ‘process_back_user_req’:
+AutorizationReqManager/../AuthorizationEngines/AuthorizationEngine.h:54:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘void’
+   54 | void endAuthEng()
+      | ^~~~
+In file included from /usr/include/fcntl.h:35,
+                 from AutorizationReqManager/../ShmData.h:11,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/bits/fcntl.h:47:4: error: expected declaration specifiers before ‘;’ token
+   47 |   };
+      |    ^
+In file included from AutorizationReqManager/../ShmData.h:11,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/fcntl.h:56:17: error: storage class specified for parameter ‘off_t’
+   56 | typedef __off_t off_t;
+      |                 ^~~~~
+In file included from AutorizationReqManager/../ShmData.h:11,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/fcntl.h:149:12: error: storage class specified for parameter ‘fcntl’
+  149 | extern int fcntl (int __fd, int __cmd, ...);
+      |            ^~~~~
+/usr/include/fcntl.h:181:12: error: storage class specified for parameter ‘open’
+  181 | extern int open (const char *__file, int __oflag, ...) __nonnull ((1));
+      |            ^~~~
+/usr/include/fcntl.h:205:12: error: storage class specified for parameter ‘openat’
+  205 | extern int openat (int __fd, const char *__file, int __oflag, ...)
+      |            ^~~~~~
+/usr/include/fcntl.h:227:12: error: storage class specified for parameter ‘creat’
+  227 | extern int creat (const char *__file, mode_t __mode) __nonnull ((1));
+      |            ^~~~~
+/usr/include/fcntl.h:256:40: error: expected declaration specifiers or ‘...’ before ‘off_t’
+  256 | extern int lockf (int __fd, int __cmd, off_t __len);
+      |                                        ^~~~~
+/usr/include/fcntl.h:273:37: error: expected declaration specifiers or ‘...’ before ‘off_t’
+  273 | extern int posix_fadvise (int __fd, off_t __offset, off_t __len,
+      |                                     ^~~~~
+/usr/include/fcntl.h:273:53: error: expected declaration specifiers or ‘...’ before ‘off_t’
+  273 | extern int posix_fadvise (int __fd, off_t __offset, off_t __len,
+      |                                                     ^~~~~
+/usr/include/fcntl.h:295:39: error: expected declaration specifiers or ‘...’ before ‘off_t’
+  295 | extern int posix_fallocate (int __fd, off_t __offset, off_t __len);
+      |                                       ^~~~~
+/usr/include/fcntl.h:295:55: error: expected declaration specifiers or ‘...’ before ‘off_t’
+  295 | extern int posix_fallocate (int __fd, off_t __offset, off_t __len);
+      |                                                       ^~~~~
+In file included from /usr/include/x86_64-linux-gnu/bits/shm.h:24,
+                 from /usr/include/x86_64-linux-gnu/sys/shm.h:30,
+                 from AutorizationReqManager/../ShmData.h:12,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/bits/shmlba.h:27:12: error: storage class specified for parameter ‘__getpagesize’
+   27 | extern int __getpagesize (void) __THROW __attribute__ ((__const__));
+      |            ^~~~~~~~~~~~~
+In file included from /usr/include/x86_64-linux-gnu/sys/shm.h:30,
+                 from AutorizationReqManager/../ShmData.h:12,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/bits/shm.h:43:27: error: storage class specified for parameter ‘shmatt_t’
+   43 | typedef __syscall_ulong_t shmatt_t;
+      |                           ^~~~~~~~
+In file included from /usr/include/x86_64-linux-gnu/bits/shm.h:45,
+                 from /usr/include/x86_64-linux-gnu/sys/shm.h:30,
+                 from AutorizationReqManager/../ShmData.h:12,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/bits/types/struct_shmid_ds.h:45:5: error: expected specifier-qualifier-list before ‘shmatt_t’
+   45 |     shmatt_t shm_nattch;                /* number of current attaches */
+      |     ^~~~~~~~
+In file included from AutorizationReqManager/../ShmData.h:12,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/sys/shm.h:50:12: error: storage class specified for parameter ‘shmctl’
+   50 | extern int shmctl (int __shmid, int __cmd, struct shmid_ds *__buf) __THROW;
+      |            ^~~~~~
+/usr/include/x86_64-linux-gnu/sys/shm.h:62:12: error: storage class specified for parameter ‘shmget’
+   62 | extern int shmget (key_t __key, size_t __size, int __shmflg) __THROW;
+      |            ^~~~~~
+/usr/include/x86_64-linux-gnu/sys/shm.h:65:14: error: storage class specified for parameter ‘shmat’
+   65 | extern void *shmat (int __shmid, const void *__shmaddr, int __shmflg)
+      |              ^~~~~
+/usr/include/x86_64-linux-gnu/sys/shm.h:69:12: error: storage class specified for parameter ‘shmdt’
+   69 | extern int shmdt (const void *__shmaddr) __THROW;
+      |            ^~~~~
+In file included from AutorizationReqManager/../ShmData.h:13,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/sys/mman.h:57:14: error: storage class specified for parameter ‘mmap’
+   57 | extern void *mmap (void *__addr, size_t __len, int __prot,
+      |              ^~~~
+/usr/include/x86_64-linux-gnu/sys/mman.h:76:12: error: storage class specified for parameter ‘munmap’
+   76 | extern int munmap (void *__addr, size_t __len) __THROW;
+      |            ^~~~~~
+/usr/include/x86_64-linux-gnu/sys/mman.h:81:12: error: storage class specified for parameter ‘mprotect’
+   81 | extern int mprotect (void *__addr, size_t __len, int __prot) __THROW;
+      |            ^~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/mman.h:89:12: error: storage class specified for parameter ‘msync’
+   89 | extern int msync (void *__addr, size_t __len, int __flags);
+      |            ^~~~~
+/usr/include/x86_64-linux-gnu/sys/mman.h:94:12: error: storage class specified for parameter ‘madvise’
+   94 | extern int madvise (void *__addr, size_t __len, int __advice) __THROW;
+      |            ^~~~~~~
+/usr/include/x86_64-linux-gnu/sys/mman.h:98:12: error: storage class specified for parameter ‘posix_madvise’
+   98 | extern int posix_madvise (void *__addr, size_t __len, int __advice) __THROW;
+      |            ^~~~~~~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/mman.h:103:12: error: storage class specified for parameter ‘mlock’
+  103 | extern int mlock (const void *__addr, size_t __len) __THROW;
+      |            ^~~~~
+/usr/include/x86_64-linux-gnu/sys/mman.h:106:12: error: storage class specified for parameter ‘munlock’
+  106 | extern int munlock (const void *__addr, size_t __len) __THROW;
+      |            ^~~~~~~
+/usr/include/x86_64-linux-gnu/sys/mman.h:111:12: error: storage class specified for parameter ‘mlockall’
+  111 | extern int mlockall (int __flags) __THROW;
+      |            ^~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/mman.h:115:12: error: storage class specified for parameter ‘munlockall’
+  115 | extern int munlockall (void) __THROW;
+      |            ^~~~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/mman.h:123:12: error: storage class specified for parameter ‘mincore’
+  123 | extern int mincore (void *__start, size_t __len, unsigned char *__vec)
+      |            ^~~~~~~
+/usr/include/x86_64-linux-gnu/sys/mman.h:144:12: error: storage class specified for parameter ‘shm_open’
+  144 | extern int shm_open (const char *__name, int __oflag, mode_t __mode);
+      |            ^~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/mman.h:147:12: error: storage class specified for parameter ‘shm_unlink’
+  147 | extern int shm_unlink (const char *__name);
+      |            ^~~~~~~~~~
+In file included from /usr/include/signal.h:32,
+                 from AutorizationReqManager/../ShmData.h:15,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/bits/types/sig_atomic_t.h:8:24: error: storage class specified for parameter ‘sig_atomic_t’
+    8 | typedef __sig_atomic_t sig_atomic_t;
+      |                        ^~~~~~~~~~~~
+In file included from /usr/include/x86_64-linux-gnu/bits/types/siginfo_t.h:6,
+                 from /usr/include/signal.h:57,
+                 from AutorizationReqManager/../ShmData.h:15,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/bits/types/__sigval_t.h:30:22: error: storage class specified for parameter ‘__sigval_t’
+   30 | typedef union sigval __sigval_t;
+      |                      ^~~~~~~~~~
+In file included from /usr/include/signal.h:57,
+                 from AutorizationReqManager/../ShmData.h:15,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/bits/types/siginfo_t.h:67:13: error: expected specifier-qualifier-list before ‘__sigval_t’
+   67 |             __sigval_t si_sigval;       /* Signal value.  */
+      |             ^~~~~~~~~~
+/usr/include/x86_64-linux-gnu/bits/types/siginfo_t.h:75:13: error: expected specifier-qualifier-list before ‘__sigval_t’
+   75 |             __sigval_t si_sigval;       /* Signal value.  */
+      |             ^~~~~~~~~~
+/usr/include/x86_64-linux-gnu/bits/types/siginfo_t.h:124:5: error: storage class specified for parameter ‘siginfo_t’
+  124 |   } siginfo_t __SI_ALIGNMENT;
+      |     ^~~~~~~~~
+In file included from /usr/include/signal.h:62,
+                 from AutorizationReqManager/../ShmData.h:15,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/bits/types/sigval_t.h:16:20: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘sigval_t’
+   16 | typedef __sigval_t sigval_t;
+      |                    ^~~~~~~~
+In file included from /usr/include/signal.h:66,
+                 from AutorizationReqManager/../ShmData.h:15,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/bits/types/sigevent_t.h:24:5: error: expected specifier-qualifier-list before ‘__sigval_t’
+   24 |     __sigval_t sigev_value;
+      |     ^~~~~~~~~~
+/usr/include/x86_64-linux-gnu/bits/types/sigevent_t.h:42:5: error: storage class specified for parameter ‘sigevent_t’
+   42 |   } sigevent_t;
+      |     ^~~~~~~~~~
+In file included from AutorizationReqManager/../ShmData.h:15,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/signal.h:72:16: error: storage class specified for parameter ‘__sighandler_t’
+   72 | typedef void (*__sighandler_t) (int);
+      |                ^~~~~~~~~~~~~~
+/usr/include/signal.h:77:23: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘__sysv_signal’
+   77 | extern __sighandler_t __sysv_signal (int __sig, __sighandler_t __handler)
+      |                       ^~~~~~~~~~~~~
+/usr/include/signal.h:88:23: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘signal’
+   88 | extern __sighandler_t signal (int __sig, __sighandler_t __handler)
+      |                       ^~~~~~
+/usr/include/signal.h:112:12: error: storage class specified for parameter ‘kill’
+  112 | extern int kill (__pid_t __pid, int __sig) __THROW;
+      |            ^~~~
+/usr/include/signal.h:119:12: error: storage class specified for parameter ‘killpg’
+  119 | extern int killpg (__pid_t __pgrp, int __sig) __THROW;
+      |            ^~~~~~
+/usr/include/signal.h:123:12: error: storage class specified for parameter ‘raise’
+  123 | extern int raise (int __sig) __THROW;
+      |            ^~~~~
+/usr/include/signal.h:127:23: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘ssignal’
+  127 | extern __sighandler_t ssignal (int __sig, __sighandler_t __handler)
+      |                       ^~~~~~~
+/usr/include/signal.h:129:12: error: storage class specified for parameter ‘gsignal’
+  129 | extern int gsignal (int __sig) __THROW;
+      |            ^~~~~~~
+/usr/include/signal.h:134:13: error: storage class specified for parameter ‘psignal’
+  134 | extern void psignal (int __sig, const char *__s);
+      |             ^~~~~~~
+/usr/include/signal.h:137:39: error: expected ‘;’, ‘,’ or ‘)’ before ‘*’ token
+  137 | extern void psiginfo (const siginfo_t *__pinfo, const char *__s);
+      |                                       ^
+/usr/include/signal.h:173:12: error: storage class specified for parameter ‘sigblock’
+  173 | extern int sigblock (int __mask) __THROW __attribute_deprecated__;
+      |            ^~~~~~~~
+/usr/include/signal.h:176:12: error: storage class specified for parameter ‘sigsetmask’
+  176 | extern int sigsetmask (int __mask) __THROW __attribute_deprecated__;
+      |            ^~~~~~~~~~
+/usr/include/signal.h:179:12: error: storage class specified for parameter ‘siggetmask’
+  179 | extern int siggetmask (void) __THROW __attribute_deprecated__;
+      |            ^~~~~~~~~~
+/usr/include/signal.h:193:24: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘sig_t’
+  193 | typedef __sighandler_t sig_t;
+      |                        ^~~~~
+/usr/include/signal.h:199:12: error: storage class specified for parameter ‘sigemptyset’
+  199 | extern int sigemptyset (sigset_t *__set) __THROW __nonnull ((1));
+      |            ^~~~~~~~~~~
+/usr/include/signal.h:202:12: error: storage class specified for parameter ‘sigfillset’
+  202 | extern int sigfillset (sigset_t *__set) __THROW __nonnull ((1));
+      |            ^~~~~~~~~~
+/usr/include/signal.h:205:12: error: storage class specified for parameter ‘sigaddset’
+  205 | extern int sigaddset (sigset_t *__set, int __signo) __THROW __nonnull ((1));
+      |            ^~~~~~~~~
+/usr/include/signal.h:208:12: error: storage class specified for parameter ‘sigdelset’
+  208 | extern int sigdelset (sigset_t *__set, int __signo) __THROW __nonnull ((1));
+      |            ^~~~~~~~~
+/usr/include/signal.h:211:12: error: storage class specified for parameter ‘sigismember’
+  211 | extern int sigismember (const sigset_t *__set, int __signo)
+      |            ^~~~~~~~~~~
+In file included from /usr/include/signal.h:229,
+                 from AutorizationReqManager/../ShmData.h:15,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/bits/sigaction.h:34:9: error: expected specifier-qualifier-list before ‘__sighandler_t’
+   34 |         __sighandler_t sa_handler;
+      |         ^~~~~~~~~~~~~~
+In file included from AutorizationReqManager/../ShmData.h:15,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/signal.h:232:12: error: storage class specified for parameter ‘sigprocmask’
+  232 | extern int sigprocmask (int __how, const sigset_t *__restrict __set,
+      |            ^~~~~~~~~~~
+/usr/include/signal.h:240:12: error: storage class specified for parameter ‘sigsuspend’
+  240 | extern int sigsuspend (const sigset_t *__set) __nonnull ((1));
+      |            ^~~~~~~~~~
+/usr/include/signal.h:243:12: error: storage class specified for parameter ‘sigaction’
+  243 | extern int sigaction (int __sig, const struct sigaction *__restrict __act,
+      |            ^~~~~~~~~
+/usr/include/signal.h:247:12: error: storage class specified for parameter ‘sigpending’
+  247 | extern int sigpending (sigset_t *__set) __THROW __nonnull ((1));
+      |            ^~~~~~~~~~
+/usr/include/signal.h:255:12: error: storage class specified for parameter ‘sigwait’
+  255 | extern int sigwait (const sigset_t *__restrict __set, int *__restrict __sig)
+      |            ^~~~~~~
+/usr/include/signal.h:265:25: error: expected declaration specifiers or ‘...’ before ‘siginfo_t’
+  265 |                         siginfo_t *__restrict __info) __nonnull ((1));
+      |                         ^~~~~~~~~
+/usr/include/signal.h:274:26: error: expected declaration specifiers or ‘...’ before ‘siginfo_t’
+  274 |                          siginfo_t *__restrict __info,
+      |                          ^~~~~~~~~
+/usr/include/signal.h:292:12: error: storage class specified for parameter ‘sigqueue’
+  292 | extern int sigqueue (__pid_t __pid, int __sig, const union sigval __val)
+      |            ^~~~~~~~
+In file included from AutorizationReqManager/../ShmData.h:15,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/signal.h:304:12: error: storage class specified for parameter ‘sigreturn’
+  304 | extern int sigreturn (struct sigcontext *__scp) __THROW;
+      |            ^~~~~~~~~
+In file included from /usr/include/signal.h:313,
+                 from AutorizationReqManager/../ShmData.h:15,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/bits/types/stack_t.h:31:5: error: storage class specified for parameter ‘stack_t’
+   31 |   } stack_t;
+      |     ^~~~~~~
+In file included from /usr/include/signal.h:316,
+                 from AutorizationReqManager/../ShmData.h:15,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/sys/ucontext.h:37:1: error: expected declaration specifiers before ‘__extension__’
+   37 | __extension__ typedef long long int greg_t;
+      | ^~~~~~~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/ucontext.h:46:9: error: unknown type name ‘greg_t’
+   46 | typedef greg_t gregset_t[__NGREG];
+      |         ^~~~~~
+/usr/include/x86_64-linux-gnu/sys/ucontext.h:46:16: error: storage class specified for parameter ‘gregset_t’
+   46 | typedef greg_t gregset_t[__NGREG];
+      |                ^~~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/ucontext.h:130:31: error: storage class specified for parameter ‘fpregset_t’
+  130 | typedef struct _libc_fpstate *fpregset_t;
+      |                               ^~~~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/ucontext.h:135:5: error: expected specifier-qualifier-list before ‘gregset_t’
+  135 |     gregset_t __ctx(gregs);
+      |     ^~~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/ucontext.h:139:3: error: storage class specified for parameter ‘mcontext_t’
+  139 | } mcontext_t;
+      |   ^~~~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/ucontext.h:146:5: error: expected specifier-qualifier-list before ‘stack_t’
+  146 |     stack_t uc_stack;
+      |     ^~~~~~~
+/usr/include/x86_64-linux-gnu/sys/ucontext.h:151:5: error: storage class specified for parameter ‘ucontext_t’
+  151 |   } ucontext_t;
+      |     ^~~~~~~~~~
+In file included from AutorizationReqManager/../ShmData.h:15,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/signal.h:324:12: error: storage class specified for parameter ‘siginterrupt’
+  324 | extern int siginterrupt (int __sig, int __interrupt) __THROW
+      |            ^~~~~~~~~~~~
+In file included from AutorizationReqManager/../ShmData.h:15,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/signal.h:333:39: error: expected ‘;’, ‘,’ or ‘)’ before ‘*’ token
+  333 | extern int sigaltstack (const stack_t *__restrict __ss,
+      |                                       ^
+In file included from AutorizationReqManager/../ShmData.h:15,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/signal.h:347:12: error: storage class specified for parameter ‘sigstack’
+  347 | extern int sigstack (struct sigstack *__ss, struct sigstack *__oss)
+      |            ^~~~~~~~
+In file included from /usr/include/signal.h:376,
+                 from AutorizationReqManager/../ShmData.h:15,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/bits/sigthread.h:31:12: error: storage class specified for parameter ‘pthread_sigmask’
+   31 | extern int pthread_sigmask (int __how,
+      |            ^~~~~~~~~~~~~~~
+/usr/include/x86_64-linux-gnu/bits/sigthread.h:36:12: error: storage class specified for parameter ‘pthread_kill’
+   36 | extern int pthread_kill (pthread_t __threadid, int __signo) __THROW;
+      |            ^~~~~~~~~~~~
+In file included from AutorizationReqManager/../ShmData.h:15,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/signal.h:383:12: error: storage class specified for parameter ‘__libc_current_sigrtmin’
+  383 | extern int __libc_current_sigrtmin (void) __THROW;
+      |            ^~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/signal.h:385:12: error: storage class specified for parameter ‘__libc_current_sigrtmax’
+  385 | extern int __libc_current_sigrtmax (void) __THROW;
+      |            ^~~~~~~~~~~~~~~~~~~~~~~
+In file included from AutorizationReqManager/../ShmData.h:16,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/unistd.h:255:22: error: storage class specified for parameter ‘useconds_t’
+  255 | typedef __useconds_t useconds_t;
+      |                      ^~~~~~~~~~
+/usr/include/unistd.h:267:20: error: storage class specified for parameter ‘intptr_t’
+  267 | typedef __intptr_t intptr_t;
+      |                    ^~~~~~~~
+/usr/include/unistd.h:274:21: error: storage class specified for parameter ‘socklen_t’
+  274 | typedef __socklen_t socklen_t;
+      |                     ^~~~~~~~~
+/usr/include/unistd.h:287:12: error: storage class specified for parameter ‘access’
+  287 | extern int access (const char *__name, int __type) __THROW __nonnull ((1));
+      |            ^~~~~~
+/usr/include/unistd.h:309:12: error: storage class specified for parameter ‘faccessat’
+  309 | extern int faccessat (int __fd, const char *__file, int __type, int __flag)
+      |            ^~~~~~~~~
+/usr/include/unistd.h:339:16: error: storage class specified for parameter ‘lseek’
+  339 | extern __off_t lseek (int __fd, __off_t __offset, int __whence) __THROW;
+      |                ^~~~~
+/usr/include/unistd.h:358:12: error: storage class specified for parameter ‘close’
+  358 | extern int close (int __fd);
+      |            ^~~~~
+/usr/include/unistd.h:363:13: error: storage class specified for parameter ‘closefrom’
+  363 | extern void closefrom (int __lowfd) __THROW;
+      |             ^~~~~~~~~
+/usr/include/unistd.h:371:16: error: storage class specified for parameter ‘read’
+  371 | extern ssize_t read (int __fd, void *__buf, size_t __nbytes) __wur
+      |                ^~~~
+/usr/include/unistd.h:378:16: error: storage class specified for parameter ‘write’
+  378 | extern ssize_t write (int __fd, const void *__buf, size_t __n) __wur
+      |                ^~~~~
+/usr/include/unistd.h:389:16: error: storage class specified for parameter ‘pread’
+  389 | extern ssize_t pread (int __fd, void *__buf, size_t __nbytes,
+      |                ^~~~~
+/usr/include/unistd.h:398:16: error: storage class specified for parameter ‘pwrite’
+  398 | extern ssize_t pwrite (int __fd, const void *__buf, size_t __n,
+      |                ^~~~~~
+/usr/include/unistd.h:437:12: error: storage class specified for parameter ‘pipe’
+  437 | extern int pipe (int __pipedes[2]) __THROW __wur;
+      |            ^~~~
+/usr/include/unistd.h:452:21: error: storage class specified for parameter ‘alarm’
+  452 | extern unsigned int alarm (unsigned int __seconds) __THROW;
+      |                     ^~~~~
+/usr/include/unistd.h:464:21: error: storage class specified for parameter ‘sleep’
+  464 | extern unsigned int sleep (unsigned int __seconds);
+      |                     ^~~~~
+/usr/include/unistd.h:472:21: error: storage class specified for parameter ‘ualarm’
+  472 | extern __useconds_t ualarm (__useconds_t __value, __useconds_t __interval)
+      |                     ^~~~~~
+/usr/include/unistd.h:480:12: error: storage class specified for parameter ‘usleep’
+  480 | extern int usleep (__useconds_t __useconds);
+      |            ^~~~~~
+/usr/include/unistd.h:489:12: error: storage class specified for parameter ‘pause’
+  489 | extern int pause (void);
+      |            ^~~~~
+/usr/include/unistd.h:493:12: error: storage class specified for parameter ‘chown’
+  493 | extern int chown (const char *__file, __uid_t __owner, __gid_t __group)
+      |            ^~~~~
+/usr/include/unistd.h:498:12: error: storage class specified for parameter ‘fchown’
+  498 | extern int fchown (int __fd, __uid_t __owner, __gid_t __group) __THROW __wur;
+      |            ^~~~~~
+/usr/include/unistd.h:503:12: error: storage class specified for parameter ‘lchown’
+  503 | extern int lchown (const char *__file, __uid_t __owner, __gid_t __group)
+      |            ^~~~~~
+/usr/include/unistd.h:511:12: error: storage class specified for parameter ‘fchownat’
+  511 | extern int fchownat (int __fd, const char *__file, __uid_t __owner,
+      |            ^~~~~~~~
+/usr/include/unistd.h:517:12: error: storage class specified for parameter ‘chdir’
+  517 | extern int chdir (const char *__path) __THROW __nonnull ((1)) __wur;
+      |            ^~~~~
+/usr/include/unistd.h:521:12: error: storage class specified for parameter ‘fchdir’
+  521 | extern int fchdir (int __fd) __THROW __wur;
+      |            ^~~~~~
+/usr/include/unistd.h:531:14: error: storage class specified for parameter ‘getcwd’
+  531 | extern char *getcwd (char *__buf, size_t __size) __THROW __wur;
+      |              ^~~~~~
+/usr/include/unistd.h:545:14: error: storage class specified for parameter ‘getwd’
+  545 | extern char *getwd (char *__buf)
+      |              ^~~~~
+/usr/include/unistd.h:552:12: error: storage class specified for parameter ‘dup’
+  552 | extern int dup (int __fd) __THROW __wur;
+      |            ^~~
+/usr/include/unistd.h:555:12: error: storage class specified for parameter ‘dup2’
+  555 | extern int dup2 (int __fd, int __fd2) __THROW;
+      |            ^~~~
+/usr/include/unistd.h:564:15: error: storage class specified for parameter ‘__environ’
+  564 | extern char **__environ;
+      |               ^~~~~~~~~
+/usr/include/unistd.h:572:12: error: storage class specified for parameter ‘execve’
+  572 | extern int execve (const char *__path, char *const __argv[],
+      |            ^~~~~~
+/usr/include/unistd.h:578:12: error: storage class specified for parameter ‘fexecve’
+  578 | extern int fexecve (int __fd, char *const __argv[], char *const __envp[])
+      |            ^~~~~~~
+/usr/include/unistd.h:584:12: error: storage class specified for parameter ‘execv’
+  584 | extern int execv (const char *__path, char *const __argv[])
+      |            ^~~~~
+/usr/include/unistd.h:589:12: error: storage class specified for parameter ‘execle’
+  589 | extern int execle (const char *__path, const char *__arg, ...)
+      |            ^~~~~~
+/usr/include/unistd.h:594:12: error: storage class specified for parameter ‘execl’
+  594 | extern int execl (const char *__path, const char *__arg, ...)
+      |            ^~~~~
+/usr/include/unistd.h:599:12: error: storage class specified for parameter ‘execvp’
+  599 | extern int execvp (const char *__file, char *const __argv[])
+      |            ^~~~~~
+/usr/include/unistd.h:605:12: error: storage class specified for parameter ‘execlp’
+  605 | extern int execlp (const char *__file, const char *__arg, ...)
+      |            ^~~~~~
+/usr/include/unistd.h:619:12: error: storage class specified for parameter ‘nice’
+  619 | extern int nice (int __inc) __THROW __wur;
+      |            ^~~~
+/usr/include/unistd.h:624:13: error: storage class specified for parameter ‘_exit’
+  624 | extern void _exit (int __status) __attribute__ ((__noreturn__));
+      |             ^~~~~
+In file included from AutorizationReqManager/../ShmData.h:16,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/unistd.h:633:17: error: storage class specified for parameter ‘pathconf’
+  633 | extern long int pathconf (const char *__path, int __name)
+      |                 ^~~~~~~~
+/usr/include/unistd.h:637:17: error: storage class specified for parameter ‘fpathconf’
+  637 | extern long int fpathconf (int __fd, int __name) __THROW;
+      |                 ^~~~~~~~~
+/usr/include/unistd.h:640:17: error: storage class specified for parameter ‘sysconf’
+  640 | extern long int sysconf (int __name) __THROW;
+      |                 ^~~~~~~
+/usr/include/unistd.h:644:15: error: storage class specified for parameter ‘confstr’
+  644 | extern size_t confstr (int __name, char *__buf, size_t __len) __THROW
+      |               ^~~~~~~
+/usr/include/unistd.h:650:16: error: storage class specified for parameter ‘getpid’
+  650 | extern __pid_t getpid (void) __THROW;
+      |                ^~~~~~
+/usr/include/unistd.h:653:16: error: storage class specified for parameter ‘getppid’
+  653 | extern __pid_t getppid (void) __THROW;
+      |                ^~~~~~~
+/usr/include/unistd.h:656:16: error: storage class specified for parameter ‘getpgrp’
+  656 | extern __pid_t getpgrp (void) __THROW;
+      |                ^~~~~~~
+/usr/include/unistd.h:659:16: error: storage class specified for parameter ‘__getpgid’
+  659 | extern __pid_t __getpgid (__pid_t __pid) __THROW;
+      |                ^~~~~~~~~
+/usr/include/unistd.h:661:16: error: storage class specified for parameter ‘getpgid’
+  661 | extern __pid_t getpgid (__pid_t __pid) __THROW;
+      |                ^~~~~~~
+/usr/include/unistd.h:668:12: error: storage class specified for parameter ‘setpgid’
+  668 | extern int setpgid (__pid_t __pid, __pid_t __pgid) __THROW;
+      |            ^~~~~~~
+/usr/include/unistd.h:682:12: error: storage class specified for parameter ‘setpgrp’
+  682 | extern int setpgrp (void) __THROW;
+      |            ^~~~~~~
+/usr/include/unistd.h:689:16: error: storage class specified for parameter ‘setsid’
+  689 | extern __pid_t setsid (void) __THROW;
+      |                ^~~~~~
+/usr/include/unistd.h:693:16: error: storage class specified for parameter ‘getsid’
+  693 | extern __pid_t getsid (__pid_t __pid) __THROW;
+      |                ^~~~~~
+/usr/include/unistd.h:697:16: error: storage class specified for parameter ‘getuid’
+  697 | extern __uid_t getuid (void) __THROW;
+      |                ^~~~~~
+/usr/include/unistd.h:700:16: error: storage class specified for parameter ‘geteuid’
+  700 | extern __uid_t geteuid (void) __THROW;
+      |                ^~~~~~~
+/usr/include/unistd.h:703:16: error: storage class specified for parameter ‘getgid’
+  703 | extern __gid_t getgid (void) __THROW;
+      |                ^~~~~~
+/usr/include/unistd.h:706:16: error: storage class specified for parameter ‘getegid’
+  706 | extern __gid_t getegid (void) __THROW;
+      |                ^~~~~~~
+/usr/include/unistd.h:711:12: error: storage class specified for parameter ‘getgroups’
+  711 | extern int getgroups (int __size, __gid_t __list[]) __THROW __wur
+      |            ^~~~~~~~~
+/usr/include/unistd.h:722:12: error: storage class specified for parameter ‘setuid’
+  722 | extern int setuid (__uid_t __uid) __THROW __wur;
+      |            ^~~~~~
+/usr/include/unistd.h:727:12: error: storage class specified for parameter ‘setreuid’
+  727 | extern int setreuid (__uid_t __ruid, __uid_t __euid) __THROW __wur;
+      |            ^~~~~~~~
+/usr/include/unistd.h:732:12: error: storage class specified for parameter ‘seteuid’
+  732 | extern int seteuid (__uid_t __uid) __THROW __wur;
+      |            ^~~~~~~
+/usr/include/unistd.h:739:12: error: storage class specified for parameter ‘setgid’
+  739 | extern int setgid (__gid_t __gid) __THROW __wur;
+      |            ^~~~~~
+/usr/include/unistd.h:744:12: error: storage class specified for parameter ‘setregid’
+  744 | extern int setregid (__gid_t __rgid, __gid_t __egid) __THROW __wur;
+      |            ^~~~~~~~
+/usr/include/unistd.h:749:12: error: storage class specified for parameter ‘setegid’
+  749 | extern int setegid (__gid_t __gid) __THROW __wur;
+      |            ^~~~~~~
+/usr/include/unistd.h:778:16: error: storage class specified for parameter ‘fork’
+  778 | extern __pid_t fork (void) __THROWNL;
+      |                ^~~~
+/usr/include/unistd.h:786:16: error: storage class specified for parameter ‘vfork’
+  786 | extern __pid_t vfork (void) __THROW;
+      |                ^~~~~
+/usr/include/unistd.h:799:14: error: storage class specified for parameter ‘ttyname’
+  799 | extern char *ttyname (int __fd) __THROW;
+      |              ^~~~~~~
+/usr/include/unistd.h:803:12: error: storage class specified for parameter ‘ttyname_r’
+  803 | extern int ttyname_r (int __fd, char *__buf, size_t __buflen)
+      |            ^~~~~~~~~
+/usr/include/unistd.h:809:12: error: storage class specified for parameter ‘isatty’
+  809 | extern int isatty (int __fd) __THROW;
+      |            ^~~~~~
+/usr/include/unistd.h:814:12: error: storage class specified for parameter ‘ttyslot’
+  814 | extern int ttyslot (void) __THROW;
+      |            ^~~~~~~
+/usr/include/unistd.h:819:12: error: storage class specified for parameter ‘link’
+  819 | extern int link (const char *__from, const char *__to)
+      |            ^~~~
+/usr/include/unistd.h:825:12: error: storage class specified for parameter ‘linkat’
+  825 | extern int linkat (int __fromfd, const char *__from, int __tofd,
+      |            ^~~~~~
+/usr/include/unistd.h:832:12: error: storage class specified for parameter ‘symlink’
+  832 | extern int symlink (const char *__from, const char *__to)
+      |            ^~~~~~~
+/usr/include/unistd.h:838:16: error: storage class specified for parameter ‘readlink’
+  838 | extern ssize_t readlink (const char *__restrict __path,
+      |                ^~~~~~~~
+/usr/include/unistd.h:847:12: error: storage class specified for parameter ‘symlinkat’
+  847 | extern int symlinkat (const char *__from, int __tofd,
+      |            ^~~~~~~~~
+/usr/include/unistd.h:851:16: error: storage class specified for parameter ‘readlinkat’
+  851 | extern ssize_t readlinkat (int __fd, const char *__restrict __path,
+      |                ^~~~~~~~~~
+/usr/include/unistd.h:858:12: error: storage class specified for parameter ‘unlink’
+  858 | extern int unlink (const char *__name) __THROW __nonnull ((1));
+      |            ^~~~~~
+/usr/include/unistd.h:862:12: error: storage class specified for parameter ‘unlinkat’
+  862 | extern int unlinkat (int __fd, const char *__name, int __flag)
+      |            ^~~~~~~~
+/usr/include/unistd.h:867:12: error: storage class specified for parameter ‘rmdir’
+  867 | extern int rmdir (const char *__path) __THROW __nonnull ((1));
+      |            ^~~~~
+/usr/include/unistd.h:871:16: error: storage class specified for parameter ‘tcgetpgrp’
+  871 | extern __pid_t tcgetpgrp (int __fd) __THROW;
+      |                ^~~~~~~~~
+/usr/include/unistd.h:874:12: error: storage class specified for parameter ‘tcsetpgrp’
+  874 | extern int tcsetpgrp (int __fd, __pid_t __pgrp_id) __THROW;
+      |            ^~~~~~~~~
+/usr/include/unistd.h:881:14: error: storage class specified for parameter ‘getlogin’
+  881 | extern char *getlogin (void);
+      |              ^~~~~~~~
+/usr/include/unistd.h:889:12: error: storage class specified for parameter ‘getlogin_r’
+  889 | extern int getlogin_r (char *__name, size_t __name_len) __nonnull ((1))
+      |            ^~~~~~~~~~
+/usr/include/unistd.h:895:12: error: storage class specified for parameter ‘setlogin’
+  895 | extern int setlogin (const char *__name) __THROW __nonnull ((1));
+      |            ^~~~~~~~
+In file included from /usr/include/x86_64-linux-gnu/bits/getopt_posix.h:27,
+                 from /usr/include/unistd.h:903,
+                 from AutorizationReqManager/../ShmData.h:16,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/bits/getopt_core.h:36:14: error: storage class specified for parameter ‘optarg’
+   36 | extern char *optarg;
+      |              ^~~~~~
+/usr/include/x86_64-linux-gnu/bits/getopt_core.h:50:12: error: storage class specified for parameter ‘optind’
+   50 | extern int optind;
+      |            ^~~~~~
+/usr/include/x86_64-linux-gnu/bits/getopt_core.h:55:12: error: storage class specified for parameter ‘opterr’
+   55 | extern int opterr;
+      |            ^~~~~~
+/usr/include/x86_64-linux-gnu/bits/getopt_core.h:59:12: error: storage class specified for parameter ‘optopt’
+   59 | extern int optopt;
+      |            ^~~~~~
+/usr/include/x86_64-linux-gnu/bits/getopt_core.h:91:12: error: storage class specified for parameter ‘getopt’
+   91 | extern int getopt (int ___argc, char *const *___argv, const char *__shortopts)
+      |            ^~~~~~
+In file included from AutorizationReqManager/../ShmData.h:16,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/unistd.h:911:12: error: storage class specified for parameter ‘gethostname’
+  911 | extern int gethostname (char *__name, size_t __len) __THROW __nonnull ((1))
+      |            ^~~~~~~~~~~
+/usr/include/unistd.h:919:12: error: storage class specified for parameter ‘sethostname’
+  919 | extern int sethostname (const char *__name, size_t __len)
+      |            ^~~~~~~~~~~
+/usr/include/unistd.h:924:12: error: storage class specified for parameter ‘sethostid’
+  924 | extern int sethostid (long int __id) __THROW __wur;
+      |            ^~~~~~~~~
+/usr/include/unistd.h:930:12: error: storage class specified for parameter ‘getdomainname’
+  930 | extern int getdomainname (char *__name, size_t __len)
+      |            ^~~~~~~~~~~~~
+/usr/include/unistd.h:933:12: error: storage class specified for parameter ‘setdomainname’
+  933 | extern int setdomainname (const char *__name, size_t __len)
+      |            ^~~~~~~~~~~~~
+/usr/include/unistd.h:939:12: error: storage class specified for parameter ‘vhangup’
+  939 | extern int vhangup (void) __THROW;
+      |            ^~~~~~~
+/usr/include/unistd.h:942:12: error: storage class specified for parameter ‘revoke’
+  942 | extern int revoke (const char *__file) __THROW __nonnull ((1)) __wur;
+      |            ^~~~~~
+/usr/include/unistd.h:950:12: error: storage class specified for parameter ‘profil’
+  950 | extern int profil (unsigned short int *__sample_buffer, size_t __size,
+      |            ^~~~~~
+/usr/include/unistd.h:958:12: error: storage class specified for parameter ‘acct’
+  958 | extern int acct (const char *__name) __THROW;
+      |            ^~~~
+/usr/include/unistd.h:962:14: error: storage class specified for parameter ‘getusershell’
+  962 | extern char *getusershell (void) __THROW;
+      |              ^~~~~~~~~~~~
+/usr/include/unistd.h:963:13: error: storage class specified for parameter ‘endusershell’
+  963 | extern void endusershell (void) __THROW; /* Discard cached info.  */
+      |             ^~~~~~~~~~~~
+/usr/include/unistd.h:964:13: error: storage class specified for parameter ‘setusershell’
+  964 | extern void setusershell (void) __THROW; /* Rewind and re-read the file.  */
+      |             ^~~~~~~~~~~~
+/usr/include/unistd.h:970:12: error: storage class specified for parameter ‘daemon’
+  970 | extern int daemon (int __nochdir, int __noclose) __THROW __wur;
+      |            ^~~~~~
+/usr/include/unistd.h:977:12: error: storage class specified for parameter ‘chroot’
+  977 | extern int chroot (const char *__path) __THROW __nonnull ((1)) __wur;
+      |            ^~~~~~
+/usr/include/unistd.h:981:14: error: storage class specified for parameter ‘getpass’
+  981 | extern char *getpass (const char *__prompt) __nonnull ((1));
+      |              ^~~~~~~
+/usr/include/unistd.h:989:12: error: storage class specified for parameter ‘fsync’
+  989 | extern int fsync (int __fd);
+      |            ^~~~~
+/usr/include/unistd.h:1002:17: error: storage class specified for parameter ‘gethostid’
+ 1002 | extern long int gethostid (void);
+      |                 ^~~~~~~~~
+/usr/include/unistd.h:1005:13: error: storage class specified for parameter ‘sync’
+ 1005 | extern void sync (void) __THROW;
+      |             ^~~~
+/usr/include/unistd.h:1011:12: error: storage class specified for parameter ‘getpagesize’
+ 1011 | extern int getpagesize (void)  __THROW __attribute__ ((__const__));
+      |            ^~~~~~~~~~~
+/usr/include/unistd.h:1016:12: error: storage class specified for parameter ‘getdtablesize’
+ 1016 | extern int getdtablesize (void) __THROW;
+      |            ^~~~~~~~~~~~~
+/usr/include/unistd.h:1026:12: error: storage class specified for parameter ‘truncate’
+ 1026 | extern int truncate (const char *__file, __off_t __length)
+      |            ^~~~~~~~
+/usr/include/unistd.h:1049:12: error: storage class specified for parameter ‘ftruncate’
+ 1049 | extern int ftruncate (int __fd, __off_t __length) __THROW __wur;
+      |            ^~~~~~~~~
+/usr/include/unistd.h:1070:12: error: storage class specified for parameter ‘brk’
+ 1070 | extern int brk (void *__addr) __THROW __wur;
+      |            ^~~
+/usr/include/unistd.h:1076:20: error: expected declaration specifiers or ‘...’ before ‘intptr_t’
+ 1076 | extern void *sbrk (intptr_t __delta) __THROW;
+      |                    ^~~~~~~~
+/usr/include/unistd.h:1091:17: error: storage class specified for parameter ‘syscall’
+ 1091 | extern long int syscall (long int __sysno, ...) __THROW;
+      |                 ^~~~~~~
+/usr/include/unistd.h:1150:12: error: storage class specified for parameter ‘fdatasync’
+ 1150 | extern int fdatasync (int __fildes);
+      |            ^~~~~~~~~
+/usr/include/unistd.h:1159:14: error: storage class specified for parameter ‘crypt’
+ 1159 | extern char *crypt (const char *__key, const char *__salt)
+      |              ^~~~~
+In file included from AutorizationReqManager/../ShmData.h:17,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/sys/types.h:33:18: error: storage class specified for parameter ‘u_char’
+   33 | typedef __u_char u_char;
+      |                  ^~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:34:19: error: storage class specified for parameter ‘u_short’
+   34 | typedef __u_short u_short;
+      |                   ^~~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:35:17: error: storage class specified for parameter ‘u_int’
+   35 | typedef __u_int u_int;
+      |                 ^~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:36:18: error: storage class specified for parameter ‘u_long’
+   36 | typedef __u_long u_long;
+      |                  ^~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:37:18: error: storage class specified for parameter ‘quad_t’
+   37 | typedef __quad_t quad_t;
+      |                  ^~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:38:20: error: storage class specified for parameter ‘u_quad_t’
+   38 | typedef __u_quad_t u_quad_t;
+      |                    ^~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:39:18: error: storage class specified for parameter ‘fsid_t’
+   39 | typedef __fsid_t fsid_t;
+      |                  ^~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:42:18: error: storage class specified for parameter ‘loff_t’
+   42 | typedef __loff_t loff_t;
+      |                  ^~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:47:17: error: storage class specified for parameter ‘ino_t’
+   47 | typedef __ino_t ino_t;
+      |                 ^~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:59:17: error: storage class specified for parameter ‘dev_t’
+   59 | typedef __dev_t dev_t;
+      |                 ^~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:74:19: error: storage class specified for parameter ‘nlink_t’
+   74 | typedef __nlink_t nlink_t;
+      |                   ^~~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:103:16: error: storage class specified for parameter ‘id_t’
+  103 | typedef __id_t id_t;
+      |                ^~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:114:19: error: storage class specified for parameter ‘daddr_t’
+  114 | typedef __daddr_t daddr_t;
+      |                   ^~~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:115:19: error: storage class specified for parameter ‘caddr_t’
+  115 | typedef __caddr_t caddr_t;
+      |                   ^~~~~~~
+In file included from AutorizationReqManager/../ShmData.h:17,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/sys/types.h:148:27: error: storage class specified for parameter ‘ulong’
+  148 | typedef unsigned long int ulong;
+      |                           ^~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:149:28: error: storage class specified for parameter ‘ushort’
+  149 | typedef unsigned short int ushort;
+      |                            ^~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:150:22: error: storage class specified for parameter ‘uint’
+  150 | typedef unsigned int uint;
+      |                      ^~~~
+In file included from /usr/include/x86_64-linux-gnu/sys/types.h:155,
+                 from AutorizationReqManager/../ShmData.h:17,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:24:18: error: storage class specified for parameter ‘int8_t’
+   24 | typedef __int8_t int8_t;
+      |                  ^~~~~~
+/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:25:19: error: storage class specified for parameter ‘int16_t’
+   25 | typedef __int16_t int16_t;
+      |                   ^~~~~~~
+/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:26:19: error: storage class specified for parameter ‘int32_t’
+   26 | typedef __int32_t int32_t;
+      |                   ^~~~~~~
+/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:27:19: error: storage class specified for parameter ‘int64_t’
+   27 | typedef __int64_t int64_t;
+      |                   ^~~~~~~
+In file included from AutorizationReqManager/../ShmData.h:17,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/sys/types.h:158:19: error: storage class specified for parameter ‘u_int8_t’
+  158 | typedef __uint8_t u_int8_t;
+      |                   ^~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:159:20: error: storage class specified for parameter ‘u_int16_t’
+  159 | typedef __uint16_t u_int16_t;
+      |                    ^~~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:160:20: error: storage class specified for parameter ‘u_int32_t’
+  160 | typedef __uint32_t u_int32_t;
+      |                    ^~~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:161:20: error: storage class specified for parameter ‘u_int64_t’
+  161 | typedef __uint64_t u_int64_t;
+      |                    ^~~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:164:13: error: storage class specified for parameter ‘register_t’
+  164 | typedef int register_t __attribute__ ((__mode__ (__word__)));
+      |             ^~~~~~~~~~
+In file included from /usr/include/endian.h:35,
+                 from /usr/include/x86_64-linux-gnu/sys/types.h:176,
+                 from AutorizationReqManager/../ShmData.h:17,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/bits/byteswap.h:35:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+   35 | {
+      | ^
+/usr/include/x86_64-linux-gnu/bits/byteswap.h:50:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+   50 | {
+      | ^
+/usr/include/x86_64-linux-gnu/bits/byteswap.h:69:1: error: expected declaration specifiers before ‘__extension__’
+   69 | __extension__ static __inline __uint64_t
+      | ^~~~~~~~~~~~~
+In file included from /usr/include/endian.h:36,
+                 from /usr/include/x86_64-linux-gnu/sys/types.h:176,
+                 from AutorizationReqManager/../ShmData.h:17,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/bits/uintn-identity.h:34:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+   34 | {
+      | ^
+/usr/include/x86_64-linux-gnu/bits/uintn-identity.h:40:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+   40 | {
+      | ^
+/usr/include/x86_64-linux-gnu/bits/uintn-identity.h:46:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+   46 | {
+      | ^
+In file included from AutorizationReqManager/../ShmData.h:17,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/sys/types.h:185:21: error: storage class specified for parameter ‘blksize_t’
+  185 | typedef __blksize_t blksize_t;
+      |                     ^~~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:192:20: error: storage class specified for parameter ‘blkcnt_t’
+  192 | typedef __blkcnt_t blkcnt_t;     /* Type to count number of disk blocks.  */
+      |                    ^~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:196:22: error: storage class specified for parameter ‘fsblkcnt_t’
+  196 | typedef __fsblkcnt_t fsblkcnt_t; /* Type to count file system blocks.  */
+      |                      ^~~~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/types.h:200:22: error: storage class specified for parameter ‘fsfilcnt_t’
+  200 | typedef __fsfilcnt_t fsfilcnt_t; /* Type to count file system inodes.  */
+      |                      ^~~~~~~~~~
+In file included from AutorizationReqManager/../ShmData.h:18,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/sys/wait.h:79:3: error: storage class specified for parameter ‘idtype_t’
+   79 | } idtype_t;
+      |   ^~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/wait.h:88:16: error: storage class specified for parameter ‘wait’
+   88 | extern __pid_t wait (int *__stat_loc);
+      |                ^~~~
+/usr/include/x86_64-linux-gnu/sys/wait.h:111:16: error: storage class specified for parameter ‘waitpid’
+  111 | extern __pid_t waitpid (__pid_t __pid, int *__stat_loc, int __options);
+      |                ^~~~~~~
+/usr/include/x86_64-linux-gnu/sys/wait.h:132:20: error: expected declaration specifiers or ‘...’ before ‘idtype_t’
+  132 | extern int waitid (idtype_t __idtype, __id_t __id, siginfo_t *__infop,
+      |                    ^~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/wait.h:132:52: error: expected declaration specifiers or ‘...’ before ‘siginfo_t’
+  132 | extern int waitid (idtype_t __idtype, __id_t __id, siginfo_t *__infop,
+      |                                                    ^~~~~~~~~
+/usr/include/x86_64-linux-gnu/sys/wait.h:148:16: error: storage class specified for parameter ‘wait3’
+  148 | extern __pid_t wait3 (int *__stat_loc, int __options,
+      |                ^~~~~
+/usr/include/x86_64-linux-gnu/sys/wait.h:164:16: error: storage class specified for parameter ‘wait4’
+  164 | extern __pid_t wait4 (__pid_t __pid, int *__stat_loc, int __options,
+      |                ^~~~~
+In file included from /usr/include/semaphore.h:28,
+                 from AutorizationReqManager/../ShmData.h:19,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/x86_64-linux-gnu/bits/semaphore.h:39:3: error: storage class specified for parameter ‘sem_t’
+   39 | } sem_t;
+      |   ^~~~~
+In file included from AutorizationReqManager/../ShmData.h:19,
+                 from AutorizationReqManager/AutorizationReqManager.c:15:
+/usr/include/semaphore.h:35:22: error: expected declaration specifiers or ‘...’ before ‘sem_t’
+   35 | extern int sem_init (sem_t *__sem, int __pshared, unsigned int __value)
+      |                      ^~~~~
+/usr/include/semaphore.h:39:25: error: expected declaration specifiers or ‘...’ before ‘sem_t’
+   39 | extern int sem_destroy (sem_t *__sem) __THROW __nonnull ((1));
+      |                         ^~~~~
+/usr/include/semaphore.h:42:14: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+   42 | extern sem_t *sem_open (const char *__name, int __oflag, ...)
+      |              ^
+/usr/include/semaphore.h:46:23: error: expected declaration specifiers or ‘...’ before ‘sem_t’
+   46 | extern int sem_close (sem_t *__sem) __THROW __nonnull ((1));
+      |                       ^~~~~
+/usr/include/semaphore.h:49:12: error: storage class specified for parameter ‘sem_unlink’
+   49 | extern int sem_unlink (const char *__name) __THROW __nonnull ((1));
+      |            ^~~~~~~~~~
+/usr/include/semaphore.h:55:22: error: expected declaration specifiers or ‘...’ before ‘sem_t’
+   55 | extern int sem_wait (sem_t *__sem) __nonnull ((1));
+      |                      ^~~~~
+/usr/include/semaphore.h:63:27: error: expected declaration specifiers or ‘...’ before ‘sem_t’
+   63 | extern int sem_timedwait (sem_t *__restrict __sem,
+      |                           ^~~~~
+/usr/include/semaphore.h:100:25: error: expected declaration specifiers or ‘...’ before ‘sem_t’
+  100 | extern int sem_trywait (sem_t *__sem) __THROWNL __nonnull ((1));
+      |                         ^~~~~
+/usr/include/semaphore.h:103:22: error: expected declaration specifiers or ‘...’ before ‘sem_t’
+  103 | extern int sem_post (sem_t *__sem) __THROWNL __nonnull ((1));
+      |                      ^~~~~
+/usr/include/semaphore.h:106:26: error: expected declaration specifiers or ‘...’ before ‘sem_t’
+  106 | extern int sem_getvalue (sem_t *__restrict __sem, int *__restrict __sval)
+      |                          ^~~~~
+In file included from AutorizationReqManager/AutorizationReqManager.c:15:
+AutorizationReqManager/../ShmData.h:37:3: error: storage class specified for parameter ‘user’
+   37 | } user;
+      |   ^~~~
+AutorizationReqManager/../ShmData.h:45:2: error: storage class specified for parameter ‘auth_eng’
+   45 | }auth_eng;
+      |  ^~~~~~~~
+AutorizationReqManager/../ShmData.h:58:2: error: storage class specified for parameter ‘shm_struct’
+   58 | }shm_struct;
+      |  ^~~~~~~~~~
+AutorizationReqManager/../ShmData.h:61:1: error: parameter ‘shm_size’ is initialized
+   61 | int shm_size = sizeof(struct shm_struct);
+      | ^~~
+AutorizationReqManager/../ShmData.h:63:1: error: expected declaration specifiers before ‘sem_t’
+   63 | sem_t* shm_sem;
+      | ^~~~~
+AutorizationReqManager/../ShmData.h:64:1: error: parameter ‘shmSemCreated’ is initialized
+   64 | bool shmSemCreated = false;
+      | ^~~~
+In file included from /usr/include/stdio.h:36,
+                 from AutorizationReqManager/../HelpData.h:11,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h:40:27: error: storage class specified for parameter ‘__gnuc_va_list’
+   40 | typedef __builtin_va_list __gnuc_va_list;
+      |                           ^~~~~~~~~~~~~~
+In file included from /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h:5,
+                 from /usr/include/stdio.h:39,
+                 from AutorizationReqManager/../HelpData.h:11,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:21:3: error: storage class specified for parameter ‘__mbstate_t’
+   21 | } __mbstate_t;
+      |   ^~~~~~~~~~~
+In file included from /usr/include/stdio.h:39,
+                 from AutorizationReqManager/../HelpData.h:11,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h:13:3: error: expected specifier-qualifier-list before ‘__mbstate_t’
+   13 |   __mbstate_t __state;
+      |   ^~~~~~~~~~~
+/usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h:14:3: error: storage class specified for parameter ‘__fpos_t’
+   14 | } __fpos_t;
+      |   ^~~~~~~~
+In file included from /usr/include/stdio.h:40,
+                 from AutorizationReqManager/../HelpData.h:11,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h:13:3: error: expected specifier-qualifier-list before ‘__mbstate_t’
+   13 |   __mbstate_t __state;
+      |   ^~~~~~~~~~~
+/usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h:14:3: error: storage class specified for parameter ‘__fpos64_t’
+   14 | } __fpos64_t;
+      |   ^~~~~~~~~~
+In file included from /usr/include/stdio.h:41,
+                 from AutorizationReqManager/../HelpData.h:11,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/include/x86_64-linux-gnu/bits/types/__FILE.h:5:25: error: storage class specified for parameter ‘__FILE’
+    5 | typedef struct _IO_FILE __FILE;
+      |                         ^~~~~~
+In file included from /usr/include/stdio.h:42,
+                 from AutorizationReqManager/../HelpData.h:11,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/include/x86_64-linux-gnu/bits/types/FILE.h:7:25: error: storage class specified for parameter ‘FILE’
+    7 | typedef struct _IO_FILE FILE;
+      |                         ^~~~
+In file included from /usr/include/stdio.h:43,
+                 from AutorizationReqManager/../HelpData.h:11,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:43:14: error: storage class specified for parameter ‘_IO_lock_t’
+   43 | typedef void _IO_lock_t;
+      |              ^~~~~~~~~~
+/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:81:3: error: expected specifier-qualifier-list before ‘_IO_lock_t’
+   81 |   _IO_lock_t *_lock;
+      |   ^~~~~~~~~~
+In file included from AutorizationReqManager/../HelpData.h:11,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/include/stdio.h:52:24: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘va_list’
+   52 | typedef __gnuc_va_list va_list;
+      |                        ^~~~~~~
+/usr/include/stdio.h:84:18: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘fpos_t’
+   84 | typedef __fpos_t fpos_t;
+      |                  ^~~~~~
+In file included from AutorizationReqManager/../HelpData.h:11,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/include/stdio.h:143:13: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+  143 | extern FILE *stdin;             /* Standard input stream.  */
+      |             ^
+/usr/include/stdio.h:144:13: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+  144 | extern FILE *stdout;            /* Standard output stream.  */
+      |             ^
+/usr/include/stdio.h:145:13: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+  145 | extern FILE *stderr;            /* Standard error output stream.  */
+      |             ^
+/usr/include/stdio.h:152:12: error: storage class specified for parameter ‘remove’
+  152 | extern int remove (const char *__filename) __THROW;
+      |            ^~~~~~
+/usr/include/stdio.h:154:12: error: storage class specified for parameter ‘rename’
+  154 | extern int rename (const char *__old, const char *__new) __THROW;
+      |            ^~~~~~
+/usr/include/stdio.h:158:12: error: storage class specified for parameter ‘renameat’
+  158 | extern int renameat (int __oldfd, const char *__old, int __newfd,
+      |            ^~~~~~~~
+/usr/include/stdio.h:178:20: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  178 | extern int fclose (FILE *__stream);
+      |                    ^~~~
+/usr/include/stdio.h:188:13: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+  188 | extern FILE *tmpfile (void)
+      |             ^
+/usr/include/stdio.h:205:14: error: storage class specified for parameter ‘tmpnam’
+  205 | extern char *tmpnam (char[L_tmpnam]) __THROW __wur;
+      |              ^~~~~~
+/usr/include/stdio.h:210:14: error: storage class specified for parameter ‘tmpnam_r’
+  210 | extern char *tmpnam_r (char __s[L_tmpnam]) __THROW __wur;
+      |              ^~~~~~~~
+/usr/include/stdio.h:222:14: error: storage class specified for parameter ‘tempnam’
+  222 | extern char *tempnam (const char *__dir, const char *__pfx)
+      |              ^~~~~~~
+/usr/include/stdio.h:230:20: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  230 | extern int fflush (FILE *__stream);
+      |                    ^~~~
+/usr/include/stdio.h:239:29: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  239 | extern int fflush_unlocked (FILE *__stream);
+      |                             ^~~~
+/usr/include/stdio.h:258:13: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+  258 | extern FILE *fopen (const char *__restrict __filename,
+      |             ^
+/usr/include/stdio.h:265:13: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+  265 | extern FILE *freopen (const char *__restrict __filename,
+      |             ^
+/usr/include/stdio.h:293:13: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+  293 | extern FILE *fdopen (int __fd, const char *__modes) __THROW
+      |             ^
+/usr/include/stdio.h:308:13: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+  308 | extern FILE *fmemopen (void *__s, size_t __len, const char *__modes)
+      |             ^
+/usr/include/stdio.h:314:13: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+  314 | extern FILE *open_memstream (char **__bufloc, size_t *__sizeloc) __THROW
+      |             ^
+/usr/include/stdio.h:328:21: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  328 | extern void setbuf (FILE *__restrict __stream, char *__restrict __buf) __THROW;
+      |                     ^~~~
+/usr/include/stdio.h:332:21: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  332 | extern int setvbuf (FILE *__restrict __stream, char *__restrict __buf,
+      |                     ^~~~
+/usr/include/stdio.h:338:24: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  338 | extern void setbuffer (FILE *__restrict __stream, char *__restrict __buf,
+      |                        ^~~~
+/usr/include/stdio.h:342:25: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  342 | extern void setlinebuf (FILE *__stream) __THROW;
+      |                         ^~~~
+/usr/include/stdio.h:350:21: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  350 | extern int fprintf (FILE *__restrict __stream,
+      |                     ^~~~
+/usr/include/stdio.h:356:12: error: storage class specified for parameter ‘printf’
+  356 | extern int printf (const char *__restrict __format, ...);
+      |            ^~~~~~
+/usr/include/stdio.h:358:12: error: storage class specified for parameter ‘sprintf’
+  358 | extern int sprintf (char *__restrict __s,
+      |            ^~~~~~~
+/usr/include/stdio.h:365:22: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  365 | extern int vfprintf (FILE *__restrict __s, const char *__restrict __format,
+      |                      ^~~~
+/usr/include/stdio.h:366:22: error: expected declaration specifiers or ‘...’ before ‘__gnuc_va_list’
+  366 |                      __gnuc_va_list __arg);
+      |                      ^~~~~~~~~~~~~~
+/usr/include/stdio.h:371:54: error: expected declaration specifiers or ‘...’ before ‘__gnuc_va_list’
+  371 | extern int vprintf (const char *__restrict __format, __gnuc_va_list __arg);
+      |                                                      ^~~~~~~~~~~~~~
+/usr/include/stdio.h:374:22: error: expected declaration specifiers or ‘...’ before ‘__gnuc_va_list’
+  374 |                      __gnuc_va_list __arg) __THROWNL;
+      |                      ^~~~~~~~~~~~~~
+/usr/include/stdio.h:378:12: error: storage class specified for parameter ‘snprintf’
+  378 | extern int snprintf (char *__restrict __s, size_t __maxlen,
+      |            ^~~~~~~~
+/usr/include/stdio.h:383:56: error: expected declaration specifiers or ‘...’ before ‘__gnuc_va_list’
+  383 |                       const char *__restrict __format, __gnuc_va_list __arg)
+      |                                                        ^~~~~~~~~~~~~~
+/usr/include/stdio.h:404:22: error: expected declaration specifiers or ‘...’ before ‘__gnuc_va_list’
+  404 |                      __gnuc_va_list __arg)
+      |                      ^~~~~~~~~~~~~~
+/usr/include/stdio.h:406:12: error: storage class specified for parameter ‘dprintf’
+  406 | extern int dprintf (int __fd, const char *__restrict __fmt, ...)
+      |            ^~~~~~~
+/usr/include/stdio.h:415:20: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  415 | extern int fscanf (FILE *__restrict __stream,
+      |                    ^~~~
+/usr/include/stdio.h:421:12: error: storage class specified for parameter ‘scanf’
+  421 | extern int scanf (const char *__restrict __format, ...) __wur;
+      |            ^~~~~
+/usr/include/stdio.h:423:12: error: storage class specified for parameter ‘sscanf’
+  423 | extern int sscanf (const char *__restrict __s,
+      |            ^~~~~~
+In file included from /usr/include/features.h:486,
+                 from /usr/include/x86_64-linux-gnu/sys/msg.h:21,
+                 from AutorizationReqManager/AutorizationReqManager.c:8:
+/usr/include/stdio.h:434:12: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  434 | extern int __REDIRECT (fscanf, (FILE *__restrict __stream,
+      |            ^~~~~~~~~~
+/usr/include/stdio.h:437:12: error: storage class specified for parameter ‘scanf’
+  437 | extern int __REDIRECT (scanf, (const char *__restrict __format, ...),
+      |            ^~~~~~~~~~
+/usr/include/stdio.h:437:12: error: redefinition of parameter ‘scanf’
+In file included from AutorizationReqManager/../HelpData.h:11,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/include/stdio.h:421:12: note: previous definition of ‘scanf’ with type ‘int (*)(const char * restrict, ...)’
+  421 | extern int scanf (const char *__restrict __format, ...) __wur;
+      |            ^~~~~
+In file included from /usr/include/features.h:486,
+                 from /usr/include/x86_64-linux-gnu/sys/msg.h:21,
+                 from AutorizationReqManager/AutorizationReqManager.c:8:
+/usr/include/stdio.h:439:12: error: storage class specified for parameter ‘sscanf’
+  439 | extern int __REDIRECT_NTH (sscanf, (const char *__restrict __s,
+      |            ^~~~~~~~~~~~~~
+/usr/include/stdio.h:439:12: error: redefinition of parameter ‘sscanf’
+In file included from AutorizationReqManager/../HelpData.h:11,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/include/stdio.h:423:12: note: previous definition of ‘sscanf’ with type ‘int (*)(const char * restrict,  const char * restrict, ...)’
+  423 | extern int sscanf (const char *__restrict __s,
+      |            ^~~~~~
+In file included from AutorizationReqManager/../HelpData.h:11,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/include/stdio.h:459:21: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  459 | extern int vfscanf (FILE *__restrict __s, const char *__restrict __format,
+      |                     ^~~~
+/usr/include/stdio.h:460:21: error: expected declaration specifiers or ‘...’ before ‘__gnuc_va_list’
+  460 |                     __gnuc_va_list __arg)
+      |                     ^~~~~~~~~~~~~~
+/usr/include/stdio.h:467:53: error: expected declaration specifiers or ‘...’ before ‘__gnuc_va_list’
+  467 | extern int vscanf (const char *__restrict __format, __gnuc_va_list __arg)
+      |                                                     ^~~~~~~~~~~~~~
+/usr/include/stdio.h:472:54: error: expected declaration specifiers or ‘...’ before ‘__gnuc_va_list’
+  472 |                     const char *__restrict __format, __gnuc_va_list __arg)
+      |                                                      ^~~~~~~~~~~~~~
+In file included from /usr/include/features.h:486,
+                 from /usr/include/x86_64-linux-gnu/sys/msg.h:21,
+                 from AutorizationReqManager/AutorizationReqManager.c:8:
+/usr/include/stdio.h:479:12: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  479 | extern int __REDIRECT (vfscanf,
+      |            ^~~~~~~~~~
+/usr/include/stdio.h:479:12: error: expected declaration specifiers or ‘...’ before ‘__gnuc_va_list’
+  479 | extern int __REDIRECT (vfscanf,
+      |            ^~~~~~~~~~
+/usr/include/stdio.h:484:12: error: expected declaration specifiers or ‘...’ before ‘__gnuc_va_list’
+  484 | extern int __REDIRECT (vscanf, (const char *__restrict __format,
+      |            ^~~~~~~~~~
+/usr/include/stdio.h:487:12: error: expected declaration specifiers or ‘...’ before ‘__gnuc_va_list’
+  487 | extern int __REDIRECT_NTH (vsscanf,
+      |            ^~~~~~~~~~~~~~
+In file included from AutorizationReqManager/../HelpData.h:11,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/include/stdio.h:513:19: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  513 | extern int fgetc (FILE *__stream);
+      |                   ^~~~
+/usr/include/stdio.h:514:18: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  514 | extern int getc (FILE *__stream);
+      |                  ^~~~
+/usr/include/stdio.h:520:12: error: storage class specified for parameter ‘getchar’
+  520 | extern int getchar (void);
+      |            ^~~~~~~
+/usr/include/stdio.h:527:27: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  527 | extern int getc_unlocked (FILE *__stream);
+      |                           ^~~~
+/usr/include/stdio.h:528:12: error: storage class specified for parameter ‘getchar_unlocked’
+  528 | extern int getchar_unlocked (void);
+      |            ^~~~~~~~~~~~~~~~
+/usr/include/stdio.h:538:28: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  538 | extern int fgetc_unlocked (FILE *__stream);
+      |                            ^~~~
+/usr/include/stdio.h:549:28: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  549 | extern int fputc (int __c, FILE *__stream);
+      |                            ^~~~
+/usr/include/stdio.h:550:27: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  550 | extern int putc (int __c, FILE *__stream);
+      |                           ^~~~
+/usr/include/stdio.h:556:12: error: storage class specified for parameter ‘putchar’
+  556 | extern int putchar (int __c);
+      |            ^~~~~~~
+/usr/include/stdio.h:565:37: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  565 | extern int fputc_unlocked (int __c, FILE *__stream);
+      |                                     ^~~~
+/usr/include/stdio.h:573:36: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  573 | extern int putc_unlocked (int __c, FILE *__stream);
+      |                                    ^~~~
+/usr/include/stdio.h:574:12: error: storage class specified for parameter ‘putchar_unlocked’
+  574 | extern int putchar_unlocked (int __c);
+      |            ^~~~~~~~~~~~~~~~
+/usr/include/stdio.h:581:18: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  581 | extern int getw (FILE *__stream);
+      |                  ^~~~
+/usr/include/stdio.h:584:27: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  584 | extern int putw (int __w, FILE *__stream);
+      |                           ^~~~
+/usr/include/stdio.h:592:52: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  592 | extern char *fgets (char *__restrict __s, int __n, FILE *__restrict __stream)
+      |                                                    ^~~~
+/usr/include/stdio.h:634:30: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  634 |                              FILE *__restrict __stream) __wur;
+      |                              ^~~~
+/usr/include/stdio.h:637:28: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  637 |                            FILE *__restrict __stream) __wur;
+      |                            ^~~~
+/usr/include/stdio.h:647:27: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  647 |                           FILE *__restrict __stream) __wur;
+      |                           ^~~~
+/usr/include/stdio.h:655:47: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  655 | extern int fputs (const char *__restrict __s, FILE *__restrict __stream);
+      |                                               ^~~~
+/usr/include/stdio.h:661:12: error: storage class specified for parameter ‘puts’
+  661 | extern int puts (const char *__s);
+      |            ^~~~
+/usr/include/stdio.h:668:29: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  668 | extern int ungetc (int __c, FILE *__stream);
+      |                             ^~~~
+/usr/include/stdio.h:676:34: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  676 |                      size_t __n, FILE *__restrict __stream) __wur;
+      |                                  ^~~~
+/usr/include/stdio.h:682:35: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  682 |                       size_t __n, FILE *__restrict __s);
+      |                                   ^~~~
+/usr/include/stdio.h:703:43: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  703 |                               size_t __n, FILE *__restrict __stream) __wur;
+      |                                           ^~~~
+/usr/include/stdio.h:705:44: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  705 |                                size_t __n, FILE *__restrict __stream);
+      |                                            ^~~~
+/usr/include/stdio.h:713:19: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  713 | extern int fseek (FILE *__stream, long int __off, int __whence);
+      |                   ^~~~
+/usr/include/stdio.h:718:24: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  718 | extern long int ftell (FILE *__stream) __wur;
+      |                        ^~~~
+/usr/include/stdio.h:723:21: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  723 | extern void rewind (FILE *__stream);
+      |                     ^~~~
+/usr/include/stdio.h:736:20: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  736 | extern int fseeko (FILE *__stream, __off_t __off, int __whence);
+      |                    ^~~~
+/usr/include/stdio.h:741:24: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  741 | extern __off_t ftello (FILE *__stream) __wur;
+      |                        ^~~~
+/usr/include/stdio.h:760:21: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  760 | extern int fgetpos (FILE *__restrict __stream, fpos_t *__restrict __pos);
+      |                     ^~~~
+/usr/include/stdio.h:760:48: error: unknown type name ‘fpos_t’
+  760 | extern int fgetpos (FILE *__restrict __stream, fpos_t *__restrict __pos);
+      |                                                ^~~~~~
+/usr/include/stdio.h:431:1: note: ‘fpos_t’ is defined in header ‘<stdio.h>’; did you forget to ‘#include <stdio.h>’?
+  430 | #include <bits/floatn.h>
+  +++ |+#include <stdio.h>
+  431 | #if !__GLIBC_USE (DEPRECATED_SCANF) && !defined __LDBL_COMPAT \
+/usr/include/stdio.h:765:21: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  765 | extern int fsetpos (FILE *__stream, const fpos_t *__pos);
+      |                     ^~~~
+/usr/include/stdio.h:765:43: error: unknown type name ‘fpos_t’
+  765 | extern int fsetpos (FILE *__stream, const fpos_t *__pos);
+      |                                           ^~~~~~
+/usr/include/stdio.h:786:23: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  786 | extern void clearerr (FILE *__stream) __THROW;
+      |                       ^~~~
+/usr/include/stdio.h:788:18: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  788 | extern int feof (FILE *__stream) __THROW __wur;
+      |                  ^~~~
+/usr/include/stdio.h:790:20: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  790 | extern int ferror (FILE *__stream) __THROW __wur;
+      |                    ^~~~
+/usr/include/stdio.h:794:32: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  794 | extern void clearerr_unlocked (FILE *__stream) __THROW;
+      |                                ^~~~
+/usr/include/stdio.h:795:27: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  795 | extern int feof_unlocked (FILE *__stream) __THROW __wur;
+      |                           ^~~~
+/usr/include/stdio.h:796:29: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  796 | extern int ferror_unlocked (FILE *__stream) __THROW __wur;
+      |                             ^~~~
+/usr/include/stdio.h:804:13: error: storage class specified for parameter ‘perror’
+  804 | extern void perror (const char *__s);
+      |             ^~~~~~
+/usr/include/stdio.h:809:20: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  809 | extern int fileno (FILE *__stream) __THROW __wur;
+      |                    ^~~~
+/usr/include/stdio.h:814:29: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  814 | extern int fileno_unlocked (FILE *__stream) __THROW __wur;
+      |                             ^~~~
+/usr/include/stdio.h:823:20: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  823 | extern int pclose (FILE *__stream);
+      |                    ^~~~
+/usr/include/stdio.h:829:13: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+  829 | extern FILE *popen (const char *__command, const char *__modes)
+      |             ^
+/usr/include/stdio.h:837:14: error: storage class specified for parameter ‘ctermid’
+  837 | extern char *ctermid (char *__s) __THROW
+      |              ^~~~~~~
+/usr/include/stdio.h:867:24: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  867 | extern void flockfile (FILE *__stream) __THROW;
+      |                        ^~~~
+/usr/include/stdio.h:871:26: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  871 | extern int ftrylockfile (FILE *__stream) __THROW __wur;
+      |                          ^~~~
+/usr/include/stdio.h:874:26: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  874 | extern void funlockfile (FILE *__stream) __THROW;
+      |                          ^~~~
+/usr/include/stdio.h:885:21: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  885 | extern int __uflow (FILE *);
+      |                     ^~~~
+/usr/include/stdio.h:886:24: error: expected declaration specifiers or ‘...’ before ‘FILE’
+  886 | extern int __overflow (FILE *, int);
+      |                        ^~~~
+In file included from /usr/include/stdlib.h:32,
+                 from AutorizationReqManager/../HelpData.h:12,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h:321:24: error: storage class specified for parameter ‘wchar_t’
+  321 | typedef __WCHAR_TYPE__ wchar_t;
+      |                        ^~~~~~~
+In file included from AutorizationReqManager/../HelpData.h:12,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/include/stdlib.h:63:5: error: storage class specified for parameter ‘div_t’
+   63 |   } div_t;
+      |     ^~~~~
+/usr/include/stdlib.h:71:5: error: storage class specified for parameter ‘ldiv_t’
+   71 |   } ldiv_t;
+      |     ^~~~~~
+/usr/include/stdlib.h:77:1: error: expected declaration specifiers before ‘__extension__’
+   77 | __extension__ typedef struct
+      | ^~~~~~~~~~~~~
+/usr/include/stdlib.h:81:5: error: expected declaration specifiers before ‘lldiv_t’
+   81 |   } lldiv_t;
+      |     ^~~~~~~
+/usr/include/stdlib.h:98:15: error: storage class specified for parameter ‘__ctype_get_mb_cur_max’
+   98 | extern size_t __ctype_get_mb_cur_max (void) __THROW __wur;
+      |               ^~~~~~~~~~~~~~~~~~~~~~
+/usr/include/stdlib.h:102:15: error: storage class specified for parameter ‘atof’
+  102 | extern double atof (const char *__nptr)
+      |               ^~~~
+/usr/include/stdlib.h:105:12: error: storage class specified for parameter ‘atoi’
+  105 | extern int atoi (const char *__nptr)
+      |            ^~~~
+/usr/include/stdlib.h:108:17: error: storage class specified for parameter ‘atol’
+  108 | extern long int atol (const char *__nptr)
+      |                 ^~~~
+/usr/include/stdlib.h:113:1: error: expected declaration specifiers before ‘__extension__’
+  113 | __extension__ extern long long int atoll (const char *__nptr)
+      | ^~~~~~~~~~~~~
+/usr/include/stdlib.h:118:15: error: storage class specified for parameter ‘strtod’
+  118 | extern double strtod (const char *__restrict __nptr,
+      |               ^~~~~~
+/usr/include/stdlib.h:124:14: error: storage class specified for parameter ‘strtof’
+  124 | extern float strtof (const char *__restrict __nptr,
+      |              ^~~~~~
+/usr/include/stdlib.h:127:20: error: storage class specified for parameter ‘strtold’
+  127 | extern long double strtold (const char *__restrict __nptr,
+      |                    ^~~~~~~
+/usr/include/stdlib.h:177:17: error: storage class specified for parameter ‘strtol’
+  177 | extern long int strtol (const char *__restrict __nptr,
+      |                 ^~~~~~
+/usr/include/stdlib.h:181:26: error: storage class specified for parameter ‘strtoul’
+  181 | extern unsigned long int strtoul (const char *__restrict __nptr,
+      |                          ^~~~~~~
+/usr/include/stdlib.h:187:1: error: expected declaration specifiers before ‘__extension__’
+  187 | __extension__
+      | ^~~~~~~~~~~~~
+/usr/include/stdlib.h:192:1: error: expected declaration specifiers before ‘__extension__’
+  192 | __extension__
+      | ^~~~~~~~~~~~~
+/usr/include/stdlib.h:200:1: error: expected declaration specifiers before ‘__extension__’
+  200 | __extension__
+      | ^~~~~~~~~~~~~
+/usr/include/stdlib.h:205:1: error: expected declaration specifiers before ‘__extension__’
+  205 | __extension__
+      | ^~~~~~~~~~~~~
+/usr/include/stdlib.h:386:14: error: storage class specified for parameter ‘l64a’
+  386 | extern char *l64a (long int __n) __THROW __wur;
+      |              ^~~~
+/usr/include/stdlib.h:389:17: error: storage class specified for parameter ‘a64l’
+  389 | extern long int a64l (const char *__s)
+      |                 ^~~~
+/usr/include/stdlib.h:402:17: error: storage class specified for parameter ‘random’
+  402 | extern long int random (void) __THROW;
+      |                 ^~~~~~
+/usr/include/stdlib.h:405:13: error: storage class specified for parameter ‘srandom’
+  405 | extern void srandom (unsigned int __seed) __THROW;
+      |             ^~~~~~~
+/usr/include/stdlib.h:411:14: error: storage class specified for parameter ‘initstate’
+  411 | extern char *initstate (unsigned int __seed, char *__statebuf,
+      |              ^~~~~~~~~
+/usr/include/stdlib.h:416:14: error: storage class specified for parameter ‘setstate’
+  416 | extern char *setstate (char *__statebuf) __THROW __nonnull ((1));
+      |              ^~~~~~~~
+/usr/include/stdlib.h:426:5: error: expected specifier-qualifier-list before ‘int32_t’
+  426 |     int32_t *fptr;              /* Front pointer.  */
+      |     ^~~~~~~
+/usr/include/stdlib.h:436:22: error: expected declaration specifiers or ‘...’ before ‘int32_t’
+  436 |                      int32_t *__restrict __result) __THROW __nonnull ((1, 2));
+      |                      ^~~~~~~
+/usr/include/stdlib.h:438:12: error: storage class specified for parameter ‘srandom_r’
+  438 | extern int srandom_r (unsigned int __seed, struct random_data *__buf)
+      |            ^~~~~~~~~
+/usr/include/stdlib.h:441:12: error: storage class specified for parameter ‘initstate_r’
+  441 | extern int initstate_r (unsigned int __seed, char *__restrict __statebuf,
+      |            ^~~~~~~~~~~
+/usr/include/stdlib.h:446:12: error: storage class specified for parameter ‘setstate_r’
+  446 | extern int setstate_r (char *__restrict __statebuf,
+      |            ^~~~~~~~~~
+/usr/include/stdlib.h:454:12: error: storage class specified for parameter ‘rand’
+  454 | extern int rand (void) __THROW;
+      |            ^~~~
+/usr/include/stdlib.h:456:13: error: storage class specified for parameter ‘srand’
+  456 | extern void srand (unsigned int __seed) __THROW;
+      |             ^~~~~
+/usr/include/stdlib.h:460:12: error: storage class specified for parameter ‘rand_r’
+  460 | extern int rand_r (unsigned int *__seed) __THROW;
+      |            ^~~~~~
+/usr/include/stdlib.h:468:15: error: storage class specified for parameter ‘drand48’
+  468 | extern double drand48 (void) __THROW;
+      |               ^~~~~~~
+/usr/include/stdlib.h:469:15: error: storage class specified for parameter ‘erand48’
+  469 | extern double erand48 (unsigned short int __xsubi[3]) __THROW __nonnull ((1));
+      |               ^~~~~~~
+/usr/include/stdlib.h:472:17: error: storage class specified for parameter ‘lrand48’
+  472 | extern long int lrand48 (void) __THROW;
+      |                 ^~~~~~~
+/usr/include/stdlib.h:473:17: error: storage class specified for parameter ‘nrand48’
+  473 | extern long int nrand48 (unsigned short int __xsubi[3])
+      |                 ^~~~~~~
+/usr/include/stdlib.h:477:17: error: storage class specified for parameter ‘mrand48’
+  477 | extern long int mrand48 (void) __THROW;
+      |                 ^~~~~~~
+/usr/include/stdlib.h:478:17: error: storage class specified for parameter ‘jrand48’
+  478 | extern long int jrand48 (unsigned short int __xsubi[3])
+      |                 ^~~~~~~
+/usr/include/stdlib.h:482:13: error: storage class specified for parameter ‘srand48’
+  482 | extern void srand48 (long int __seedval) __THROW;
+      |             ^~~~~~~
+/usr/include/stdlib.h:483:28: error: storage class specified for parameter ‘seed48’
+  483 | extern unsigned short int *seed48 (unsigned short int __seed16v[3])
+      |                            ^~~~~~
+/usr/include/stdlib.h:485:13: error: storage class specified for parameter ‘lcong48’
+  485 | extern void lcong48 (unsigned short int __param[7]) __THROW __nonnull ((1));
+      |             ^~~~~~~
+/usr/include/stdlib.h:502:12: error: storage class specified for parameter ‘drand48_r’
+  502 | extern int drand48_r (struct drand48_data *__restrict __buffer,
+      |            ^~~~~~~~~
+/usr/include/stdlib.h:504:12: error: storage class specified for parameter ‘erand48_r’
+  504 | extern int erand48_r (unsigned short int __xsubi[3],
+      |            ^~~~~~~~~
+/usr/include/stdlib.h:509:12: error: storage class specified for parameter ‘lrand48_r’
+  509 | extern int lrand48_r (struct drand48_data *__restrict __buffer,
+      |            ^~~~~~~~~
+/usr/include/stdlib.h:512:12: error: storage class specified for parameter ‘nrand48_r’
+  512 | extern int nrand48_r (unsigned short int __xsubi[3],
+      |            ^~~~~~~~~
+/usr/include/stdlib.h:518:12: error: storage class specified for parameter ‘mrand48_r’
+  518 | extern int mrand48_r (struct drand48_data *__restrict __buffer,
+      |            ^~~~~~~~~
+/usr/include/stdlib.h:521:12: error: storage class specified for parameter ‘jrand48_r’
+  521 | extern int jrand48_r (unsigned short int __xsubi[3],
+      |            ^~~~~~~~~
+/usr/include/stdlib.h:527:12: error: storage class specified for parameter ‘srand48_r’
+  527 | extern int srand48_r (long int __seedval, struct drand48_data *__buffer)
+      |            ^~~~~~~~~
+/usr/include/stdlib.h:530:12: error: storage class specified for parameter ‘seed48_r’
+  530 | extern int seed48_r (unsigned short int __seed16v[3],
+      |            ^~~~~~~~
+/usr/include/stdlib.h:533:12: error: storage class specified for parameter ‘lcong48_r’
+  533 | extern int lcong48_r (unsigned short int __param[7],
+      |            ^~~~~~~~~
+/usr/include/stdlib.h:540:14: error: storage class specified for parameter ‘malloc’
+  540 | extern void *malloc (size_t __size) __THROW __attribute_malloc__
+      |              ^~~~~~
+/usr/include/stdlib.h:543:14: error: storage class specified for parameter ‘calloc’
+  543 | extern void *calloc (size_t __nmemb, size_t __size)
+      |              ^~~~~~
+/usr/include/stdlib.h:551:14: error: storage class specified for parameter ‘realloc’
+  551 | extern void *realloc (void *__ptr, size_t __size)
+      |              ^~~~~~~
+/usr/include/stdlib.h:555:13: error: storage class specified for parameter ‘free’
+  555 | extern void free (void *__ptr) __THROW;
+      |             ^~~~
+/usr/include/stdlib.h:563:14: error: storage class specified for parameter ‘reallocarray’
+  563 | extern void *reallocarray (void *__ptr, size_t __nmemb, size_t __size)
+      |              ^~~~~~~~~~~~
+/usr/include/stdlib.h:569:14: error: storage class specified for parameter ‘reallocarray’
+  569 | extern void *reallocarray (void *__ptr, size_t __nmemb, size_t __size)
+      |              ^~~~~~~~~~~~
+/usr/include/stdlib.h:569:14: error: redefinition of parameter ‘reallocarray’
+/usr/include/stdlib.h:563:14: note: previous definition of ‘reallocarray’ with type ‘void * (*)(void *, size_t,  size_t)’ {aka ‘void * (*)(void *, long unsigned int,  long unsigned int)’}
+  563 | extern void *reallocarray (void *__ptr, size_t __nmemb, size_t __size)
+      |              ^~~~~~~~~~~~
+In file included from /usr/include/stdlib.h:574,
+                 from AutorizationReqManager/../HelpData.h:12,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/include/alloca.h:32:14: error: storage class specified for parameter ‘alloca’
+   32 | extern void *alloca (size_t __size) __THROW;
+      |              ^~~~~~
+In file included from AutorizationReqManager/../HelpData.h:12,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/include/stdlib.h:580:14: error: storage class specified for parameter ‘valloc’
+  580 | extern void *valloc (size_t __size) __THROW __attribute_malloc__
+      |              ^~~~~~
+/usr/include/stdlib.h:586:12: error: storage class specified for parameter ‘posix_memalign’
+  586 | extern int posix_memalign (void **__memptr, size_t __alignment, size_t __size)
+      |            ^~~~~~~~~~~~~~
+/usr/include/stdlib.h:592:14: error: storage class specified for parameter ‘aligned_alloc’
+  592 | extern void *aligned_alloc (size_t __alignment, size_t __size)
+      |              ^~~~~~~~~~~~~
+/usr/include/stdlib.h:598:13: error: storage class specified for parameter ‘abort’
+  598 | extern void abort (void) __THROW __attribute__ ((__noreturn__));
+      |             ^~~~~
+/usr/include/stdlib.h:602:12: error: storage class specified for parameter ‘atexit’
+  602 | extern int atexit (void (*__func) (void)) __THROW __nonnull ((1));
+      |            ^~~~~~
+/usr/include/stdlib.h:610:12: error: storage class specified for parameter ‘at_quick_exit’
+  610 | extern int at_quick_exit (void (*__func) (void)) __THROW __nonnull ((1));
+      |            ^~~~~~~~~~~~~
+/usr/include/stdlib.h:617:12: error: storage class specified for parameter ‘on_exit’
+  617 | extern int on_exit (void (*__func) (int __status, void *__arg), void *__arg)
+      |            ^~~~~~~
+/usr/include/stdlib.h:624:13: error: storage class specified for parameter ‘exit’
+  624 | extern void exit (int __status) __THROW __attribute__ ((__noreturn__));
+      |             ^~~~
+/usr/include/stdlib.h:630:13: error: storage class specified for parameter ‘quick_exit’
+  630 | extern void quick_exit (int __status) __THROW __attribute__ ((__noreturn__));
+      |             ^~~~~~~~~~
+/usr/include/stdlib.h:636:13: error: storage class specified for parameter ‘_Exit’
+  636 | extern void _Exit (int __status) __THROW __attribute__ ((__noreturn__));
+      |             ^~~~~
+/usr/include/stdlib.h:641:14: error: storage class specified for parameter ‘getenv’
+  641 | extern char *getenv (const char *__name) __THROW __nonnull ((1)) __wur;
+      |              ^~~~~~
+/usr/include/stdlib.h:654:12: error: storage class specified for parameter ‘putenv’
+  654 | extern int putenv (char *__string) __THROW __nonnull ((1));
+      |            ^~~~~~
+/usr/include/stdlib.h:660:12: error: storage class specified for parameter ‘setenv’
+  660 | extern int setenv (const char *__name, const char *__value, int __replace)
+      |            ^~~~~~
+/usr/include/stdlib.h:664:12: error: storage class specified for parameter ‘unsetenv’
+  664 | extern int unsetenv (const char *__name) __THROW __nonnull ((1));
+      |            ^~~~~~~~
+/usr/include/stdlib.h:671:12: error: storage class specified for parameter ‘clearenv’
+  671 | extern int clearenv (void) __THROW;
+      |            ^~~~~~~~
+/usr/include/stdlib.h:682:14: error: storage class specified for parameter ‘mktemp’
+  682 | extern char *mktemp (char *__template) __THROW __nonnull ((1));
+      |              ^~~~~~
+/usr/include/stdlib.h:695:12: error: storage class specified for parameter ‘mkstemp’
+  695 | extern int mkstemp (char *__template) __nonnull ((1)) __wur;
+      |            ^~~~~~~
+/usr/include/stdlib.h:717:12: error: storage class specified for parameter ‘mkstemps’
+  717 | extern int mkstemps (char *__template, int __suffixlen) __nonnull ((1)) __wur;
+      |            ^~~~~~~~
+/usr/include/stdlib.h:738:14: error: storage class specified for parameter ‘mkdtemp’
+  738 | extern char *mkdtemp (char *__template) __THROW __nonnull ((1)) __wur;
+      |              ^~~~~~~
+/usr/include/stdlib.h:791:12: error: storage class specified for parameter ‘system’
+  791 | extern int system (const char *__command) __wur;
+      |            ^~~~~~
+/usr/include/stdlib.h:808:14: error: storage class specified for parameter ‘realpath’
+  808 | extern char *realpath (const char *__restrict __name,
+      |              ^~~~~~~~
+/usr/include/stdlib.h:816:15: error: storage class specified for parameter ‘__compar_fn_t’
+  816 | typedef int (*__compar_fn_t) (const void *, const void *);
+      |               ^~~~~~~~~~~~~
+/usr/include/stdlib.h:829:54: error: expected declaration specifiers or ‘...’ before ‘__compar_fn_t’
+  829 |                       size_t __nmemb, size_t __size, __compar_fn_t __compar)
+      |                                                      ^~~~~~~~~~~~~
+/usr/include/stdlib.h:839:20: error: expected declaration specifiers or ‘...’ before ‘__compar_fn_t’
+  839 |                    __compar_fn_t __compar) __nonnull ((1, 4));
+      |                    ^~~~~~~~~~~~~
+/usr/include/stdlib.h:848:12: error: storage class specified for parameter ‘abs’
+  848 | extern int abs (int __x) __THROW __attribute__ ((__const__)) __wur;
+      |            ^~~
+/usr/include/stdlib.h:849:17: error: storage class specified for parameter ‘labs’
+  849 | extern long int labs (long int __x) __THROW __attribute__ ((__const__)) __wur;
+      |                 ^~~~
+/usr/include/stdlib.h:852:1: error: expected declaration specifiers before ‘__extension__’
+  852 | __extension__ extern long long int llabs (long long int __x)
+      | ^~~~~~~~~~~~~
+/usr/include/stdlib.h:860:14: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘div’
+  860 | extern div_t div (int __numer, int __denom)
+      |              ^~~
+/usr/include/stdlib.h:862:15: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘ldiv’
+  862 | extern ldiv_t ldiv (long int __numer, long int __denom)
+      |               ^~~~
+/usr/include/stdlib.h:866:1: error: expected declaration specifiers before ‘__extension__’
+  866 | __extension__ extern lldiv_t lldiv (long long int __numer,
+      | ^~~~~~~~~~~~~
+/usr/include/stdlib.h:880:14: error: storage class specified for parameter ‘ecvt’
+  880 | extern char *ecvt (double __value, int __ndigit, int *__restrict __decpt,
+      |              ^~~~
+/usr/include/stdlib.h:886:14: error: storage class specified for parameter ‘fcvt’
+  886 | extern char *fcvt (double __value, int __ndigit, int *__restrict __decpt,
+      |              ^~~~
+/usr/include/stdlib.h:892:14: error: storage class specified for parameter ‘gcvt’
+  892 | extern char *gcvt (double __value, int __ndigit, char *__buf)
+      |              ^~~~
+/usr/include/stdlib.h:898:14: error: storage class specified for parameter ‘qecvt’
+  898 | extern char *qecvt (long double __value, int __ndigit,
+      |              ^~~~~
+/usr/include/stdlib.h:901:14: error: storage class specified for parameter ‘qfcvt’
+  901 | extern char *qfcvt (long double __value, int __ndigit,
+      |              ^~~~~
+/usr/include/stdlib.h:904:14: error: storage class specified for parameter ‘qgcvt’
+  904 | extern char *qgcvt (long double __value, int __ndigit, char *__buf)
+      |              ^~~~~
+/usr/include/stdlib.h:910:12: error: storage class specified for parameter ‘ecvt_r’
+  910 | extern int ecvt_r (double __value, int __ndigit, int *__restrict __decpt,
+      |            ^~~~~~
+/usr/include/stdlib.h:913:12: error: storage class specified for parameter ‘fcvt_r’
+  913 | extern int fcvt_r (double __value, int __ndigit, int *__restrict __decpt,
+      |            ^~~~~~
+/usr/include/stdlib.h:917:12: error: storage class specified for parameter ‘qecvt_r’
+  917 | extern int qecvt_r (long double __value, int __ndigit,
+      |            ^~~~~~~
+/usr/include/stdlib.h:921:12: error: storage class specified for parameter ‘qfcvt_r’
+  921 | extern int qfcvt_r (long double __value, int __ndigit,
+      |            ^~~~~~~
+/usr/include/stdlib.h:930:12: error: storage class specified for parameter ‘mblen’
+  930 | extern int mblen (const char *__s, size_t __n) __THROW;
+      |            ^~~~~
+/usr/include/stdlib.h:933:20: error: expected declaration specifiers or ‘...’ before ‘wchar_t’
+  933 | extern int mbtowc (wchar_t *__restrict __pwc,
+      |                    ^~~~~~~
+/usr/include/stdlib.h:937:31: error: expected declaration specifiers or ‘...’ before ‘wchar_t’
+  937 | extern int wctomb (char *__s, wchar_t __wchar) __THROW;
+      |                               ^~~~~~~
+/usr/include/stdlib.h:941:25: error: expected declaration specifiers or ‘...’ before ‘wchar_t’
+  941 | extern size_t mbstowcs (wchar_t *__restrict  __pwcs,
+      |                         ^~~~~~~
+/usr/include/stdlib.h:946:39: error: expected ‘;’, ‘,’ or ‘)’ before ‘*’ token
+  946 |                         const wchar_t *__restrict __pwcs, size_t __n)
+      |                                       ^
+/usr/include/stdlib.h:956:12: error: storage class specified for parameter ‘rpmatch’
+  956 | extern int rpmatch (const char *__response) __THROW __nonnull ((1)) __wur;
+      |            ^~~~~~~
+/usr/include/stdlib.h:967:12: error: storage class specified for parameter ‘getsubopt’
+  967 | extern int getsubopt (char **__restrict __optionp,
+      |            ^~~~~~~~~
+/usr/include/stdlib.h:1013:12: error: storage class specified for parameter ‘getloadavg’
+ 1013 | extern int getloadavg (double __loadavg[], int __nelem)
+      |            ^~~~~~~~~~
+In file included from AutorizationReqManager/../HelpData.h:13,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/include/string.h:43:14: error: storage class specified for parameter ‘memcpy’
+   43 | extern void *memcpy (void *__restrict __dest, const void *__restrict __src,
+      |              ^~~~~~
+/usr/include/string.h:47:14: error: storage class specified for parameter ‘memmove’
+   47 | extern void *memmove (void *__dest, const void *__src, size_t __n)
+      |              ^~~~~~~
+/usr/include/string.h:54:14: error: storage class specified for parameter ‘memccpy’
+   54 | extern void *memccpy (void *__restrict __dest, const void *__restrict __src,
+      |              ^~~~~~~
+/usr/include/string.h:61:14: error: storage class specified for parameter ‘memset’
+   61 | extern void *memset (void *__s, int __c, size_t __n) __THROW __nonnull ((1));
+      |              ^~~~~~
+/usr/include/string.h:64:12: error: storage class specified for parameter ‘memcmp’
+   64 | extern int memcmp (const void *__s1, const void *__s2, size_t __n)
+      |            ^~~~~~
+/usr/include/string.h:80:12: error: storage class specified for parameter ‘__memcmpeq’
+   80 | extern int __memcmpeq (const void *__s1, const void *__s2, size_t __n)
+      |            ^~~~~~~~~~
+/usr/include/string.h:107:14: error: storage class specified for parameter ‘memchr’
+  107 | extern void *memchr (const void *__s, int __c, size_t __n)
+      |              ^~~~~~
+/usr/include/string.h:141:14: error: storage class specified for parameter ‘strcpy’
+  141 | extern char *strcpy (char *__restrict __dest, const char *__restrict __src)
+      |              ^~~~~~
+/usr/include/string.h:144:14: error: storage class specified for parameter ‘strncpy’
+  144 | extern char *strncpy (char *__restrict __dest,
+      |              ^~~~~~~
+/usr/include/string.h:149:14: error: storage class specified for parameter ‘strcat’
+  149 | extern char *strcat (char *__restrict __dest, const char *__restrict __src)
+      |              ^~~~~~
+/usr/include/string.h:152:14: error: storage class specified for parameter ‘strncat’
+  152 | extern char *strncat (char *__restrict __dest, const char *__restrict __src,
+      |              ^~~~~~~
+/usr/include/string.h:156:12: error: storage class specified for parameter ‘strcmp’
+  156 | extern int strcmp (const char *__s1, const char *__s2)
+      |            ^~~~~~
+/usr/include/string.h:159:12: error: storage class specified for parameter ‘strncmp’
+  159 | extern int strncmp (const char *__s1, const char *__s2, size_t __n)
+      |            ^~~~~~~
+/usr/include/string.h:163:12: error: storage class specified for parameter ‘strcoll’
+  163 | extern int strcoll (const char *__s1, const char *__s2)
+      |            ^~~~~~~
+/usr/include/string.h:166:15: error: storage class specified for parameter ‘strxfrm’
+  166 | extern size_t strxfrm (char *__restrict __dest,
+      |               ^~~~~~~
+/usr/include/string.h:175:12: error: storage class specified for parameter ‘strcoll_l’
+  175 | extern int strcoll_l (const char *__s1, const char *__s2, locale_t __l)
+      |            ^~~~~~~~~
+/usr/include/string.h:179:15: error: storage class specified for parameter ‘strxfrm_l’
+  179 | extern size_t strxfrm_l (char *__dest, const char *__src, size_t __n,
+      |               ^~~~~~~~~
+/usr/include/string.h:187:14: error: storage class specified for parameter ‘strdup’
+  187 | extern char *strdup (const char *__s)
+      |              ^~~~~~
+/usr/include/string.h:195:14: error: storage class specified for parameter ‘strndup’
+  195 | extern char *strndup (const char *__string, size_t __n)
+      |              ^~~~~~~
+/usr/include/string.h:246:14: error: storage class specified for parameter ‘strchr’
+  246 | extern char *strchr (const char *__s, int __c)
+      |              ^~~~~~
+/usr/include/string.h:273:14: error: storage class specified for parameter ‘strrchr’
+  273 | extern char *strrchr (const char *__s, int __c)
+      |              ^~~~~~~
+/usr/include/string.h:293:15: error: storage class specified for parameter ‘strcspn’
+  293 | extern size_t strcspn (const char *__s, const char *__reject)
+      |               ^~~~~~~
+/usr/include/string.h:297:15: error: storage class specified for parameter ‘strspn’
+  297 | extern size_t strspn (const char *__s, const char *__accept)
+      |               ^~~~~~
+/usr/include/string.h:323:14: error: storage class specified for parameter ‘strpbrk’
+  323 | extern char *strpbrk (const char *__s, const char *__accept)
+      |              ^~~~~~~
+/usr/include/string.h:350:14: error: storage class specified for parameter ‘strstr’
+  350 | extern char *strstr (const char *__haystack, const char *__needle)
+      |              ^~~~~~
+/usr/include/string.h:356:14: error: storage class specified for parameter ‘strtok’
+  356 | extern char *strtok (char *__restrict __s, const char *__restrict __delim)
+      |              ^~~~~~
+/usr/include/string.h:361:14: error: storage class specified for parameter ‘__strtok_r’
+  361 | extern char *__strtok_r (char *__restrict __s,
+      |              ^~~~~~~~~~
+/usr/include/string.h:366:14: error: storage class specified for parameter ‘strtok_r’
+  366 | extern char *strtok_r (char *__restrict __s, const char *__restrict __delim,
+      |              ^~~~~~~~
+/usr/include/string.h:407:15: error: storage class specified for parameter ‘strlen’
+  407 | extern size_t strlen (const char *__s)
+      |               ^~~~~~
+/usr/include/string.h:413:15: error: storage class specified for parameter ‘strnlen’
+  413 | extern size_t strnlen (const char *__string, size_t __maxlen)
+      |               ^~~~~~~
+/usr/include/string.h:419:14: error: storage class specified for parameter ‘strerror’
+  419 | extern char *strerror (int __errnum) __THROW;
+      |              ^~~~~~~~
+In file included from /usr/include/features.h:486,
+                 from /usr/include/x86_64-linux-gnu/sys/msg.h:21,
+                 from AutorizationReqManager/AutorizationReqManager.c:8:
+/usr/include/string.h:432:12: error: storage class specified for parameter ‘strerror_r’
+  432 | extern int __REDIRECT_NTH (strerror_r,
+      |            ^~~~~~~~~~~~~~
+In file included from AutorizationReqManager/../HelpData.h:13,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/include/string.h:458:14: error: storage class specified for parameter ‘strerror_l’
+  458 | extern char *strerror_l (int __errnum, locale_t __l) __THROW;
+      |              ^~~~~~~~~~
+In file included from /usr/include/string.h:462,
+                 from AutorizationReqManager/../HelpData.h:13,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/include/strings.h:34:12: error: storage class specified for parameter ‘bcmp’
+   34 | extern int bcmp (const void *__s1, const void *__s2, size_t __n)
+      |            ^~~~
+/usr/include/strings.h:38:13: error: storage class specified for parameter ‘bcopy’
+   38 | extern void bcopy (const void *__src, void *__dest, size_t __n)
+      |             ^~~~~
+/usr/include/strings.h:42:13: error: storage class specified for parameter ‘bzero’
+   42 | extern void bzero (void *__s, size_t __n) __THROW __nonnull ((1));
+      |             ^~~~~
+/usr/include/strings.h:68:14: error: storage class specified for parameter ‘index’
+   68 | extern char *index (const char *__s, int __c)
+      |              ^~~~~
+/usr/include/strings.h:96:14: error: storage class specified for parameter ‘rindex’
+   96 | extern char *rindex (const char *__s, int __c)
+      |              ^~~~~~
+/usr/include/strings.h:104:12: error: storage class specified for parameter ‘ffs’
+  104 | extern int ffs (int __i) __THROW __attribute_const__;
+      |            ^~~
+/usr/include/strings.h:110:12: error: storage class specified for parameter ‘ffsl’
+  110 | extern int ffsl (long int __l) __THROW __attribute_const__;
+      |            ^~~~
+/usr/include/strings.h:111:1: error: expected declaration specifiers before ‘__extension__’
+  111 | __extension__ extern int ffsll (long long int __ll)
+      | ^~~~~~~~~~~~~
+/usr/include/strings.h:116:12: error: storage class specified for parameter ‘strcasecmp’
+  116 | extern int strcasecmp (const char *__s1, const char *__s2)
+      |            ^~~~~~~~~~
+/usr/include/strings.h:120:12: error: storage class specified for parameter ‘strncasecmp’
+  120 | extern int strncasecmp (const char *__s1, const char *__s2, size_t __n)
+      |            ^~~~~~~~~~~
+/usr/include/strings.h:128:12: error: storage class specified for parameter ‘strcasecmp_l’
+  128 | extern int strcasecmp_l (const char *__s1, const char *__s2, locale_t __loc)
+      |            ^~~~~~~~~~~~
+/usr/include/strings.h:133:12: error: storage class specified for parameter ‘strncasecmp_l’
+  133 | extern int strncasecmp_l (const char *__s1, const char *__s2,
+      |            ^~~~~~~~~~~~~
+In file included from AutorizationReqManager/../HelpData.h:13,
+                 from AutorizationReqManager/AutorizationReqManager.c:16:
+/usr/include/string.h:466:13: error: storage class specified for parameter ‘explicit_bzero’
+  466 | extern void explicit_bzero (void *__s, size_t __n) __THROW __nonnull ((1))
+      |             ^~~~~~~~~~~~~~
+/usr/include/string.h:471:14: error: storage class specified for parameter ‘strsep’
+  471 | extern char *strsep (char **__restrict __stringp,
+      |              ^~~~~~
+/usr/include/string.h:478:14: error: storage class specified for parameter ‘strsignal’
+  478 | extern char *strsignal (int __sig) __THROW;
+      |              ^~~~~~~~~
+/usr/include/string.h:489:14: error: storage class specified for parameter ‘__stpcpy’
+  489 | extern char *__stpcpy (char *__restrict __dest, const char *__restrict __src)
+      |              ^~~~~~~~
+/usr/include/string.h:491:14: error: storage class specified for parameter ‘stpcpy’
+  491 | extern char *stpcpy (char *__restrict __dest, const char *__restrict __src)
+      |              ^~~~~~
+/usr/include/string.h:496:14: error: storage class specified for parameter ‘__stpncpy’
+  496 | extern char *__stpncpy (char *__restrict __dest,
+      |              ^~~~~~~~~
+/usr/include/string.h:499:14: error: storage class specified for parameter ‘stpncpy’
+  499 | extern char *stpncpy (char *__restrict __dest,
+      |              ^~~~~~~
+In file included from AutorizationReqManager/AutorizationReqManager.c:16:
+AutorizationReqManager/../HelpData.h:22:1: error: parameter ‘AutReqManCreated’ is initialized
+   22 | bool AutReqManCreated = false, MonEngCreated = false;
+      | ^~~~
+AutorizationReqManager/../HelpData.h:22:1: error: parameter ‘MonEngCreated’ is initialized
+In file included from AutorizationReqManager/AutorizationReqManager.c:17:
+AutorizationReqManager/../IntQueues.h:12:2: error: storage class specified for parameter ‘message’
+   12 | }message;
+      |  ^~~~~~~
+AutorizationReqManager/../IntQueues.h:20:2: error: storage class specified for parameter ‘queue’
+   20 | }queue;
+      |  ^~~~~
+In file included from AutorizationReqManager/AutorizationReqManager.c:18:
+AutorizationReqManager/../MessageQueue.h:19:2: error: storage class specified for parameter ‘mq_message’
+   19 | }mq_message;
+      |  ^~~~~~~~~~
+AutorizationReqManager/../MessageQueue.h:21:19: error: conflicting types for ‘message’; have ‘struct mq_message’
+   21 | struct mq_message message;
+      |                   ^~~~~~~
+In file included from AutorizationReqManager/AutorizationReqManager.c:17:
+AutorizationReqManager/../IntQueues.h:12:2: note: previous definition of ‘message’ with type ‘struct message’
+   12 | }message;
+      |  ^~~~~~~
+In file included from AutorizationReqManager/AutorizationReqManager.c:18:
+AutorizationReqManager/../MessageQueue.h:24:1: error: parameter ‘mqCreated’ is initialized
+   24 | bool mqCreated = false;
+      | ^~~~
+AutorizationReqManager/../MessageQueue.h:25:1: error: expected declaration specifiers before ‘sem_t’
+   25 | sem_t* mq_sem;
+      | ^~~~~
+AutorizationReqManager/AutorizationReqManager.c:23:1: error: parameter ‘SenderCreated’ is initialized
+   23 | bool SenderCreated = false, ReceiverCreated = false;      // Sender and Receiver threads creation status
+      | ^~~~
+AutorizationReqManager/AutorizationReqManager.c:23:1: error: parameter ‘ReceiverCreated’ is initialized
+AutorizationReqManager/AutorizationReqManager.c:24:1: error: parameter ‘userPipeCreated’ is initialized
+   24 | bool userPipeCreated = false, backPipeCreated = false;    // User and back pipes creation status
+      | ^~~~
+AutorizationReqManager/AutorizationReqManager.c:24:1: error: parameter ‘backPipeCreated’ is initialized
+AutorizationReqManager/AutorizationReqManager.c:25:1: error: parameter ‘userPipeFDOpened’ is initialized
+   25 | bool userPipeFDOpened = false, backPipeFDOpened = false;  // User and back pipes file descriptors open status
+      | ^~~~
+AutorizationReqManager/AutorizationReqManager.c:25:1: error: parameter ‘backPipeFDOpened’ is initialized
+AutorizationReqManager/AutorizationReqManager.c:26:1: error: parameter ‘using_sem’ is initialized
+   26 | bool using_sem = false;
+      | ^~~~
+AutorizationReqManager/AutorizationReqManager.c:30:1: error: parameter ‘vid_queueCreated’ is initialized
+   30 | bool vid_queueCreated = false, other_queueCreated = false;
+      | ^~~~
+AutorizationReqManager/AutorizationReqManager.c:30:1: error: parameter ‘other_queueCreated’ is initialized
+AutorizationReqManager/AutorizationReqManager.c:32:1: error: parameter ‘cv’ is initialized
+   32 | pthread_cond_t cv = PTHREAD_COND_INITIALIZER;
+      | ^~~~~~~~~~~~~~
+AutorizationReqManager/AutorizationReqManager.c:33:1: error: parameter ‘mutex’ is initialized
+   33 | pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+      | ^~~~~~~~~~~~~~~
+AutorizationReqManager/AutorizationReqManager.c:38:18: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+   38 | void AutReqMan() {
+      |                  ^
+AutorizationReqManager/AutorizationReqManager.c:92:25: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+   92 | void* Sender(void* arg) {
+      |                         ^
+AutorizationReqManager/AutorizationReqManager.c:157:27: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+  157 | void* Receiver(void* arg) {
+      |                           ^
+AutorizationReqManager/AutorizationReqManager.c:242:22: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+  242 | void create_queues() {
+      |                      ^
+AutorizationReqManager/AutorizationReqManager.c:262:66: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+  262 | void div_buf_info(char* buf, char* arg1, char* arg2, char* arg3) {
+      |                                                                  ^
+AutorizationReqManager/AutorizationReqManager.c:271:83: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+  271 | void write_in_queue(struct queue* queue_ptr, char* ID, char* command, char* data) {
+      |                                                                                   ^
+AutorizationReqManager/AutorizationReqManager.c:289:71: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+  289 | void get_from_queue(struct queue* queue_ptr, struct message* request) {
+      |                                                                       ^
+AutorizationReqManager/AutorizationReqManager.c:299:22: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+  299 | void update_queues() {
+      |                      ^
+AutorizationReqManager/AutorizationReqManager.c:334:38: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+  334 | bool any_queue_is(double percentage) {
+      |                                      ^
+AutorizationReqManager/AutorizationReqManager.c:342:60: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+  342 | void send_req_to(int auth_eng_num, struct message request) {
+      |                                                            ^
+AutorizationReqManager/AutorizationReqManager.c:362:22: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+  362 | void logQueuesReqs() {
+      |                      ^
+AutorizationReqManager/AutorizationReqManager.c:418:22: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+  418 | void killProcesses() {
+      |                      ^
+AutorizationReqManager/AutorizationReqManager.c:428:20: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+  428 | void killThreads() {
+      |                    ^
+AutorizationReqManager/AutorizationReqManager.c:437:26: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+  437 | void deleteAllAuthEngs() {
+      |                          ^
+AutorizationReqManager/AutorizationReqManager.c:459:20: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+  459 | void unlinkPipes() {
+      |                    ^
+AutorizationReqManager/AutorizationReqManager.c:469:39: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+  469 | void autReqError(char* error_message) {
+      |                                       ^
+AutorizationReqManager/AutorizationReqManager.c:478:21: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+  478 | void endAutReqMan() {
+      |                     ^
+In file included from AutorizationReqManager/AutorizationReqManager.c:14:
+AutorizationReqManager/../AuthorizationEngines/AuthorizationEngine.h:44:6: error: old-style parameter declarations in prototyped function definition
+   44 | void process_back_user_req(struct message request)
+      |      ^~~~~~~~~~~~~~~~~~~~~
+AutorizationReqManager/AutorizationReqManager.c:490: error: expected ‘{’ at end of input
+In file included from AutorizationReqManager/AutorizationReqManager.c:14:
+AutorizationReqManager/../AuthorizationEngines/AuthorizationEngine.h:44:43: warning: unused parameter ‘request’ [-Wunused-parameter]
+   44 | void process_back_user_req(struct message request)
+      |                            ~~~~~~~~~~~~~~~^~~~~~~
+LogFileManager/LogFileManager.c:21:20: warning: initialization of ‘char’ from ‘char *’ makes integer from pointer without a cast [-Wint-conversion]
+   21 | char logFileName = "log";
+      |                    ^~~~~
+LogFileManager/LogFileManager.c:21:20: error: initializer element is not computable at load time
+LogFileManager/LogFileManager.c: In function ‘creatLogFile’:
+LogFileManager/LogFileManager.c:39:25: warning: passing argument 1 of ‘fopen’ makes pointer from integer without a cast [-Wint-conversion]
+   39 |     if((logFile = fopen(logFileName, "w")) == NULL) {
+      |                         ^~~~~~~~~~~
+      |                         |
+      |                         char
+In file included from LogFileManager/LogFileManager.c:8:
+/usr/include/stdio.h:258:44: note: expected ‘const char * restrict’ but argument is of type ‘char’
+  258 | extern FILE *fopen (const char *__restrict __filename,
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+MonitorEngine/MonitorEngine.c: In function ‘process_alerts’:
+MonitorEngine/MonitorEngine.c:60:16: warning: ‘mq_sem_path’ may be used uninitialized [-Wmaybe-uninitialized]
+   60 |             if(sprintf(mq_sem_path, "%s%d", MQ_NAMED_SEMAPHORE_GEN_PATH, shm_ptr->users[i].id) < 0) {
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+MonitorEngine/MonitorEngine.c: In function ‘sendStatistics’:
+MonitorEngine/MonitorEngine.c:118:5: warning: ‘mq_sem_path’ is used uninitialized [-Wuninitialized]
+  118 |     strcpy(mq_sem_path, MQ_NAMED_BACK_SEM_P); //This part of the code is responsible for sending the statistics to the back user
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+make: *** [makefile:46: SystemManager] Error 1

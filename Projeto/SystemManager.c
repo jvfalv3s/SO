@@ -22,6 +22,20 @@ FILE* f;
 char* buf;
 bool ConfigFileClosed = true;
 bool bufFree = true;
+int MOBILE_USERS;
+int QUEUE_POS;
+int AUTH_SERVERS_MAX;
+int AUTH_PROC_TIME;
+int MAX_VIDEO_WAIT;
+int MAX_OTHERS_WAIT;
+bool AutReqManCreated = false, MonEngCreated = false;
+struct shm_struct* shm_ptr;
+int shm_size = sizeof(struct shm_struct);
+
+sem_t* shm_sem;
+bool shmSemCreated = false;
+
+pid_t SYS_PID, ARM_PID, ME_PID;
 
 /**
  * Main Function.

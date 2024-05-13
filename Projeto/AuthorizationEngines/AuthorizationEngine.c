@@ -7,6 +7,7 @@
 
 #include <sys/msg.h>
 #include <time.h>
+#include <stdbool.h>
 #include "../LogFileManager/LogFileManager.h"
 #include "./AuthorizationEngine.h"
 #include "../IntQueues.h"
@@ -14,8 +15,19 @@
 #include "../HelpData.h"
 #include "../MessageQueue.h"
 
-bool using_sem = false;
+bool using_shm_sem = false;
 int auth_eng_num;
+
+extern mq_message mq_msg;
+extern int mq_key;
+extern int mq_id;
+extern bool mqCreated;
+extern sem_t* mq_sem;
+extern struct shm_struct* shm_ptr;
+extern int shm_size;
+extern sem_t* shm_sem;
+extern bool shmSemCreated;
+extern int AUTH_PROC_TIME;
 
 /**
  * Implements an Authorization Engine.
@@ -23,39 +35,48 @@ int auth_eng_num;
 void AuthEngine(int authEngNum) {
     auth_eng_num = authEngNum;
 
-    char* log_message;
+    char log_message[1024];
     if(sprintf(log_message, "AUTHORIZATION_ENGINE %d READY", auth_eng_num+1) < 0) {
         AuthEngError("CREATING AUTHORIZATON ENGINE READY LOG MESSSAGE");
     }
     writeLog(log_message);
     
     signal(SIGQUIT, SIG_IGN);
-    signal(SIGINT, deleteAuthEng);
+    signal(SIGINT, endAuthEng);
 
     struct message request;
     while(true) {
         sem_wait(shm_sem);
-        using_sem = true;
+        using_shm_sem = true;
 
-        read(shm_ptr->auth_engs[auth_eng_num].pipe_read_fd, &request);
+        read(shm_ptr->auth_engs[auth_eng_num].pipe_read_fd, &request, sizeof(request));
         usleep(AUTH_PROC_TIME * 1000.0);
         
         if(request.id == 1) {
-            process_user_req(request);
+            process_user_req(auth_eng_num,request);
         } else {
             process_back_user_req(request);
         }
         sem_post(shm_sem);
-        using_sem = false;
+        using_shm_sem = false;
 
         if(strcmp(request.command, "SOCIAL") == 0) {
-            writelog("AUTHORIZATION_ENGINE %d: SOCIAL AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id);
+            if(sprintf(log_message,"AUTHORIZATION_ENGINE %d: SOCIAL AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id) < 0) {
+                AuthEngError("CREATING SOCIAL REQUEST COMPLETE LOG MESSAGE");
+            }
+            writeLog(log_message);
         }
         else if(strcmp(request.command, "MUSIC") == 0) {
-            writelog("AUTHORIZATION_ENGINE %d: MUSIC AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id);
+            if(sprintf(log_message,"AUTHORIZATION_ENGINE %d: MUSIC AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id) < 0) {
+                AuthEngError("CREATING MUSIC REQUEST COMPLETE LOG MESSAGE");
+            }
+            writeLog(log_message);
         }
         else if(strcmp(request.command, "VIDEO") == 0) {
-            writelog("AUTHORIZATION_ENGINE %d: VIDEO AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id);
+            if(sprintf(log_message,"AUTHORIZATION_ENGINE %d: VIDEO AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id) < 0) {
+                AuthEngError("CREATING VIDEO REQUEST COMPLETE LOG MESSAGE");
+            }
+            writeLog(log_message);
         }
     }
 }
@@ -97,7 +118,7 @@ void remove_auth_eng(int auth_num) {
 void check_auth_busy() {
     double dif;
     for(int i = 0; i < shm_ptr->n_auth_engs; i++) {
-        if(shm_ptr->auth_engs[i].pid != NULL && shm_ptr->auth_engs[i].busy) {
+        if(shm_ptr->auth_engs[i].pid != 0 && shm_ptr->auth_engs[i].busy) {
             dif = difftime(shm_ptr->auth_engs[i].l_request_time, time(0));
             if(dif > (AUTH_PROC_TIME / 1000)) {
                 shm_ptr->auth_engs[i].busy = false;
@@ -111,7 +132,7 @@ void check_auth_busy() {
  */
 int get_auth_eng_num() {
     for(int i = 0; i < shm_ptr->n_auth_engs; i++) {
-        if((shm_ptr->auth_engs[i].pid != NULL) && (!shm_ptr->auth_engs[i].busy)) {
+        if((shm_ptr->auth_engs[i].pid != 0) && (!shm_ptr->auth_engs[i].busy)) {
             return i;
         }
     }
@@ -123,7 +144,7 @@ int get_auth_eng_num() {
  */
 void process_user_req(int auth_eng_num, struct message request) {
     bool already_in = false;
-    char* log_message;
+    char log_message[1024];
     int i;
     for(i = 0; i < shm_ptr->n_users; i++) {
         if(request.id == shm_ptr->users[i].id)  {
@@ -141,7 +162,7 @@ void process_user_req(int auth_eng_num, struct message request) {
                 if(sprintf(log_message, "AUTHORIZATION_ENGINE %d: VIDEO AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id) < 0) {
                     AuthEngError("CREATING VIDEO REQUEST COMPLETE LOG MESSAGE");
                 }
-                writelog(log_message);
+                writeLog(log_message);
             }
             else if(strcmp(request.command, "MUSIC") == 0) {
                 shm_ptr->total_MUSIC_auths++;
@@ -149,7 +170,7 @@ void process_user_req(int auth_eng_num, struct message request) {
                 if(sprintf(log_message, "AUTHORIZATION_ENGINE %d: MUSIC AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id) < 0) {
                     AuthEngError("CREATING MUSIC REQUEST COMPLETE LOG MESSAGE");
                 }
-                writelog(log_message);
+                writeLog(log_message);
             }
             else {
                 shm_ptr->total_SOCIAL_auths++;
@@ -157,7 +178,7 @@ void process_user_req(int auth_eng_num, struct message request) {
                 if(sprintf(log_message, "AUTHORIZATION_ENGINE %d: SOCIAL AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id) < 0) {
                     AuthEngError("CREATING SOCIAL REQUEST COMPLETE LOG MESSAGE");
                 }
-                writelog(log_message);
+                writeLog(log_message);
             }
         }
         if(shm_ptr->users[i].current_plafond/shm_ptr->users[i].max_plafond <= 80) {
@@ -169,13 +190,13 @@ void process_user_req(int auth_eng_num, struct message request) {
             if(sprintf(log_message, "AUTHORIZATION_ENGINE %d: USER %d ALREADY REGISTED", auth_eng_num+1, request.id) < 0) {
                 AuthEngError("CREATING USER ALREADY REGISTED LOG MESSAGE");
             }
-            writelog(log_message);
+            writeLog(log_message);
         }
         else if(i == MAX_USERS_SHM-1) {
             if(sprintf(log_message, "AUTHORIZATION_ENGINE %d: MAX NUMBER OF USERS REACHED", auth_eng_num+1) < 0) {
                 AuthEngError("CREATING MAX NUMBER OF USERS LOG MESSAGE");
             }
-            writelog(log_message);
+            writeLog(log_message);
         }
         else {
             shm_ptr->users[i].id = request.id;
@@ -220,6 +241,6 @@ void AuthEngError(char* error_message) {
  * Ends Authotization Engine freeing all the resources.
  */
 void endAuthEng() {
-    if(using_sem) sem_post(shm_sem);
+    if(using_shm_sem) sem_post(shm_sem);
     exit(EXIT_SUCCESS);
 }

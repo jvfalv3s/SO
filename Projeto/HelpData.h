@@ -13,14 +13,5 @@
 #include <string.h>
 #include <stdbool.h>
 
-int MOBILE_USERS;
-int QUEUE_POS;
-int AUTH_SERVERS_MAX;
-int AUTH_PROC_TIME;
-int MAX_VIDEO_WAIT;
-int MAX_OTHERS_WAIT;
-bool AutReqManCreated = false, MonEngCreated = false;
-
-pid_t SYS_PID, ARM_PID, ME_PID;
 
 #endif

@@ -15,10 +15,11 @@ CC = gcc
 # Flags de compilação
 CFLAGS = -Wall -Wextra -g -pthread
 
-CFLAGS += -I./AutorizationReqManager
-CFLAGS += -I./LogFileManager
-CFLAGS += -I./MonitorEngine
-
+#CFLAGS += -I./AutorizationReqManager
+#CFLAGS += -I./LogFileManager
+#CFLAGS += -I./MonitorEngine
+#CFLAGS += -I./AuthorizationEngines
+#CFLAGS += -I./mobileUser
 
 # Nome do executável
 TARGET = SystemManager MobileUserExe BackOfficeUser
@@ -35,15 +36,18 @@ HEADERS = mobileUser/mobileUser.h backOfficeUser/backOfficeUser.h LogFileManager
 # Regra padrão
 all: $(TARGET)
 
-MobileUserExe : mobileUser/mobileUser.c
+MobileUserExe : mobileUser/mobileUser.c 
+	$(CC) $(CFLAGS) $^ -o $@ 
 
 BackOfficeUser : backOffice/backOfficeUser.c
+	$(CC) $(CFLAGS) $^ -o $@ 
 
-SystemManager : SystemManager.c AutorizationReqManager/AutorizationReqManager.c LogFileManager/LogFileManager.c MonitorEngine/MonitorEngine.c
+SystemManager : SystemManager.c AutorizationReqManager/AutorizationReqManager.c LogFileManager/LogFileManager.c MonitorEngine/MonitorEngine.c AuthorizationEngines/AuthorizationEngine.c
+	$(CC) $(CFLAGS) $^ -o $@
 	
 # Regra para o alvo principal
-$(TARGET):% : 
-	$(CC) $(CFLAGS) $^ -o $@ 
+#$(TARGET):% : 
+#	$(CC) $(CFLAGS) $^ -o $@ 
 
 # Regra para compilar os arquivos objetos
 %.o : %.c $(HEADERS)
