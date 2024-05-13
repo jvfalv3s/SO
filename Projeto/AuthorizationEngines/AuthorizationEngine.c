@@ -31,11 +31,21 @@ void AuthEngine(int auth_eng_num) {
 
         sem_wait(shm_sem);
         if(request.id == 1) {
-            process_user_req(auth_eng_num, request);
+            process_user_req(request);
         } else {
             process_back_user_req(request);
         }
         sem_post(shm_sem);
+
+        if(strcmp(request.command, "SOCIAL") == 0) {
+            writelog("AUTHORIZATION_ENGINE %d: SOCIAL AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id);
+        }
+        else if(strcmp(request.command, "MUSIC") == 0) {
+            writelog("AUTHORIZATION_ENGINE %d: MUSIC AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id);
+        }
+        else if(strcmp(request.command, "VIDEO") == 0) {
+            writelog("AUTHORIZATION_ENGINE %d: VIDEO AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id);
+        }
     }
 }
 
