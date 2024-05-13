@@ -5,6 +5,11 @@
  * --> João Vitor Fraga Maia Alves           Nº: 2016122878
  **********************************************************/
 
+
+/*a analise desse processo serve para determinar quando o plafond de cada Mobile User atinge de 80 a 100%
+do plafond inicial. Como resultado gera-se alertas para os respectivos MU atravea da messa queue. Gera tb 
+estatisticas periodicas (30s) para o Backoffice  User */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -35,7 +40,7 @@ char* mq_named_sem_path;                 // Path to message queue named semaphor
 sem_t *sem;
 pid_t SYS_PID;
 
-void MonEng(pid_t SYS_PID, int consumo_critico,int id_usuario) {
+void MonEng(int consumo_critico,int id_usuario) {
     /* Creating the message queue key */
     int mq_key = ftok(MQ_KEY_PATH, MQ_KEY_ID);
     if(mq_key == -1) error("Creating message queue key");
@@ -60,18 +65,10 @@ void MonEng(pid_t SYS_PID, int consumo_critico,int id_usuario) {
             // Envio de mensagem de alerta para a fila de mensagens
             char msg[MAX_SIZE];
             sprintf(msg, "Usuário %d: consumo de dados crítico", id_usuario);
-            mq_send(mq, msg, strlen(msg) + 1, 0);
+            mq_send(mq_id, msg, strlen(msg) + 1, 0); // Replace 'mq' with 'mq_id'
         }
 
         // Compilação de estatísticas
         // Código para compilar estatísticas periódicas
-
-    
-
     }
-}
-
-int main() {
-    MonEng(SYS_PID);
-    return 0;
 }
