@@ -96,31 +96,46 @@ int get_auth_eng_num() {
     return -1;
 }
 
-
+/**
+ * Process a mobile user request.
+ */
 void process_user_req(int auth_eng_num, struct message request) {
-    if(strcmp(request.command, "VIDEO") == 0 || strcmp(request.command, "MUSIC") == 0 || strcmp(request.command, "SOCIAL") == 0) {
-        int i;
-        for(i = 0; i < shm_ptr->n_users; i++) {
-            if(request.id == shm_ptr->users[i].id) break;
+    bool already_in = false;
+    char* log_message;
+    int i;
+    for(i = 0; i < shm_ptr->n_users; i++) {
+        if(request.id == shm_ptr->users[i].id)  {
+            already_in = true;
+            break;
         }
-
+    }
+    if(strcmp(request.command, "VIDEO") == 0 || strcmp(request.command, "MUSIC") == 0 || strcmp(request.command, "SOCIAL") == 0) {
         if(request.data_to_reserve <= shm_ptr->users[i].current_plafond) {
             shm_ptr->users[i].current_plafond = shm_ptr->users[i].current_plafond - request.data_to_reserve;
             
             if(strcmp(request.command, "VIDEO") == 0) {
                 shm_ptr->total_VIDEO_auths++;
                 shm_ptr->total_VIDEO_data = shm_ptr->total_VIDEO_data + request.data_to_reserve;
-                writelog("AUTHORIZATION_ENGINE %d: VIDEO AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id);
+                if(sprintf(log_message, "AUTHORIZATION_ENGINE %d: VIDEO AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id) < 0) {
+                    error("CREATING VIDEO REQUEST COMPLETE LOG MESSAGE");
+                }
+                writelog(log_message);
             }
             else if(strcmp(request.command, "MUSIC") == 0) {
                 shm_ptr->total_MUSIC_auths++;
                 shm_ptr->total_MUSIC_data = shm_ptr->total_MUSIC_data + request.data_to_reserve;
-                writelog("AUTHORIZATION_ENGINE %d: MUSIC AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id);
+                if(sprintf(log_message, "AUTHORIZATION_ENGINE %d: MUSIC AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id) < 0) {
+                    error("CREATING MUSIC REQUEST COMPLETE LOG MESSAGE");
+                }
+                writelog(log_message);
             }
             else {
                 shm_ptr->total_SOCIAL_auths++;
                 shm_ptr->total_SOCIAL_data = shm_ptr->total_SOCIAL_data + request.data_to_reserve;
-                writelog("AUTHORIZATION_ENGINE %d: SOCIAL AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id);
+                if(sprintf(log_message, "AUTHORIZATION_ENGINE %d: SOCIAL AUTHORIZATION REQUEST (ID = %d) PROCESSING COMPLETED", auth_eng_num+1, request.id) < 0) {
+                    error("CREATING SOCIAL REQUEST COMPLETE LOG MESSAGE");
+                }
+                writelog(log_message);
             }
         }
         if(shm_ptr->users[i].current_plafond/shm_ptr->users[i].max_plafond <= 80) {
@@ -128,10 +143,39 @@ void process_user_req(int auth_eng_num, struct message request) {
         }
     }
     else {
-
+        if(already_in) {
+            if(sprintf(log_message, "AUTHORIZATION_ENGINE %d: USER %d ALREADY REGISTED", auth_eng_num+1, request.id) < 0) {
+                error("CREATING USER ALREADY REGISTED LOG MESSAGE");
+            }
+            writelog(log_message);
+        }
+        else if(i == MAX_USERS_SHM-1) {
+            if(sprintf(log_message, "AUTHORIZATION_ENGINE %d: MAX NUMBER OF USERS REACHED", auth_eng_num+1) < 0) {
+                error("CREATING MAX NUMBER OF USERS LOG MESSAGE");
+            }
+            writelog(log_message);
+        }
+        else {
+            shm_ptr->users[i].id = request.id;
+            shm_ptr->users[i].max_plafond = atoi(request.command);
+            shm_ptr->users[i].current_plafond = 0;
+        }
     }
 }
 
+/**
+ * Process a back office user request.
+ */
 void process_back_user_req(struct message request) {
-    
+    if(strcmp(request.command, "data_stats") == 0) {
+        
+    }
+    else {
+        shm_ptr->total_MUSIC_auths = 0;
+        shm_ptr->total_MUSIC_data = 0;
+        shm_ptr->total_SOCIAL_auths = 0;
+        shm_ptr->total_SOCIAL_data = 0;
+        shm_ptr->total_VIDEO_auths = 0;
+        shm_ptr->total_VIDEO_data = 0;
+    }
 }
