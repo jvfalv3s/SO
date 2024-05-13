@@ -15,6 +15,7 @@
 #include "../ShmData.h"
 #include "../HelpData.h"
 #include "../IntQueues.h"
+#include "../MessageQueue.h"
 
 /* Initialization */
 pthread_t Sender_id, Receiver_id;  // Threads IDs
@@ -36,6 +37,14 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 void AutReqMan() {
     /* Stays alert for sigquit signals */
     signal(SIGQUIT, endAutReqMan);
+
+    /* Creating the message queue key */
+    mq_key = ftok(MQ_KEY_PATH, MQ_KEY_ID);
+    if(mq_key == -1) error("Creating message queue key");
+
+    /* Opening the message queue for reading */
+    mq_id = msgget(mq_key, IPC_CREAT | 0200);  // 0200 --> write-only permissions
+    if(mq_id == -1) error("Getting message queue id");
 
     /* Creating USER_PIPE and BACK_PIPE */
     if(mkfifo(USER_PIPE_PATH, 0666) == -1) autReqError("CREATING USER PIPE");
@@ -317,7 +326,7 @@ void update_queues() {
 /**
  * Check if any of the two internal queues are at 'percentage' of their total size.
  */
-bool any_queue_is(double percentage){
+bool any_queue_is(double percentage) {
     if((vid_queue.n_empty/vid_queue.max_queue_pos) <= percentage) return true;
     else return false;
 }

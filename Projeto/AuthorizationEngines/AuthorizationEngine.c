@@ -12,6 +12,7 @@
 #include "../IntQueues.h"
 #include "../ShmData.h"
 #include "../HelpData.h"
+#include "../MessageQueue.h"
 
 /**
  * Implements an Authorization Engine.
@@ -168,7 +169,13 @@ void process_user_req(int auth_eng_num, struct message request) {
  */
 void process_back_user_req(struct message request) {
     if(strcmp(request.command, "data_stats") == 0) {
-        
+        struct mq_message stats_message;
+        stats_message.mgg_type = 1;
+        if(sprintf(stats_message.msg_text, "STATS\nSERVICE / TOTAL DATA / AUTH REQS\nVIDEO:  %d  %d\nMUSIC:  %d  %d\nSOCIAL:  %d  %d", shm_ptr->total_VIDEO_data, shm_ptr->total_VIDEO_auths,
+                   shm_ptr->total_MUSIC_data, shm_ptr->total_MUSIC_auths, shm_ptr->total_SOCIAL_data, shm_ptr->total_SOCIAL_auths) < 0) {
+            error("CREATING STATS MESSAGE");
+        }
+        msgsnd(mq_id, &stats_message, sizeof(stats_message), 0);
     }
     else {
         shm_ptr->total_MUSIC_auths = 0;
