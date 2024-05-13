@@ -8,6 +8,8 @@
         "stdbool.h": "c",
         "system_error": "c",
         "types.h": "c",
-        "stat.h": "c"
+        "stat.h": "c",
+        "helpdata.h": "c",
+        "*.gitignore": "c"
     }
 }

@@ -3,7 +3,7 @@
 
 #define MAX_CHAR_COMMAND 30
 
-/* Message from message queue struct */
+/* Message from internal queue struct */
 typedef struct message {
     int id;
     char command[MAX_CHAR_COMMAND];

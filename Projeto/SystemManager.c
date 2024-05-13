@@ -7,8 +7,8 @@
 #include "./LogFileManager/LogFileManager.h"
 #include "./AutorizationReqManager/AutorizationReqManager.h"
 #include "./MonitorEngine/MonitorEngine.h"
-#include "ShmData.h"
-#include "HelpData.h"
+#include "./ShmData.h"
+#include "./HelpData.h"
 
 void shmClose();
 void killProcess();
