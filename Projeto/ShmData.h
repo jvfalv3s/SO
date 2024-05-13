@@ -16,13 +16,15 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <semaphore.h>
 
 /* Comment this line to don't show debug messages */
 #define DEBUG
 
 /* Shared memory important definitions */
 #define MAX_USERS_SHM 20      // Max number users (defines shm size)
-#define SHM_PATH "./tmp/shm"  // Path to shm file
+#define SHM_PATH "shm"        // Path to shm file
+#define SHM_SEM_PATH "shm_sem"
 
 /* Sharerd memory structur */
 typedef struct user {
@@ -54,5 +56,7 @@ typedef struct shm_struct {
 
 struct shm_struct* shm_ptr;
 int shm_size = sizeof(struct shm_struct);
+
+sem_t* shm_sem;
 
 #endif
