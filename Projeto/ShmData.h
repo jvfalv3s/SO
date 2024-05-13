@@ -24,8 +24,8 @@
 
 /* Shared memory important definitions */
 #define MAX_USERS_SHM 20      // Max number users (defines shm size)
-#define SHM_PATH "/tmp/shm"   // Path to shm file
-#define SHM_SEM_PATH "/tmp/shm_sem"
+#define SHM_PATH "shm"   // Path to shm file
+#define SHM_SEM_PATH "shm_sem"
 
 /* Sharerd memory structur */
 typedef struct user {
