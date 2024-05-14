@@ -79,6 +79,9 @@ void AutReqMan() {
     if(mkfifo(BACK_PIPE_PATH, O_CREAT|O_EXCL|0600) == -1 && (errno != EEXIST)) autReqError("CREATING BACK PIPE");
     backPipeCreated = true;
 
+    sem_t* user_pipe_mutex = sem_open(USER_PIPE_MUTEX_PATH, O_CREAT, 0666, 1);
+    if(user_pipe_mutex == SEM_FAILED) autReqError("CREATING USER PIPE MUTEX");
+
     /* Creating VIDEO QUEUE and OTHER QUEUE */
     create_queues();
 
