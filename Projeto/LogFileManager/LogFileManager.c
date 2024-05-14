@@ -89,7 +89,8 @@ void endLogFile() {
     sem_post(mutex);
     
     /* Destroys the mutex created to use the log file */
-    sem_destroy(mutex);
+    sem_close(mutex);
+    sem_unlink(LOG_MUTEX_SEM);
 }
 
 /**
