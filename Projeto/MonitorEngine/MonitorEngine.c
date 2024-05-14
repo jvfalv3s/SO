@@ -135,11 +135,11 @@ void sendStatistics() {
     msgsnd(mq_id, &stats_message, sizeof(stats_message), 0); // Send the message with the statistics to the message queue
     puts("debug11");
     strcpy(mq_sem_path, MQ_NAMED_BACK_SEM_P); //This part of the code is responsible for sending the statistics to the back user
-    sem_unlink(mq_sem_path);
     mq_sem = sem_open(mq_sem_path, O_CREAT, 0666, 0);
+    puts("debug12");
     sem_post(mq_sem);
     sem_close(mq_sem);
-    puts("debug12");
+    puts("debug13");
 }
 
 /**
