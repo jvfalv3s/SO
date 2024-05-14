@@ -124,6 +124,7 @@ void* Sender(void* arg) {
     struct message request;
     char log_message[1024];
     int auth_eng_num;
+    puts("debug5");
     while(true) {
         pthread_mutex_lock(&mutex);
 
@@ -185,14 +186,16 @@ void* Receiver(void* arg) {
     #ifdef DEBUG
         printf("Thread Receiver created.");
     #endif
-
+    puts("debug1");
     /* Opening USER_PIPE and BACK_PIPE */
     user_pipe_fd = open(USER_PIPE_PATH, O_RDONLY);
     if (user_pipe_fd == -1) autReqError("OPENING USER PIPE FOR READ");
     userPipeFDOpened = true;
+    puts("debug2");
     back_pipe_fd = open(BACK_PIPE_PATH, O_RDONLY);
     if (back_pipe_fd == -1) autReqError("OPENING BACK PIPE FOR READ");
     backPipeFDOpened = true;
+    puts("debug3");
 
     fd_set read_set;
     struct queue* queue_ptr;
@@ -210,7 +213,7 @@ void* Receiver(void* arg) {
     int maxfdp = user_pipe_fd;
     if(back_pipe_fd > maxfdp) maxfdp = back_pipe_fd;
     maxfdp++;
-
+    puts("debug4");
     while(true) {
         /* Sets all pipes in the read set */
         FD_SET(user_pipe_fd, &read_set);

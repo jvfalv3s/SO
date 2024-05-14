@@ -51,11 +51,12 @@ void MonEng() {
 
     signal(SIGQUIT, endMonEng); // Signal to end the Monitor Engine
     signal(SIGUSR1, process_alerts); // Signal to process alerts
-
+    puts("debug7");
     while(true) {
+        puts("debug8");
         // Envie as estatísticas para o back user pela msg queue e para o log
         sendStatistics();
-
+        puts("debug9");
         sleep(30);
     }
     endMonEng(); //call for the end of the Monitor Engine function
