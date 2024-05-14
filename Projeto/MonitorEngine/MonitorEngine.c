@@ -137,7 +137,7 @@ void sendStatistics() {
     strcpy(mq_sem_path, MQ_NAMED_BACK_SEM_P); //This part of the code is responsible for sending the statistics to the back user
     mq_sem = sem_open(mq_sem_path, O_CREAT, 0666, 100);
     puts("debug12");
-    sem_post(mq_sem);
+    sem_wait(mq_sem);
     sem_close(mq_sem);
     puts("debug13");
 }
