@@ -10,8 +10,8 @@
 
 #define BUF_SIZE 100
 /* Paths to user and back pipe */
-#define USER_PIPE_PATH "user_pipe"
-#define BACK_PIPE_PATH "back_pipe"
+#define USER_PIPE_PATH "/user_pipe"
+#define BACK_PIPE_PATH "/back_pipe"
 #include "../IntQueues.h"
 
 #include <stdbool.h>
