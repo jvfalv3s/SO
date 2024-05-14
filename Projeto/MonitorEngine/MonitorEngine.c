@@ -122,7 +122,6 @@ void process_alerts() {
  */
 void sendStatistics() {
     struct mq_message stats_message; //Trough this struct we will send the statistics to the back user
-    char mq_sem_path[1024]; // Message queue semaphore path
     stats_message.mgg_type = 1; // Message type for the statistics
     sem_wait(shm_sem);
     if(sprintf(stats_message.msg_text, "STATS\nSERVICE / TOTAL DATA / AUTH REQS\nVIDEO:  %d  %d\nMUSIC:  %d  %d\nSOCIAL:  %d  %d", shm_ptr->total_VIDEO_data, shm_ptr->total_VIDEO_auths, // Copy the message to the message queue
@@ -130,16 +129,11 @@ void sendStatistics() {
         MonEngError("CREATING STATS MESSAGE"); // Error if the message was not created
     }
     sem_post(shm_sem); 
-    puts("debug10");
     writeLog(stats_message.msg_text); // Write the message with the statistics to the log file;
     msgsnd(mq_id, &stats_message, sizeof(stats_message), 0); // Send the message with the statistics to the message queue
-    puts("debug11");
-    strcpy(mq_sem_path, MQ_NAMED_BACK_SEM_P); //This part of the code is responsible for sending the statistics to the back user
-    mq_sem = sem_open(mq_sem_path, O_CREAT, 0666, 100);
-    puts("debug12");
-    sem_wait(mq_sem);
+    mq_sem = sem_open(MQ_NAMED_BACK_SEM_P, O_CREAT, 0666, 0);
+    sem_post(mq_sem);
     sem_close(mq_sem);
-    puts("debug13");
 }
 
 /**
