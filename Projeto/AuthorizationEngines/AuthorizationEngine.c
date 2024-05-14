@@ -85,8 +85,10 @@ void AuthEngine(int authEngNum) {
  * Creates a new authorization engine.
  */
 void create_auth_eng(int auth_num) {
+    puts("teste1");
     int tmp_pipe[2];
     pipe(tmp_pipe);
+    puts("teste2");
     shm_ptr->auth_engs[auth_num].pipe_read_fd = tmp_pipe[0];
     shm_ptr->auth_engs[auth_num].pipe_write_fd = tmp_pipe[1];
     shm_ptr->auth_engs[auth_num].busy = false;
@@ -96,6 +98,7 @@ void create_auth_eng(int auth_num) {
         AuthEngine(auth_num);
         exit(EXIT_SUCCESS);
     }
+    puts("teste3");
 }
 
 /**
