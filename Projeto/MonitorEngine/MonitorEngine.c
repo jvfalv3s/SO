@@ -131,6 +131,7 @@ void sendStatistics() {
     sem_post(shm_sem); 
     writeLog(stats_message.msg_text); // Write the message with the statistics to the log file;
     msgsnd(mq_id, &stats_message, sizeof(stats_message), 0); // Send the message with the statistics to the message queue
+    puts("aaaaaaaaaa");
     mq_sem = sem_open(MQ_NAMED_BACK_SEM_P, O_CREAT, 0666, 0);
     sem_post(mq_sem);
     sem_close(mq_sem);
