@@ -12,7 +12,7 @@
 /* Paths to user and back pipe */
 #define USER_PIPE_PATH "/tmp/user_pipe"
 #define BACK_PIPE_PATH "/tmp/back_pipe"
-#define USER_PIPE_MUTEX_PATH "/tmp/user_pipe_mutex_sem"
+#define USER_PIPE_MUTEX_PATH "user_pipe_mutex_sem"
 #include "../IntQueues.h"
 
 #include <stdbool.h>

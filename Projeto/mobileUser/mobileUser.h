@@ -38,7 +38,7 @@
 /* Path of the USER PIPE */
 #define USER_PIPE_PATH "/tmp/user_pipe"
 /* Path to USER PIPE NAMED MUTEX SEMAPHORE */
-#define USER_PIPE_MUTEX_PATH "/tmp/user_pipe_mutex_sem"
+#define USER_PIPE_MUTEX_PATH "user_pipe_mutex_sem"
 /* Path to MESSAGE QUEUE NAMED SEMAPHORE directory */
 #define MQ_NAMED_SEMAPHORE_DIR_PATH "/tmp/mq_sem_"
 
