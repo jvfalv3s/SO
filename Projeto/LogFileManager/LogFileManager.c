@@ -12,9 +12,10 @@
 #include <time.h>
 #include <semaphore.h> 
 #include <unistd.h>
+#include <fcntl.h>
 #include "LogFileManager.h"
 
-static sem_t mutex;
+static sem_t* mutex;
 time_t t;
 FILE* logFile;
 struct tm tm;
@@ -45,14 +46,15 @@ void creatLogFile() {
     printf("5G_AUTH_PLATFORM SIMULATOR STARTING\n");
 
     /* Initializes a new semaphore caled mutex to use in next times */
-    sem_init(&mutex, 0, 1);
+    mutex = sem_open(LOG_MUTEX_SEM, O_CREAT, 0666, 1);
+    if(mutex == SEM_FAILED) perror("OPENING LOG MUTEX SEMAPHORE");
 }
 
 /**
  * Writes a new log in the log file and also prints the message in the console.
  */
 void writeLog(char* newLog) {
-    sem_wait(&mutex);
+    sem_wait(mutex);
 
     /* Takes the actual time to use in the log file */
     t = time(NULL);
@@ -64,14 +66,14 @@ void writeLog(char* newLog) {
     /* Prints the same message in the console */
     printf("%02d:%02d:%02d %s\n", tm.tm_hour, tm.tm_min, tm.tm_sec, newLog);
 
-    sem_post(&mutex);
+    sem_post(mutex);
 }
 
 /**
  * Ends the log file writting a last log in it and in the console, it also destroys the mutex created.
  */
 void endLogFile() {
-    sem_wait(&mutex);
+    sem_wait(mutex);
 
     /* Takes the actual time to use in the log file */
     t = time(NULL);
@@ -87,7 +89,7 @@ void endLogFile() {
     sem_post(&mutex);
     
     /* Destroys the mutex created to use the log file */
-    sem_destroy(&mutex);
+    sem_destroy(mutex);
 }
 
 /**
