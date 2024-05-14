@@ -37,9 +37,9 @@
 /* Path of the BACK PIPE */
 #define BACK_PIPE_PATH "back_pipe"
 /* Path to MESSAGE QUEUE NAMED SEMAPHORE that indicates about periodic stats */
-#define MQ_NAMED_SEMAPHORE_P_PATH "/tmp/back_sem_P"
+#define MQ_NAMED_SEMAPHORE_P_PATH "back_sem_P"
 /* Path to MESSAGE QUEUE NAMED SEMAPHORE that indicates about stats response */
-#define MQ_NAMED_SEMAPHORE_R_PATH "/tmp/back_sem_R"
+#define MQ_NAMED_SEMAPHORE_R_PATH "back_sem_R"
 
 /* Message from message queue struct */
 typedef struct mq_message {
