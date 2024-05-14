@@ -210,7 +210,6 @@ void* Receiver(void* arg) {
     int maxfdp = user_pipe_fd;
     if(back_pipe_fd > maxfdp) maxfdp = back_pipe_fd;
     maxfdp++;
-    puts("debug4");
     while(true) {
         /* Sets all pipes in the read set */
         FD_SET(user_pipe_fd, &read_set);
