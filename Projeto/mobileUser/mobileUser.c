@@ -94,12 +94,10 @@ int main(int argc, char **argv) {
     /* Completed relative path to named semaphore */
     if(sprintf(mq_named_sem_path, "%s%d", MQ_NAMED_SEMAPHORE_DIR_PATH, MOBILE_USER_ID) < 0) error("Creating mq_named_sem_path string");
 
-    puts("teste");
     /* Initializing user pipe named semaphore (mutex) */
     user_pipe_mutex = sem_open(USER_PIPE_MUTEX_PATH, 0);
     if (user_pipe_mutex == SEM_FAILED) error("Opening user pipe named semaphore (mutex)");
     userPipeMutexOpened = true;
-    puts("teste2");
 
     /* Initializing message queue named semaphore */
     mq_named_sem = sem_open(mq_named_sem_path, O_CREAT, 0666, 0);
