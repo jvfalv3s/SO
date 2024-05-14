@@ -35,7 +35,7 @@
 #define MQ_KEY_PATH "/tmp/message_queue"
 #define MQ_KEY_ID 'a'
 /* Path of the BACK PIPE */
-#define BACK_PIPE_PATH "/tmp/back_pipe"
+#define BACK_PIPE_PATH "back_pipe"
 /* Path to MESSAGE QUEUE NAMED SEMAPHORE that indicates about periodic stats */
 #define MQ_NAMED_SEMAPHORE_P_PATH "/tmp/back_sem_P"
 /* Path to MESSAGE QUEUE NAMED SEMAPHORE that indicates about stats response */

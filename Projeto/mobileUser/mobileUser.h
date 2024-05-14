@@ -36,7 +36,7 @@
 #define MQ_KEY_PATH "/tmp/message_queue"
 #define MQ_KEY_ID 'a'
 /* Path of the USER PIPE */
-#define USER_PIPE_PATH "/tmp/user_pipe"
+#define USER_PIPE_PATH "user_pipe"
 /* Path to USER PIPE NAMED MUTEX SEMAPHORE */
 #define USER_PIPE_MUTEX_PATH "/tmp/user_pipe_mutex_sem"
 /* Path to MESSAGE QUEUE NAMED SEMAPHORE directory */
