@@ -13,7 +13,7 @@ char command[MAX_CHAR_COMMAND_AMMOUNT];
 struct mq_message message;               // Message from message queue
 int user_pipe_fd;                        // User pipe file descriptor
 sem_t *user_pipe_mutex, *mq_named_sem;   // Named semaphores
-char* mq_named_sem_path;                 // Path to message queue named semaphore
+char mq_named_sem_path[1024];                 // Path to message queue named semaphore
 
 /* Status variables */
 bool userPipeFdOpened = false;
