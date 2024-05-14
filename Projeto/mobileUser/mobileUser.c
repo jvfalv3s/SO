@@ -117,7 +117,7 @@ int main(int argc, char **argv) {
     int mq_key = 1234;
 
     /* Opening the message queue for reading */
-    mq_id = msgget(mq_key, 0400);  // 0400 --> read-only permissions
+    mq_id = msgget(mq_key, IPC_CREATE | 0400);  // 0400 --> read-only permissions
     if(mq_id == -1) error("Getting message queue id");
 
     /* Sending register message */
