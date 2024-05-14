@@ -86,10 +86,11 @@ void endLogFile() {
     /* Prints the same message in the console */
     printf("%02d:%02d:%02d 5G_AUTH_PLATFORM SIMULATOR CLOSING", tm.tm_hour, tm.tm_min, tm.tm_sec);
 
-    sem_post(&mutex);
+    sem_post(mutex);
     
     /* Destroys the mutex created to use the log file */
-    sem_destroy(mutex);
+    sem_close(mutex);
+    sem_unlink(LOG_MUTEX_SEM);
 }
 
 /**
