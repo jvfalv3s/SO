@@ -8,7 +8,7 @@
 #ifndef LOGFILEMANAGER_H
 #define LOGFILEMANAGER_H
 
-#define LOG_MUTEX_SEM "/tmp/log_mutex"
+#define LOG_MUTEX_SEM "log_mutex"
 
 /**
  * Creates a new log file.

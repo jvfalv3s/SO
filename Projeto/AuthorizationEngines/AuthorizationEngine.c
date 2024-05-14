@@ -50,8 +50,10 @@ void AuthEngine(int authEngNum) {
         using_shm_sem = true;
 
         read(shm_ptr->auth_engs[auth_eng_num].pipe_read_fd, &request, sizeof(request));
+        sem_post(shm_sem);
         usleep(AUTH_PROC_TIME * 1000.0);
-        
+        sem_wait(shm_sem);
+           
         if(request.id == 1) {
             process_user_req(auth_eng_num,request);
         } else {

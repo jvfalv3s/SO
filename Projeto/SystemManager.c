@@ -70,6 +70,7 @@ int main(int argc, char* argv[]) {
     if(shm_sem == SEM_FAILED) error("OPENING SHARED MEMORY SEMAPHORE");
     shmSemCreated = true;
 
+
     buf = (char*) malloc(sizeof(char)*100);
     bufFree = false;
     int i = 0;
@@ -188,8 +189,9 @@ int main(int argc, char* argv[]) {
     signal(SIGQUIT, handle_sigquit);
 
     /* Waits for his 2 childs to end */
-    int status;
-    while(waitpid(-1, &status, WNOHANG) > 0);
+    for(int i = 0; i < 2; i++) {
+        wait(NULL);
+    }
 
     /* Ends the System Manager */
     endSys();

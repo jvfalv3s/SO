@@ -42,7 +42,6 @@ void MonEng() {
     mq_key = ftok(MQ_KEY_PATH, MQ_KEY_ID);
     if(mq_key == -1) error("Creating message queue key");
     */
-
     mq_key = 1234;
 
     /* Opening the message queue for reading */
@@ -126,7 +125,7 @@ void sendStatistics() {
     struct mq_message stats_message; //Trough this struct we will send the statistics to the back user
     char mq_sem_path[1024]; // Message queue semaphore path
     stats_message.mgg_type = 1; // Message type for the statistics
-
+    sem_wait(shm_sem);
     if(sprintf(stats_message.msg_text, "STATS\nSERVICE / TOTAL DATA / AUTH REQS\nVIDEO:  %d  %d\nMUSIC:  %d  %d\nSOCIAL:  %d  %d", shm_ptr->total_VIDEO_data, shm_ptr->total_VIDEO_auths, // Copy the message to the message queue
                shm_ptr->total_MUSIC_data, shm_ptr->total_MUSIC_auths, shm_ptr->total_SOCIAL_data, shm_ptr->total_SOCIAL_auths) < 0) {
         MonEngError("CREATING STATS MESSAGE"); // Error if the message was not created
