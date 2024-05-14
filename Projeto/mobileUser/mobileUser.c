@@ -118,7 +118,7 @@ int main(int argc, char **argv) {
 
     /* Opening the message queue for reading */
     mq_id = msgget(mq_key, 0400);  // 0400 --> read-only permissions
-    if (mq_id == -1) error("Getting message queue id");
+    if(mq_id == -1) error("Getting message queue id");
 
     /* Sending register message */
     send_reg_message(initial_plafond);
