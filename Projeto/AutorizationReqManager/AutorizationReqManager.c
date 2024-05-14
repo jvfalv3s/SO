@@ -11,6 +11,7 @@
 #include <sys/select.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <errno.h>
 #include "../LogFileManager/LogFileManager.h"
 #include "./AutorizationReqManager.h"
 #include "../AuthorizationEngines/AuthorizationEngine.h"
@@ -73,9 +74,9 @@ void AutReqMan() {
     if(mq_id == -1) error("Getting message queue id");
 
     /* Creating USER_PIPE and BACK_PIPE */
-    if(mkfifo(USER_PIPE_PATH, 0666) == -1) autReqError("CREATING USER PIPE");
+    if(mkfifo(USER_PIPE_PATH, O_CREAT|O_EXCL|0600) == -1 && (errno != EEXIST)) autReqError("CREATING USER PIPE");
     userPipeCreated = true;
-    if(mkfifo(BACK_PIPE_PATH, 0666) == -1) autReqError("CREATING BACK PIPE");
+    if(mkfifo(BACK_PIPE_PATH, O_CREAT|O_EXCL|0600) == -1 && (errno != EEXIST)) autReqError("CREATING BACK PIPE");
     backPipeCreated = true;
 
     /* Creating VIDEO QUEUE and OTHER QUEUE */
